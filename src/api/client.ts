@@ -9,7 +9,8 @@ import {
   patientsSchema,
   stateSchema,
 } from './contracts';
-import type { AnalysisContext, CohortQuery, ReplayState } from './contracts';
+import type { AnalysisContext, CohortQuery, Evidence, ReplayState } from './contracts';
+import { summarySchema, type ReportSummary } from './summaries';
 import { alertListSchema, resistanceInvestigationSchema } from './alerts';
 import {
   backendEvidenceSchema,
@@ -109,6 +110,19 @@ function cohortParams(q: CohortQuery) {
     : { ...rest, calendar_year };
 }
 export const api = {
+  async summarize(evidence: Evidence, signal?: AbortSignal) {
+    const summary = await request('/ai/summaries', summarySchema, {}, signal, 'POST', {
+      analysis_id: evidence.analysis_id, language: 'en',
+    });
+    assertSummary(summary, evidence);
+    return summary;
+  },
+  async summary(id: string, evidence: Evidence, signal?: AbortSignal) {
+    const summary = await request(`/ai/summaries/${encodeURIComponent(id)}`, summarySchema, {}, signal);
+    assertSummary(summary, evidence);
+    if (summary.summary_id !== id) throw new ApiError('The response belongs to a different summary.', 502, 'invalid_context');
+    return summary;
+  },
   async resistanceAlerts(state: ReplayState, signal?: AbortSignal) {
     const data = await request('/alerts', alertListSchema, guard(state), signal);
     if (
@@ -368,3 +382,10 @@ export const api = {
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   },
 };
+
+function assertSummary(summary: ReportSummary, evidence: Evidence) {
+  if (summary.analysis_id !== evidence.analysis_id || summary.run_id !== evidence.context.run_id
+      || summary.state_revision !== evidence.context.state_revision || summary.method_version !== evidence.context.method_version
+      || summary.as_of !== evidence.context.as_of)
+    throw new ApiError('The summary does not match this saved report.', 502, 'invalid_context');
+}

@@ -40,6 +40,21 @@ The panel appears only when the launcher sets `VITE_DEMO_CONTROLS=1`. Vite proxi
 does not include these controls. Ctrl+C stops the launcher and its servers; relaunch
 resumes, and `-Restart` creates a fresh demo run. See the backend's `DEMO.md`.
 
+## Report summary panel
+
+In API mode, **Summarize this report** requests an explanation of the saved evidence
+currently displayed. The panel uses `/api/v1/ai/summaries`, polls pending work, and
+labels the result **AI-assisted summary** or **Basic summary** according to the
+backend. Applicable limitations remain visible, supporting facts expand below the
+paragraph, and **View evidence** opens the matching report's provenance.
+
+Generation is explicit. A new analysis clears the old panel and offers
+**Summarize updated report**; late responses cannot attach to another analysis.
+During revision refresh, a retained summary is labelled as belonging to an older
+report. Errors stay in this panel. Pending polling pauses after two minutes and
+offers **Check status**. No provider credentials or model calls belong in the browser.
+Configure the provider on the backend as described in its `AI_SUMMARY.md`.
+
 ## Dates and overlapping overview periods
 
 **Report end date** sets the inclusive endpoint of both headline periods and the
