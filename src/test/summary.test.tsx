@@ -4,7 +4,7 @@ import { afterEach, expect, it, vi } from 'vitest';
 import { api } from '../api/client';
 import type { Evidence } from '../api/contracts';
 import { summarySchema, type ReportSummary } from '../api/summaries';
-import { AiSummaryPanel } from '../features/AiSummaryPanel';
+import { AiSummaryDrawer, AiSummaryPanel } from '../features/AiSummaryPanel';
 import { initialState, makeEvidence } from '../mocks/fixtures';
 
 const evidence = makeEvidence(new URLSearchParams(), initialState, 'report-one');
@@ -182,4 +182,25 @@ it('rejects malformed completion and summaries for a different snapshot', async 
     );
     await expect(api.summarize(evidence)).rejects.toThrow('does not match');
   }
+});
+
+it('opens AI as a secondary drawer and reuses the summary when reopened', async () => {
+  const create = vi.spyOn(api, 'summarize').mockResolvedValue(complete());
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  render(
+    <QueryClientProvider client={client}>
+      <AiSummaryDrawer evidence={evidence} state={initialState} onEvidence={vi.fn()} />
+    </QueryClientProvider>,
+  );
+  expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button', { name: 'AI summary' }));
+  expect(screen.getByRole('dialog', { name: 'AI report summary' })).toBeInTheDocument();
+  expect(create).not.toHaveBeenCalled();
+  fireEvent.click(screen.getByRole('button', { name: 'Summarize this report' }));
+  await screen.findByText('Basic summary');
+  fireEvent.click(screen.getByRole('button', { name: 'Close panel' }));
+  fireEvent.click(screen.getByRole('button', { name: 'AI summary' }));
+  await screen.findByText('Basic summary');
+  expect(create).toHaveBeenCalledTimes(1);
+  client.clear();
 });

@@ -1,3 +1,4 @@
+import { notifyExport } from '../components/export-notifications';
 import { useEffect, useState } from 'react';
 import { ArrowLeft, ArrowRight, FlaskConical, Search, UserRound } from 'lucide-react';
 import type { Meta, ReplayState } from '../api/contracts';
@@ -61,6 +62,7 @@ export function PatientHistoryDrawer({
     setExportError('');
     try {
       await api.export(history.data.analysis_id, format);
+      notifyExport(format);
     } catch (error) {
       setExportError((error as Error).message);
     } finally {

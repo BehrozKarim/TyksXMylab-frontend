@@ -1,9 +1,60 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Sparkles } from 'lucide-react';
 import { api } from '../api/client';
 import type { Evidence, ReplayState } from '../api/contracts';
-import { Badge, Button, ErrorPanel, Loading, Panel, SectionHeading } from '../components/ui';
+import {
+  Badge,
+  Button,
+  Drawer,
+  ErrorPanel,
+  Loading,
+  Panel,
+  SectionHeading,
+} from '../components/ui';
+import { rememberTrigger } from '../components/focus';
+
+export function AiSummaryDrawer(props: Parameters<typeof AiSummaryPanel>[0]) {
+  const [open, setOpen] = useState(false);
+  const trigger = useRef<HTMLButtonElement>(null);
+  const pendingEvidence = useRef<Evidence | null>(null);
+  return (
+    <>
+      <Button
+        ref={trigger}
+        disabled={!props.evidence}
+        onClick={() => {
+          rememberTrigger();
+          setOpen(true);
+        }}
+      >
+        <Sparkles size={17} /> AI summary
+      </Button>
+      <Drawer
+        open={open}
+        onClose={() => setOpen(false)}
+        onClosed={() => {
+          const report = pendingEvidence.current;
+          pendingEvidence.current = null;
+          if (report) {
+            trigger.current?.focus();
+            props.onEvidence(report);
+          }
+        }}
+        title="AI report summary"
+        description="An optional explanation of the selected report, with its supporting evidence."
+      >
+        <AiSummaryPanel
+          {...props}
+          onEvidence={(report) => {
+            pendingEvidence.current = report;
+            setOpen(false);
+          }}
+        />
+      </Drawer>
+    </>
+  );
+}
 
 export function AiSummaryPanel({
   evidence,
@@ -43,7 +94,14 @@ function ReportSummary({
   onRequested: () => void;
 }) {
   const client = useQueryClient();
-  const [jobId, setJobId] = useState<string>();
+  const jobKey = ['summary-job', evidence.analysis_id];
+  const job = useQuery<string | null>({
+    queryKey: jobKey,
+    queryFn: () => null,
+    enabled: false,
+    initialData: null,
+  });
+  const jobId = job.data ?? undefined;
   const [polling, setPolling] = useState(true);
   const [check, setCheck] = useState(0);
   const key = (id?: string) => ['summary', evidence.analysis_id, id];
@@ -52,7 +110,7 @@ function ReportSummary({
     retry: false,
     onSuccess: (summary) => {
       client.setQueryData(key(summary.summary_id), summary);
-      setJobId(summary.summary_id);
+      client.setQueryData(jobKey, summary.summary_id);
     },
   });
   const result = useQuery({

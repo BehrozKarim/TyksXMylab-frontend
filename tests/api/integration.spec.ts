@@ -10,7 +10,9 @@ test('overview reads published evidence, orders periods, and opens investigation
 }) => {
   const unavailable: string[] = [];
   page.on('request', (r) => {
-    if (/\/api\/v1\/(alerts|investigations)/.test(r.url())) unavailable.push(r.url());
+    // The top navigation may read alerts for its count; the cohort page must
+    // still open directly without requesting an alert investigation.
+    if (/\/api\/v1\/investigations/.test(r.url())) unavailable.push(r.url());
   });
   const response = page.waitForResponse(
     (r) => r.url().includes('/api/v1/evidence?') && r.status() === 200,

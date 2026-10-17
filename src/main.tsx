@@ -5,8 +5,13 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import App from './app/App';
 import { queryClient } from './app/queries';
 import { DATA_MODE } from './api/client';
+import '@fontsource/barlow/latin-400.css';
+import '@fontsource/barlow/latin-500.css';
+import '@fontsource/barlow/latin-700.css';
+import '@fontsource/barlow-condensed/latin-600.css';
 import './styles/tokens.css';
 import './styles/global.css';
+import './styles/workspace.css';
 
 async function start() {
   if (DATA_MODE === 'fixtures') {

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { ArrowRight, RotateCcw, SlidersHorizontal } from 'lucide-react';
 import type { CohortQuery, Meta } from '../api/contracts';
 import { Button, Select } from '../components/ui';
@@ -8,10 +8,14 @@ export function CohortControls({
   query,
   meta,
   onApply,
+  children,
+  shortcuts,
 }: {
   query: CohortQuery;
   meta: Meta;
   onApply: (q: CohortQuery) => void;
+  children?: ReactNode;
+  shortcuts?: ReactNode;
 }) {
   const [draft, setDraft] = useState(query);
   const [advanced, setAdvanced] = useState(false);
@@ -38,9 +42,7 @@ export function CohortControls({
   };
   return (
     <form className="cohort-panel" onSubmit={submit} aria-label="Select evidence cohort">
-      <div className="filter-top">
-        <span className="eyebrow">Select your cohort</span>
-      </div>
+      <div className="filter-date-row">{children}</div>
       <div className="filter-grid">
         <Select
           id="ward"
@@ -94,42 +96,6 @@ export function CohortControls({
             </option>
           ))}
         </Select>
-        <Button type="submit" variant="primary" className="apply-button">
-          Apply cohort <ArrowRight size={16} />
-        </Button>
-      </div>
-      <div className="filter-bottom">
-        <Button
-          type="button"
-          variant="ghost"
-          aria-expanded={advanced}
-          aria-controls="advanced-filters"
-          onClick={() => setAdvanced(!advanced)}
-        >
-          <SlidersHorizontal size={15} />
-          Population filters{active > 0 && <span className="count-badge">{active}</span>}
-        </Button>
-        <span className="filter-current" title="Applied only after clicking Apply cohort">
-          {draft.sex === 'F' ? 'Women' : draft.sex === 'M' ? 'Men' : 'All sexes'}
-          <span className="separator-dot">·</span>
-          {draft.age_min !== null || draft.age_max !== null
-            ? `Ages ${draft.age_min ?? 0}–${draft.age_max ?? '120+'}`
-            : 'All ages'}
-        </span>
-        <Button
-          variant="ghost"
-          type="button"
-          className="reset-filter"
-          onClick={() => {
-            const next = { ...query, ...defaults, calendar_year: query.calendar_year };
-            setDraft(next);
-            onApply(next);
-            setError('');
-          }}
-        >
-          <RotateCcw size={14} />
-          Reset filters
-        </Button>
       </div>
       {advanced && (
         <div id="advanced-filters" className="advanced-filters">
@@ -178,6 +144,43 @@ export function CohortControls({
           )}
         </div>
       )}
+      <div className="filter-bottom">
+        <Button
+          type="button"
+          variant="ghost"
+          aria-expanded={advanced}
+          aria-controls="advanced-filters"
+          onClick={() => setAdvanced(!advanced)}
+        >
+          <SlidersHorizontal size={15} />
+          Population filters{active > 0 && <span className="count-badge">{active}</span>}
+        </Button>
+        <span className="filter-current" title="Applied only after clicking Apply cohort">
+          {draft.sex === 'F' ? 'Women' : draft.sex === 'M' ? 'Men' : 'All sexes'}
+          <span className="separator-dot">·</span>
+          {draft.age_min !== null || draft.age_max !== null
+            ? `Ages ${draft.age_min ?? 0}–${draft.age_max ?? '120+'}`
+            : 'All ages'}
+        </span>
+        <Button
+          variant="ghost"
+          type="button"
+          className="reset-filter"
+          onClick={() => {
+            const next = { ...query, ...defaults, calendar_year: query.calendar_year };
+            setDraft(next);
+            onApply(next);
+            setError('');
+          }}
+        >
+          <RotateCcw size={14} />
+          Reset filters
+        </Button>
+        {shortcuts}
+        <Button type="submit" variant="primary" className="apply-button">
+          Apply cohort <ArrowRight size={16} />
+        </Button>
+      </div>
     </form>
   );
 }

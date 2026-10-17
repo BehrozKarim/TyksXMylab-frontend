@@ -4,17 +4,10 @@ import {
   Activity,
   ArrowDownToLine,
   ArrowRight,
-  BookOpen,
-  ChevronRight,
   CircleHelp,
   FlaskConical,
-  LayoutDashboard,
-  Menu,
-  Microscope,
-  PanelLeftClose,
   UsersRound,
   SearchCheck,
-  BellDot,
 } from 'lucide-react';
 import { Link, Navigate, Route, Routes, useLocation, useSearchParams } from 'react-router-dom';
 import { api, DATA_MODE } from '../api/client';
@@ -35,7 +28,9 @@ import { CohortInvestigation } from '../features/CohortInvestigation';
 import { SusceptibilityTrend } from '../features/SusceptibilityTrend';
 import { ResistanceAlerts, ResistanceInvestigation } from '../features/ResistanceAlerts';
 import { DemoControls } from '../features/DemoControls';
-import { AiSummaryPanel } from '../features/AiSummaryPanel';
+import { AiSummaryDrawer } from '../features/AiSummaryPanel';
+import { QuickQueries } from '../features/QuickQueries';
+import { ExportToast } from '../components/ExportToast';
 
 function Brand() {
   return (
@@ -51,10 +46,24 @@ function Brand() {
         </svg>
       </span>
       <span className="brand-type">
-        ward<span>evidence</span>
+        <span className="brand-word">
+          ward<span>evidence</span>
+        </span>
+        <span className="brand-sub">TYKS × MYLAB</span>
       </span>
     </span>
   );
+}
+function AlertCount({ state }: { state: ReplayState }) {
+  const alerts = useAnalysis('resistance-alerts', state, {}, (signal) =>
+    api.resistanceAlerts(state, signal),
+  );
+  const count = alerts.data?.alerts.filter((item) => item.status !== 'cleared').length;
+  return count ? (
+    <span className="nav-count" aria-label={`${count} alerts to review`}>
+      {count}
+    </span>
+  ) : null;
 }
 function Workspace({
   meta,
@@ -77,7 +86,6 @@ function Workspace({
   const { query, issues, pinned } = readCohort(search, meta, state);
   const [patientOpen, setPatientOpen] = useState(false);
   const [guideOpen, setGuideOpen] = useState(false);
-  const [navOpen, setNavOpen] = useState(false);
   const [provenance, setProvenance] = useState<{ analysis: Analysis; window?: WindowKey } | null>(
     null,
   );
@@ -97,26 +105,16 @@ function Workspace({
       previousRun.current = state.run_id;
     }
   }, [state.run_id, client]);
-  useEffect(() => {
-    if (!navOpen) return;
-    const close = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setNavOpen(false);
-        document.querySelector<HTMLElement>('[aria-label="Toggle navigation"]')?.focus();
-      }
-    };
-    document.addEventListener('keydown', close);
-    return () => document.removeEventListener('keydown', close);
-  }, [navOpen]);
-  const investigation = location.pathname.startsWith('/investigate');
-  const alertsPage = location.pathname.startsWith('/alerts');
+  const alertsPage =
+    location.pathname.startsWith('/alerts') ||
+    (!!meta.capabilities?.alerts && location.pathname.startsWith('/investigate/'));
+  const investigation = !alertsPage && location.pathname.startsWith('/investigate');
   const serialized = writeCohort(query, pinned).toString();
   const searchString = search.toString();
   useEffect(() => {
     if (!issues.length && serialized !== searchString) setSearch(serialized, { replace: true });
   }, [serialized, searchString, setSearch, issues.length]);
   useEffect(() => {
-    setNavOpen(false);
     (document.querySelector<HTMLElement>('h1') ?? document.getElementById('main-content'))?.focus();
     window.scrollTo({ top: 0 });
   }, [location.pathname]);
@@ -139,100 +137,48 @@ function Workspace({
       <a href="#main-content" className="skip-link">
         Skip to evidence
       </a>
-      <aside className={`sidebar ${navOpen ? 'sidebar--open' : ''}`} aria-label="Main navigation">
-        <Link to={`/ward?${search}`} className="brand-link" aria-label="Ward Evidence home">
-          <Brand />
-        </Link>
-        <div className="workspace-label">WORKSPACE</div>
-        <nav>
-          <Link
-            aria-label="Ward overview"
-            className={`nav-item ${!investigation && !alertsPage ? 'active' : ''}`}
-            aria-current={!investigation && !alertsPage ? 'page' : undefined}
-            to={`/ward?${search}`}
-          >
-            <LayoutDashboard size={19} />
-            <span>Ward overview</span>
+      <header className="app-header">
+        <div className="app-header-inner">
+          <Link to={`/ward?${search}`} className="brand-link" aria-label="Ward Evidence home">
+            <Brand />
           </Link>
-          <Link
-            aria-label="Investigate susceptibility"
-            className={`nav-item ${investigation ? 'active' : ''}`}
-            aria-current={investigation ? 'page' : undefined}
-            to={`/investigate?${search}`}
-          >
-            <SearchCheck size={19} />
-            <span>Investigate susceptibility</span>
-          </Link>
-          {meta.capabilities?.alerts && (
+          <nav className="app-nav" aria-label="Main navigation">
             <Link
-              className={`nav-item ${alertsPage ? 'active' : ''}`}
-              aria-label="Resistance alerts"
-              aria-current={alertsPage ? 'page' : undefined}
-              to={`/alerts?${search}`}
+              aria-label="Ward overview"
+              className="nav-pill"
+              aria-current={!investigation && !alertsPage ? 'page' : undefined}
+              to={`/ward?${search}`}
             >
-              <BellDot size={19} />
-              <span>Resistance alerts</span>
+              Ward overview
             </Link>
-          )}
-          <button className="nav-item" aria-label="Patient history" onClick={showPatients}>
-            <UsersRound size={19} />
-            <span>Patient history</span>
-          </button>
-        </nav>
-        <div className="sidebar-divider" />
-        <div className="workspace-label">RESOURCES</div>
-        <button className="nav-item" aria-label="Reading the evidence" onClick={showGuide}>
-          <BookOpen size={19} />
-          <span>Reading the evidence</span>
-        </button>
-        <div className="sidebar-bottom">
-          <div className="sidebar-lab">
-            <span className="sidebar-lab-icon">
-              <Microscope size={23} />
-            </span>
-            <h3>Tyks × Mylab</h3>
-            <p>Laboratory susceptibility research.</p>
-            <button onClick={showGuide}>
-              About this workspace <ArrowRight size={14} />
-            </button>
-          </div>
-          <div className="partner-mark">
-            TYKS <span>×</span> mylab
-            <span className="partner-sub">JunctionX Turku · Prototype</span>
-          </div>
-        </div>
-      </aside>
-      {navOpen && (
-        <button
-          className="mobile-backdrop"
-          aria-label="Close navigation"
-          onClick={() => setNavOpen(false)}
-        />
-      )}
-      <div className="app-body">
-        <header className="topbar">
-          <div className="topbar-left">
-            <Button
-              variant="ghost"
-              className="mobile-menu icon-button"
-              aria-label="Toggle navigation"
-              aria-expanded={navOpen}
-              onClick={() => setNavOpen(!navOpen)}
+            <Link
+              aria-label="Investigate susceptibility"
+              className="nav-pill"
+              aria-current={investigation ? 'page' : undefined}
+              to={`/investigate?${search}`}
             >
-              {navOpen ? <PanelLeftClose size={20} /> : <Menu size={20} />}
-            </Button>
-            <span className="topbar-title">Clinical surveillance</span>
-            <ChevronRight size={14} />
-            <span className="topbar-current">
-              {alertsPage ? 'Resistance alerts' : investigation ? 'Investigation' : 'Ward overview'}
-            </span>
-          </div>
-          <div className="topbar-right">
+              Investigate susceptibility
+            </Link>
+            {meta.capabilities?.alerts && (
+              <Link
+                className="nav-pill"
+                aria-label="Resistance alerts"
+                aria-current={alertsPage ? 'page' : undefined}
+                to={`/alerts?${search}`}
+              >
+                Resistance alerts <AlertCount state={state} />
+              </Link>
+            )}
+            <button className="nav-pill" aria-label="Patient history" onClick={showPatients}>
+              <UsersRound size={17} />
+              Patient history
+            </button>
+          </nav>
+          <div className="app-header-right">
             <span className="synthetic-label">
               <span />
               {state.mode === 'feed' ? 'External feed' : 'Synthetic data'}
             </span>
-            <span className="topbar-divider" />
             <Button
               variant="ghost"
               className="icon-button"
@@ -245,8 +191,10 @@ function Workspace({
               WE
             </span>
           </div>
-        </header>
-        <main id="main-content" className="main-content" tabIndex={-1}>
+        </div>
+      </header>
+      <div className="app-body">
+        <div className="workspace-notices">
           <DemoControls state={state} />
           <RefreshNotice
             error={refreshError}
@@ -297,6 +245,8 @@ function Workspace({
               below show the explicit defaults.
             </div>
           )}
+        </div>
+        <main id="main-content" className="main-content" tabIndex={-1}>
           <Routes>
             <Route path="/" element={<Navigate to={`/ward?${search}`} replace />} />
             <Route
@@ -370,9 +320,11 @@ function Workspace({
               {state.method_version} <span className="separator-dot">·</span> Snapshot{' '}
               {state.state_revision} <span className="separator-dot">·</span> {state.run_id}
             </span>
+            <span>TYKS × mylab · JunctionX Turku · Prototype</span>
           </footer>
         </main>
       </div>
+      <ExportToast />
       {patientOpen && (
         <PatientHistoryDrawer
           key={state.run_id}
@@ -435,6 +387,24 @@ function Workspace({
               sparse recent cohort; Geriatrics shows missing tests; Health centre North shows an
               empty cohort. Mecillinam demonstrates a paired denominator below 30.
             </p>
+            <div className="support-shortcuts">
+              {[
+                { name: 'Urology', ward: 'URO' },
+                { name: 'Intensive care', ward: 'ICU' },
+                { name: 'Geriatrics', ward: 'GER' },
+                { name: 'Health centre North', ward: 'PHC-N' },
+                { name: 'Mecillinam comparison', ward: 'URO', antibiotic: 'MEC' },
+              ].map((shortcut) => (
+                <Link
+                  className="button button--secondary"
+                  key={shortcut.name}
+                  to={`/ward?${writeCohort({ ...query, ward_code: shortcut.ward, antibiotic_b: shortcut.antibiotic ?? query.antibiotic_b }, pinned)}`}
+                  onClick={() => setGuideOpen(false)}
+                >
+                  {shortcut.name}
+                </Link>
+              ))}
+            </div>
           </div>
         )}
         <div className="small-note">
@@ -480,6 +450,9 @@ function WardPage({
           <p>Choose a cohort. See how susceptibility compares over time.</p>
         </div>
         <div className="heading-actions">
+          {DATA_MODE === 'api' && (
+            <AiSummaryDrawer evidence={evidence.data} state={state} onEvidence={onProvenance} />
+          )}
           <Link className="button button--primary" to={`/investigate${search}`}>
             <SearchCheck size={17} />
             Investigate cohort
@@ -493,51 +466,61 @@ function WardPage({
           </Button>
         </div>
       </div>
-      <div className="overview-toolbar">
-        <div className="date-controls">
-          <label className="field inline-field">
-            <span>Report end date</span>
-            <input
-              type="date"
-              aria-describedby="report-date-help"
-              value={query.as_of}
-              min={meta.source.start}
-              max={state.demo_date}
-              onChange={(e) => {
-                if (e.target.value)
-                  onApply(
-                    {
-                      ...query,
-                      as_of: e.target.value,
-                      calendar_year: Math.min(
-                        query.calendar_year,
-                        Number(e.target.value.slice(0, 4)),
-                      ),
-                    },
-                    true,
-                  );
-              }}
-            />
-          </label>
-          {pinned ? (
-            <Button
-              variant="ghost"
-              onClick={() => onApply({ ...query, as_of: state.demo_date }, false)}
-            >
-              Use latest date
-            </Button>
-          ) : (
-            <span className="following-label">
-              <span />
-              Latest published samples
-            </span>
-          )}
+      <CohortControls
+        key={JSON.stringify(query)}
+        query={query}
+        meta={meta}
+        onApply={onApply}
+        shortcuts={
+          <QuickQueries query={query} pinned={pinned} meta={meta} state={state} onApply={onApply} />
+        }
+      >
+        <div className="overview-toolbar">
+          <div className="date-controls">
+            <label className="field inline-field">
+              <span>Report end date</span>
+              <input
+                type="date"
+                aria-describedby="report-date-help"
+                value={query.as_of}
+                min={meta.source.start}
+                max={state.demo_date}
+                onChange={(e) => {
+                  if (e.target.value)
+                    onApply(
+                      {
+                        ...query,
+                        as_of: e.target.value,
+                        calendar_year: Math.min(
+                          query.calendar_year,
+                          Number(e.target.value.slice(0, 4)),
+                        ),
+                      },
+                      true,
+                    );
+                }}
+              />
+            </label>
+            {pinned ? (
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => onApply({ ...query, as_of: state.demo_date }, false)}
+              >
+                Use latest date
+              </Button>
+            ) : (
+              <span className="following-label">
+                <span />
+                Latest published samples
+              </span>
+            )}
+          </div>
         </div>
-      </div>
-      <p id="report-date-help" className="report-date-help">
-        Both headline periods end on this date. The chart year below affects only the time chart.
-      </p>
-      <CohortControls key={JSON.stringify(query)} query={query} meta={meta} onApply={onApply} />
+        <p id="report-date-help" className="report-date-help">
+          Both headline periods end on this date. The chart year below affects only the time chart.
+        </p>
+      </CohortControls>
       <div className="applied-context">
         <p>
           <span className="context-indicator" /> {cohortLabel(query, meta)}
@@ -549,15 +532,16 @@ function WardPage({
       </div>
       <div className="evidence-section-title">
         <div>
+          <span className="eyebrow">Evidence · two overlapping periods</span>
           <h2>Susceptibility at a glance</h2>
           <p>
             <strong>{drugLabel(query.antibiotic_code, meta)}</strong> · observed laboratory
             susceptibility
           </p>
-          <p className="period-overlap-note">
-            The last 12 months includes the recent 28 days. These are overlapping time periods.
-          </p>
         </div>
+        <p className="period-overlap-note">
+          The last 12 months includes the recent 28 days. These are overlapping time periods.
+        </p>
       </div>
       <div aria-live="polite" className="sr-only">
         {evidence.data
@@ -588,7 +572,6 @@ function WardPage({
           }}
         />
       )}
-      {DATA_MODE === 'api' && <AiSummaryPanel evidence={evidence.data} state={state} onEvidence={onProvenance} />}
       <AntibioticComparison
         query={query}
         state={state}
