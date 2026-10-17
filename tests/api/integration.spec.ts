@@ -67,6 +67,32 @@ test('monthly trend uses guarded published 28-day responses and gaps for suppres
   await expect(page.locator('.trend-point')).toHaveCount(available.length);
 });
 
+test('comparison provenance displays the actual backend coverage flags', async ({ page }) => {
+  const response = page.waitForResponse((r) => r.url().includes('/api/v1/comparisons?') && r.ok());
+  await page.goto('/ward');
+  const wire = await (await response).json();
+  await page.getByText('Paired counts & missing tests', { exact: true }).click();
+  await page
+    .locator('#comparison')
+    .getByRole('button', { name: 'How calculated', exact: true })
+    .click();
+  const dialog = page.getByRole('dialog');
+  await expect(dialog).toContainText(
+    wire.comparison.coverage.source_date_span_covers_window
+      ? 'Imported date span covers this period'
+      : 'Partial imported-dataset coverage',
+  );
+  await expect(dialog).toContainText(
+    wire.comparison.coverage.source_fully_imported
+      ? 'Dataset import complete'
+      : 'Dataset import incomplete',
+  );
+  if (wire.comparison.coverage.source_date_span_covers_window)
+    await expect(
+      dialog.getByText('Partial imported-dataset coverage', { exact: true }),
+    ).toHaveCount(0);
+});
+
 test('patient lookup and all-specimen history use real IDs and strict cutoff', async ({ page }) => {
   await page.goto('/ward');
   await expect(page.getByRole('heading', { name: 'Ward overview', exact: true })).toBeVisible();

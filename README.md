@@ -92,15 +92,38 @@ not an outbreak, causal or significance claim.
 
 ## Susceptibility over time
 
-The chart loads automatically on opening the overview and after cohort, report
-date, chart year or published revision changes. There is no separate load button.
+The chart loads automatically on opening the overview and after cohort, explicit
+report date or chart year changes. Live revisions refresh it at most once every
+30 seconds; the latest revision at that fixed deadline is used. **Refresh now**
+can update it sooner. Snapshot cutoff/revision and waiting/loading status are
+displayed. Changing comparison B or its period does not reload the chart.
 The backend still has no true monthly-aggregate/series endpoint. The chart
 requests its 28-day evidence at month-end cutoffs for the chart year. These
 are rolling estimates sampled monthly, not complete calendar-month aggregates.
-Up to two requests run together; all results must share one run/revision. Sparse
+One historical request runs at a time; all results must share one run/revision. Sparse
 or unavailable percentages are gaps. An expandable table retains counts, supplied
 intervals and each point's frozen export. Historical cutoffs use the current published
 isolate revisions, not a claim about when results became known.
+Superseded series are cancelled immediately so remaining cutoffs do not queue
+behind new publications. The previous complete chart stays visible during refresh,
+with its own snapshot label. A new population/year/run clears that chart.
+
+## Refresh failures and coverage
+
+Background state or metadata failures retain the workspace when validated data
+already exists. An inline **Retry refresh** notice marks it as potentially out of
+date. A failed initial load still shows the full error state.
+
+Analysis refreshes retain only exact population/date/cursor/method/run matches.
+An active view holds its last successful snapshot even if an older query revision
+is garbage-collected. Retry errors remain visible beside those results; changing
+population, date or run never substitutes another population's data. Exports keep
+the original displayed analysis ID.
+
+Comparison validation preserves the backend's actual coverage and maps it into
+snapshot provenance. Imported-date-span coverage, dataset import completeness and
+feed inclusion are separately labeled. Missing comparison coverage is rejected
+instead of manufacturing an incomplete-source warning.
 
 ## Live feed integration
 
@@ -198,7 +221,7 @@ because `playwright-interactive` is not installed. Production authentication,
 connecting a real hospital feed, Flink, localization, saved cohorts and adjusted analyses
 remain outside this frontend.
 
-Latest validation: production build, ESLint, 32 unit tests, 16 fixture-browser
-tests and all 8 API/browser tests passed (including separate authored alert
+Latest validation: production build, ESLint, 39 unit tests, 19 fixture-browser
+tests and all 9 API/browser tests passed (including separate authored alert
 and live-feed scenarios). Desktop/mobile accessibility and overflow checks passed. Refreshed
 screenshots had no browser page errors.

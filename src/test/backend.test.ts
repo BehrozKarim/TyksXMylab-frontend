@@ -109,6 +109,7 @@ describe('Published backend adapter', () => {
       },
       comparison: {
         ...cells,
+        coverage,
         window: 'rolling_28_days',
         start_date: '2026-08-31',
         end_date: '2026-09-27',
@@ -118,6 +119,24 @@ describe('Published backend adapter', () => {
     expect(data.comparison.window).toBe('last_28d');
     expect(data.comparison.cells).toEqual(cells.cells);
     expect(data.context.method_version).toBe('comparison-v1');
+    expect(data.context.coverage.last_28d.source_covers_requested_window).toBe(true);
+    expect(data.context.coverage.last_28d.replay_complete_through_as_of).toBe(true);
+    wire.comparison.coverage = {
+      source_date_span_covers_window: false,
+      source_fully_imported: false,
+    };
+    expect(
+      mapComparison(backendComparisonSchema.parse(wire), query).context.coverage.last_28d,
+    ).toMatchObject({
+      source_covers_requested_window: false,
+      replay_complete_through_as_of: false,
+    });
+    expect(
+      backendComparisonSchema.safeParse({
+        ...wire,
+        comparison: { ...wire.comparison, coverage: undefined },
+      }).success,
+    ).toBe(false);
   });
   it('accepts receiving feed runs and preserves feed provenance separately from seed coverage', () => {
     const raw = backendStateSchema.parse({

@@ -211,6 +211,84 @@ test('shows persistent API failure without fixture fallback and retries the same
     '29 tested',
   );
 });
+
+test('background state and metadata failures keep the workspace usable with inline retry', async ({
+  page,
+}) => {
+  const values = await page.locator('.period-value').allTextContents();
+  for (const endpoint of ['state', 'meta'] as const) {
+    await page.evaluate(async (name) => {
+      const module = '/src/mocks/testing.ts';
+      const { failRefresh } = await import(module);
+      await failRefresh(name);
+    }, endpoint);
+    await expect(page.getByText('Could not refresh the workspace', { exact: true })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Ward overview', exact: true })).toBeVisible();
+    await expect(page.locator('.period-value')).toHaveText(values);
+    await expect(page.locator('.boot-screen')).toHaveCount(0);
+    await page.getByLabel('Ward', { exact: true }).selectOption('ICU');
+    await expect(page.getByLabel('Ward', { exact: true })).toHaveValue('ICU');
+    await page.evaluate(async () => {
+      const module = '/src/mocks/testing.ts';
+      (await import(module)).recover();
+    });
+    const retry = page.getByRole('button', { name: 'Retry refresh', exact: true }).first();
+    if (await retry.isVisible()) await retry.click();
+    await expect(page.getByText('Could not refresh the workspace', { exact: true })).toHaveCount(0);
+  }
+});
+
+test('analysis refetch failure retains the displayed snapshot and its original export', async ({
+  page,
+}) => {
+  const before = await page.locator('.period-value').allTextContents();
+  await page.evaluate(async () => {
+    const module = '/src/mocks/testing.ts';
+    await (await import(module)).failRefresh('evidence');
+  });
+  await expect(
+    page.getByText('Could not refresh these results', { exact: true }).first(),
+  ).toBeVisible();
+  await expect(page.locator('.period-value')).toHaveText(before);
+  await page.getByRole('button', { name: 'How calculated: Last 12 months' }).click();
+  await expect(page.getByRole('dialog')).toContainText('Frozen analysis');
+  const downloadEvent = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Download JSON', exact: true }).click();
+  const download = await downloadEvent;
+  const exported = JSON.parse(
+    await (await import('node:fs/promises')).readFile((await download.path())!, 'utf8'),
+  );
+  expect(exported.windows.last_28d.susceptibility_pct).toBe(75);
+  await page.getByRole('button', { name: 'Close panel' }).click();
+  await page.evaluate(async () => {
+    const module = '/src/mocks/testing.ts';
+    (await import(module)).recover();
+  });
+  await page.getByRole('button', { name: 'Retry refresh', exact: true }).first().click();
+  await expect(page.getByText('Could not refresh these results', { exact: true })).toHaveCount(0);
+});
+
+test('live revisions defer historical requests while headline evidence updates, with manual refresh available', async ({
+  page,
+}) => {
+  await expect(page.getByText('Monthly values, counts & exports', { exact: true })).toBeVisible();
+  const snapshots = await page.locator('.trend-freshness').innerText();
+  const historical: string[] = [];
+  page.on('request', (r) => {
+    const url = new URL(r.url());
+    if (url.pathname.endsWith('/evidence') && url.searchParams.get('as_of')! < '2026-09-27')
+      historical.push(r.url());
+  });
+  await publish(page, 'step');
+  await expect(page.getByLabel('Report end date')).toHaveValue('2026-09-28');
+  await expect(page.locator('.trend-freshness')).toContainText('New data is available');
+  await expect(page.locator('.trend-freshness')).toContainText(snapshots);
+  expect(historical).toHaveLength(0);
+  await page.getByRole('button', { name: 'Refresh now', exact: true }).click();
+  await expect(page.locator('.trend-freshness')).toContainText('revision 9');
+  expect(historical.length).toBeGreaterThan(0);
+  await expect(page.locator('.trend-freshness')).not.toContainText('New data is available');
+});
 test('rejects legacy statistics at the facade instead of reinterpreting them', async ({ page }) => {
   await page.evaluate(async () => {
     const module = '/src/mocks/testing.ts';
@@ -219,9 +297,11 @@ test('rejects legacy statistics at the facade instead of reinterpreting them', a
   });
   await page.getByLabel('Chart year').selectOption('2025');
   await expect(
-    page.getByText(
-      'The API returned an incompatible evidence contract. Check the /api/v1 integration.',
-    ),
+    page
+      .getByText(
+        'The API returned an incompatible evidence contract. Check the /api/v1 integration.',
+      )
+      .first(),
   ).toBeVisible();
   await expect(page.getByRole('region', { name: 'Last 28 days evidence' })).toHaveCount(0);
 });

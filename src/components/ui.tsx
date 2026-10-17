@@ -109,6 +109,32 @@ export function ErrorPanel({
     </div>
   );
 }
+export function RefreshNotice({
+  error,
+  onRetry,
+  pending = false,
+  title = 'Could not refresh these results',
+}: {
+  error: Error | null;
+  onRetry: () => void;
+  pending?: boolean;
+  title?: string;
+}) {
+  if (!error) return null;
+  return (
+    <div className="refresh-notice" role="status">
+      <AlertCircle size={18} aria-hidden="true" />
+      <div>
+        <strong>{title}</strong>
+        <p>Showing the last successful snapshot. Results may be out of date.</p>
+        <p className="small-note">{error.message}</p>
+      </div>
+      <Button disabled={pending} onClick={onRetry}>
+        {pending ? 'Retrying…' : 'Retry refresh'}
+      </Button>
+    </div>
+  );
+}
 export function Drawer({
   open,
   onClose,

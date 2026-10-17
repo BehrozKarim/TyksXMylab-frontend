@@ -3,7 +3,15 @@ import { Link } from 'react-router-dom';
 import { api } from '../api/client';
 import type { ReplayState } from '../api/contracts';
 import { useAnalysis } from '../app/queries';
-import { Badge, Button, ErrorPanel, Loading, Panel, SectionHeading } from '../components/ui';
+import {
+  Badge,
+  Button,
+  ErrorPanel,
+  Loading,
+  Panel,
+  SectionHeading,
+  RefreshNotice,
+} from '../components/ui';
 import { formatDate } from '../domain/formatters';
 export function ReviewFlags({
   state,
@@ -20,6 +28,11 @@ export function ReviewFlags({
   const pinned = asOf !== state.demo_date;
   return (
     <Panel className="review-panel">
+      <RefreshNotice
+        error={result.refreshError}
+        onRetry={() => void result.refetch()}
+        pending={result.isFetching}
+      />
       <SectionHeading
         eyebrow="Monitoring"
         title="Changes for review"

@@ -153,6 +153,14 @@ export function nextDate(value: string) {
 function bounds(w: { start_date: string; end_date: string }) {
   return { start_inclusive: w.start_date, end_exclusive: nextDate(w.end_date) };
 }
+function mapCoverage(value?: z.infer<typeof sourceCoverage>) {
+  return {
+    coverage_scope: value?.coverage_scope,
+    includes_feed_data: value?.includes_feed_data,
+    source_covers_requested_window: value?.source_date_span_covers_window ?? false,
+    replay_complete_through_as_of: value?.source_fully_imported ?? false,
+  };
+}
 function uiContext(
   c: z.infer<typeof context>,
   query: CohortQuery,
@@ -165,12 +173,7 @@ function uiContext(
     start_inclusive: `${query.calendar_year}-01-01`,
     end_exclusive: `${query.calendar_year + 1}-01-01`,
   };
-  const coverage = (w?: z.infer<typeof windowSchema>) => ({
-    coverage_scope: w?.coverage.coverage_scope,
-    includes_feed_data: w?.coverage.includes_feed_data,
-    source_covers_requested_window: w?.coverage.source_date_span_covers_window ?? false,
-    replay_complete_through_as_of: w?.coverage.source_fully_imported ?? false,
-  });
+  const coverage = (w?: z.infer<typeof windowSchema>) => mapCoverage(w?.coverage);
   return {
     mode: c.mode,
     clock_mode: c.clock_mode,
@@ -232,6 +235,7 @@ const paired = z
     window: z.enum(['rolling_12_months', 'rolling_28_days']),
     start_date: date,
     end_date: date,
+    coverage: sourceCoverage,
   })
   .transform((p) => ({
     ...p,
@@ -243,6 +247,10 @@ const paired = z
       window: z.enum(['rolling_12m', 'last_28d']),
       start_date: date,
       end_date: date,
+      coverage: sourceCoverage.extend({
+        coverage_scope: sourceCoverage.shape.coverage_scope.removeDefault(),
+        includes_feed_data: sourceCoverage.shape.includes_feed_data.removeDefault(),
+      }),
     }),
   );
 export const backendComparisonSchema = z.object({
@@ -260,6 +268,7 @@ export const backendComparisonSchema = z.object({
 export function mapComparison(value: z.infer<typeof backendComparisonSchema>, query: CohortQuery) {
   const c = uiContext(value.context, query);
   c.date_bounds[value.comparison.window] = bounds(value.comparison);
+  c.coverage[value.comparison.window] = mapCoverage(value.comparison.coverage);
   return { analysis_id: value.analysis_id, context: c, comparison: value.comparison };
 }
 export const backendPatientsSchema = z.object({

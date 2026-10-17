@@ -11,6 +11,7 @@ import {
   EmptyState,
   ErrorPanel,
   Loading,
+  RefreshNotice,
 } from '../components/ui';
 import { formatDate } from '../domain/formatters';
 export function PatientHistoryDrawer({
@@ -75,6 +76,11 @@ export function PatientHistoryDrawer({
     >
       {!patient ? (
         <>
+          <RefreshNotice
+            error={results.refreshError}
+            onRetry={() => void results.refetch()}
+            pending={results.isFetching}
+          />
           <label className="field patient-search">
             <span>Patient identifier</span>
             <div className="search-input">
@@ -125,6 +131,11 @@ export function PatientHistoryDrawer({
         </>
       ) : (
         <>
+          <RefreshNotice
+            error={history.refreshError}
+            onRetry={() => void history.refetch()}
+            pending={history.isFetching}
+          />
           <Button variant="ghost" onClick={() => setPatient('')}>
             <ArrowLeft size={15} />
             Back to search

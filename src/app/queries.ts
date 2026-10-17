@@ -1,4 +1,10 @@
-import { QueryClient, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  hashKey,
+  QueryClient,
+  useQuery,
+  useQueryClient,
+  type UseQueryResult,
+} from '@tanstack/react-query';
 import { api, ApiError, DATA_MODE } from '../api/client';
 import { subscribeToUpdates } from '../api/updates';
 import type { ReplayState } from '../api/contracts';
@@ -68,14 +74,18 @@ export function useAnalysis<T>(
 ) {
   const client = useQueryClient();
   const recoveredAt = useRef(0);
-  return useQuery<T>({
+  const identity = hashKey([kind, state.run_id, state.method_version, params]);
+  const [retained, setRetained] = useState<{ identity: string; data: T }>();
+  const result = useQuery<T>({
     queryKey: keys.analysis(kind, state, params),
     enabled,
     placeholderData: (previous, previousQuery) => {
       const key = previousQuery?.queryKey;
       // Retain complete same-population snapshots during revision refresh only.
       // Never borrow values across filters, patient/cursor changes, dates or runs.
-      return key?.[2] === state.run_id && JSON.stringify(key[5]) === JSON.stringify(params)
+      return key?.[2] === state.run_id &&
+        key[4] === state.method_version &&
+        hashKey([key[5]]) === hashKey([params])
         ? previous
         : undefined;
     },
@@ -105,4 +115,44 @@ export function useAnalysis<T>(
           ['invalid_contract', 'invalid_context'].includes(error.code))
       ),
   });
+  // Query placeholder data disappears after an error. Recover only a complete,
+  // validated snapshot for exactly this population/date/cursor and current run.
+  const previous =
+    result.data === undefined && (result.isError || result.isPending)
+      ? (client
+          .getQueryCache()
+          .findAll({ queryKey: ['analysis', kind, state.run_id] })
+          .filter(
+            (q) =>
+              q.state.data !== undefined &&
+              q.queryKey[4] === state.method_version &&
+              Number(q.queryKey[3]) <= state.state_revision &&
+              hashKey([q.queryKey[5]]) === hashKey([params]),
+          )
+          .sort((a, b) => Number(b.queryKey[3]) - Number(a.queryKey[3]))[0]?.state.data as
+          T | undefined)
+      : undefined;
+  const data = result.data ?? (retained?.identity === identity ? retained.data : previous);
+  useEffect(() => {
+    // Keep one active-view snapshot even if an obsolete revision's cache is collected.
+    if (data !== undefined)
+      setRetained(current => current?.identity === identity && current.data === data ? current : { identity, data });
+  }, [identity, data]);
+  const visible: UseQueryResult<T, Error> =
+    (result.isError || result.isPending) && data !== undefined
+      ? {
+          ...result,
+          data,
+          error: null,
+          status: 'success',
+          isSuccess: true,
+          isError: false,
+          isPending: false,
+          isLoading: false,
+          isLoadingError: false,
+          isRefetchError: false,
+          isPlaceholderData: result.isPending || result.isPlaceholderData,
+        }
+      : result;
+  return { ...visible, refreshError: result.isError && data !== undefined ? result.error : null };
 }

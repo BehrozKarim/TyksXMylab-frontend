@@ -3,7 +3,15 @@ import { ArrowLeft, Download } from 'lucide-react';
 import type { Analysis, CohortQuery, Meta, ReplayState } from '../api/contracts';
 import { api } from '../api/client';
 import { useAnalysis } from '../app/queries';
-import { Button, DataTable, ErrorPanel, Loading, Panel, SectionHeading } from '../components/ui';
+import {
+  Button,
+  DataTable,
+  ErrorPanel,
+  Loading,
+  Panel,
+  SectionHeading,
+  RefreshNotice,
+} from '../components/ui';
 import { IntervalPlot } from '../components/IntervalPlot';
 import { AntibioticComparison } from './AntibioticComparison';
 import {
@@ -60,6 +68,11 @@ export function CohortInvestigation({
         <ErrorPanel error={result.error} onRetry={() => void result.refetch()} />
       ) : (
         <>
+          <RefreshNotice
+            error={result.refreshError}
+            onRetry={() => void result.refetch()}
+            pending={result.isFetching}
+          />
           <Panel>
             <SectionHeading
               title="Evidence behind the estimate"

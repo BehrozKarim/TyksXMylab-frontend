@@ -1,5 +1,8 @@
 import { ChartNoAxesCombined } from 'lucide-react';
-import type { Analysis, CohortQuery, Meta, ReplayState } from '../api/contracts';
+import { useEffect, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { useTrendRefresh } from '../app/useTrendRefresh';
+import type { Analysis, CohortQuery, Evidence, Meta, ReplayState } from '../api/contracts';
 import { api } from '../api/client';
 import { trendDates } from '../domain/trend';
 import { useAnalysis } from '../app/queries';
@@ -11,10 +14,35 @@ import {
   Panel,
   SectionHeading,
   Select,
+  RefreshNotice,
 } from '../components/ui';
 import { formatDate, percentage } from '../domain/formatters';
 
 export function SusceptibilityTrend({
+  followLatest,
+  ...props
+}: {
+  followLatest: boolean;
+  query: CohortQuery;
+  state: ReplayState;
+  meta: Meta;
+  onProvenance: (analysis: Analysis) => void;
+  onYearChange: (year: number) => void;
+}) {
+  const { antibiotic_b: _b, window: _window, as_of, ...selection } = props.query;
+  void _b;
+  void _window;
+  const identity = JSON.stringify([
+    props.state.run_id,
+    props.state.method_version,
+    selection,
+    followLatest ? 'latest' : as_of,
+    props.meta.source.start,
+  ]);
+  return <TrendView key={identity} {...props} />;
+}
+
+function TrendView({
   query,
   state,
   meta,
@@ -27,25 +55,42 @@ export function SusceptibilityTrend({
   onProvenance: (analysis: Analysis) => void;
   onYearChange: (year: number) => void;
 }) {
-  const dates = trendDates(query.calendar_year, query.as_of, meta.source.start);
+  const client = useQueryClient();
+  const { snapshot, refresh } = useTrendRefresh(state, query);
+  const [complete, setComplete] = useState<Evidence[] | undefined>(undefined);
+  const dates = trendDates(snapshot.query.calendar_year, snapshot.query.as_of, meta.source.start);
+  const current = snapshot.state.state_revision === state.state_revision;
+  useEffect(() => {
+    void client.cancelQueries({
+      queryKey: ['analysis', 'trend', state.run_id],
+      predicate: (q) => q.queryKey[3] !== state.state_revision,
+    });
+  }, [client, state.run_id, state.state_revision]);
   const result = useAnalysis(
     'trend',
-    state,
-    { query, dates },
+    snapshot.state,
+    { query: snapshot.query, dates },
     async (signal) => {
-      // The reference backend serializes calculations. Limit work to two requests.
+      // One historical request at a time leaves publication fewer queued readers.
       const points = [];
-      for (let i = 0; i < dates.length; i += 2) {
-        const batch = await Promise.all(
-          dates.slice(i, i + 2).map((as_of) => api.evidence({ ...query, as_of }, state, signal)),
-        );
-        points.push(...batch);
+      for (const as_of of dates) {
+        signal.throwIfAborted();
+        points.push(await api.evidence({ ...snapshot.query, as_of }, snapshot.state, signal));
       }
       return points;
     },
-    dates.length > 0 && state.status !== 'running',
+    current && dates.length > 0 && state.status !== 'running',
   );
-  const points = result.data ?? [];
+  useEffect(() => {
+    if (result.data && !result.isPlaceholderData) setComplete(result.data);
+  }, [result.data, result.isPlaceholderData]);
+  const points = result.data ?? complete ?? [];
+  const displayed = points.at(-1)?.context;
+  const behind = !current || (!!displayed && displayed.state_revision !== state.state_revision);
+  const refreshNow = () => {
+    refresh();
+    if (current) void result.refetch();
+  };
   const x = (index: number) => 52 + (index / Math.max(1, points.length - 1)) * 684;
   const y = (value: number) => 210 - value * 1.7;
   let segment = '';
@@ -65,9 +110,9 @@ export function SusceptibilityTrend({
         title="Susceptibility over time"
         description="28-day estimates sampled at each month end, up to the report end date."
         action={
-          <span className="section-icon">
-            <ChartNoAxesCombined size={20} />
-          </span>
+          <Button onClick={refreshNow} disabled={result.isFetching || state.status === 'running'}>
+            <ChartNoAxesCombined size={17} /> Refresh now
+          </Button>
         }
       />
       <div className="chart-controls">
@@ -92,16 +137,29 @@ export function SusceptibilityTrend({
           {formatDate(query.as_of)}.
         </p>
       </div>
+      <div className="trend-freshness" role="status">
+        {displayed
+          ? `Chart snapshot: latest cutoff ${formatDate(displayed.as_of)} · revision ${displayed.state_revision}.`
+          : 'The chart loads automatically.'}
+        {behind &&
+          ' New data is available. Live chart updates are limited to once every 30 seconds.'}
+        {result.isFetching && ' Updating chart…'}
+      </div>
+      <RefreshNotice
+        error={result.refreshError ?? (points.length ? result.error : null)}
+        onRetry={refreshNow}
+        pending={result.isFetching}
+      />
       {state.status === 'running' ? (
         <p className="inline-notice">
           The chart will load automatically when publication pauses, using one stable snapshot.
         </p>
       ) : !dates.length ? (
         <p className="inline-notice">No published collection dates are available in this year.</p>
-      ) : result.isPending ? (
+      ) : result.isPending && !points.length ? (
         <Loading label={`Loading ${dates.length} monthly cutoffs…`} />
-      ) : result.isError ? (
-        <ErrorPanel error={result.error} onRetry={() => void result.refetch()} />
+      ) : result.isError && !points.length ? (
+        <ErrorPanel error={result.error} onRetry={refreshNow} />
       ) : (
         <>
           {points.some((p) => p.windows.last_28d.status === 'available') ? (

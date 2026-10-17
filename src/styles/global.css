@@ -1645,7 +1645,7 @@ tbody tr:last-child td {
   gap: 5px;
   font-size: 12px;
 }
-.provenance-period span {
+.provenance-period > span:not(.badge) {
   color: var(--muted);
 }
 .provenance-period code {
@@ -1654,7 +1654,6 @@ tbody tr:last-child td {
 }
 .provenance-period .badge {
   align-self: flex-start;
-  color: var(--warning);
 }
 .method-list {
   padding-left: 20px;
@@ -3170,6 +3169,40 @@ main:focus {
 }
 .trend-intro .button {
   flex-shrink: 0;
+}
+.refresh-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  margin-block: var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--warning-soft);
+  color: var(--foreground);
+  flex-wrap: wrap;
+}
+.refresh-notice > div {
+  flex: 1;
+  min-width: 180px;
+}
+.refresh-notice p {
+  margin: var(--space-1) 0;
+}
+.refresh-notice > svg {
+  flex-shrink: 0;
+  color: var(--warning);
+}
+.trend-freshness {
+  color: var(--muted);
+  font-size: 13px;
+  margin-block: var(--space-4);
+}
+.trend-panel > .section-heading {
+  flex-wrap: wrap;
+}
+.trend-panel > .section-heading > div {
+  flex: 1 1 240px;
 }
 .trend-chart:focus-visible {
   outline: 2px solid var(--focus-ring);

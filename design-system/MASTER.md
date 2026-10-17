@@ -107,10 +107,19 @@ population. Do not invent interval graphics for alert payloads without intervals
 
 The time chart loads on entry and reloads with the selected report/cohort/year.
 Use the shared loading/error states; retain complete same-population snapshots
-during revision refresh with an updating notice. The horizontally scrolling chart
+during revision refresh with an updating notice. Background failures show an inline
+retry notice alongside the last valid view. Initial failure without data keeps the
+full error state. Coverage badges use actual backend flags and their semantic tone.
+The horizontally scrolling chart
 region is named, keyboard-focusable and uses the existing focus-ring token.
 
 Navigation says **Investigate susceptibility**. Patient search shows the verified
 supplied-data example **P000001**. Feed mode names its source, reporting clock and
 update connection. Imported dataset dates/coverage remain separate from feed
 completeness; do not imply a live feed is complete from seed manifest statistics.
+
+The chart's first load is automatic. Live revisions are limited to one series start
+per 30 seconds, with a supplemental Refresh now action, one request at a time and
+immediate cancellation of superseded work. Label the displayed cutoff/revision;
+keep the complete previous chart during updates. Wrap chart header controls on
+mobile rather than squeezing its title. No manual ingestion controls are added.

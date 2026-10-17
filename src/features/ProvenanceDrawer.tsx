@@ -78,9 +78,19 @@ export function ProvenanceDrawer({
                 <code>
                   [{c.date_bounds[key].start_inclusive}, {c.date_bounds[key].end_exclusive})
                 </code>
-                {!c.coverage[key].source_covers_requested_window && (
-                  <Badge tone="warning">Partial imported-dataset coverage</Badge>
-                )}
+                <Badge
+                  tone={c.coverage[key].source_covers_requested_window ? 'success' : 'warning'}
+                >
+                  {c.coverage[key].source_covers_requested_window
+                    ? 'Imported date span covers this period'
+                    : 'Partial imported-dataset coverage'}
+                </Badge>
+                <Badge tone={c.coverage[key].replay_complete_through_as_of ? 'neutral' : 'warning'}>
+                  {c.coverage[key].replay_complete_through_as_of
+                    ? 'Dataset import complete'
+                    : 'Dataset import incomplete'}
+                </Badge>
+                {c.coverage[key].includes_feed_data && <Badge>Includes feed data</Badge>}
               </div>
             ))}
           </div>

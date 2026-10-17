@@ -4,6 +4,22 @@ import { API_BASE } from '../api/client';
 import { worker } from './browser';
 import { fixtureTestControl } from './handlers';
 import { makeEvidence } from './fixtures';
+import { queryClient, keys } from '../app/queries';
+export function failRefresh(endpoint: 'state' | 'meta' | 'evidence' | 'comparisons') {
+  worker.use(
+    http.get(`${API_BASE}/${endpoint}`, () =>
+      HttpResponse.json({ error: { message: 'Refresh connection unavailable.' } }, { status: 503 }),
+    ),
+  );
+  return queryClient.invalidateQueries({
+    queryKey:
+      endpoint === 'state'
+        ? keys.state
+        : endpoint === 'meta'
+          ? keys.meta
+          : ['analysis', endpoint === 'comparisons' ? 'comparison' : 'evidence'],
+  });
+}
 export function fault(kind: 'state_changed' | 'network' | 'legacy' | 'delayed') {
   let calls = 0;
   worker.use(

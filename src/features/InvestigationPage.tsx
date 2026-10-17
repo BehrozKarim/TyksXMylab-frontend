@@ -10,6 +10,7 @@ import {
   DataTable,
   ErrorPanel,
   Loading,
+  RefreshNotice,
   Panel,
   SectionHeading,
 } from '../components/ui';
@@ -55,6 +56,11 @@ export function InvestigationPage({
     ) * 10;
   return (
     <>
+      <RefreshNotice
+        error={result.refreshError}
+        onRetry={() => void result.refetch()}
+        pending={result.isFetching}
+      />
       <Link to={`/ward${location.search}`} className="back-link">
         <ArrowLeft size={16} />
         Back to ward overview

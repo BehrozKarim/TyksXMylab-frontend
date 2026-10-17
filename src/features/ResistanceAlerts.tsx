@@ -13,6 +13,7 @@ import {
   EmptyState,
   ErrorPanel,
   Loading,
+  RefreshNotice,
   Panel,
   SectionHeading,
 } from '../components/ui';
@@ -105,6 +106,11 @@ export function ResistanceAlerts({
         <ErrorPanel error={result.error} onRetry={() => void result.refetch()} />
       ) : (
         <>
+          <RefreshNotice
+            error={result.refreshError}
+            onRetry={() => void result.refetch()}
+            pending={result.isFetching}
+          />
           <div className="monitoring-summary">
             <span>
               Monitoring date <strong>{formatDate(result.data.monitoring_as_of)}</strong>
@@ -452,6 +458,11 @@ export function ResistanceInvestigation({ state, meta }: { state: ReplayState; m
         data &&
         report && (
           <>
+            <RefreshNotice
+              error={result.refreshError}
+              onRetry={() => void result.refetch()}
+              pending={result.isFetching}
+            />
             <div
               className="alert-snapshot-selector"
               role="group"

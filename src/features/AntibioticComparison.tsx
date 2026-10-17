@@ -9,6 +9,7 @@ import {
   EmptyState,
   ErrorPanel,
   Loading,
+  RefreshNotice,
   Panel,
   SectionHeading,
   Select,
@@ -38,6 +39,11 @@ export function AntibioticComparison({
   const c = result.data?.comparison;
   return (
     <Panel className="comparison-panel" id="comparison">
+      <RefreshNotice
+        error={result.refreshError}
+        onRetry={() => void result.refetch()}
+        pending={result.isFetching}
+      />
       <SectionHeading
         eyebrow="A shared isolate set"
         title="Antibiotic comparison"

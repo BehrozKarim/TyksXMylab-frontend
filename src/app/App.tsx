@@ -20,7 +20,7 @@ import { Link, Navigate, Route, Routes, useLocation, useSearchParams } from 'rea
 import { api, DATA_MODE } from '../api/client';
 import type { Analysis, CohortQuery, Meta, ReplayState, WindowKey } from '../api/contracts';
 import { useAnalysis, useMeta, useReplayState } from './queries';
-import { Button, Drawer, ErrorPanel, Loading } from '../components/ui';
+import { Button, Drawer, ErrorPanel, Loading, RefreshNotice } from '../components/ui';
 import { rememberTrigger } from '../components/focus';
 import { readCohort, writeCohort } from '../domain/cohort';
 import { cohortLabel, drugLabel, formatDate } from '../domain/formatters';
@@ -58,10 +58,16 @@ function Workspace({
   meta,
   state,
   updatesConnected,
+  refreshError,
+  onRetryRefresh,
+  refreshing,
 }: {
   meta: Meta;
   state: ReplayState;
   updatesConnected: boolean;
+  refreshError: Error | null;
+  onRetryRefresh: () => void;
+  refreshing: boolean;
 }) {
   const updating = useIsFetching({ queryKey: ['analysis'] }) > 0;
   const [search, setSearch] = useSearchParams();
@@ -239,6 +245,12 @@ function Workspace({
           </div>
         </header>
         <main id="main-content" className="main-content" tabIndex={-1}>
+          <RefreshNotice
+            error={refreshError}
+            onRetry={onRetryRefresh}
+            pending={refreshing}
+            title="Could not refresh the workspace"
+          />
           {state.mode === 'feed' && (
             <p className="inline-notice feed-status">
               <strong>{state.feed_source_label ?? 'External feed'}</strong> ·{' '}
@@ -549,6 +561,11 @@ function WardPage({
           ? `Evidence loaded for ${cohortLabel(evidence.data.context.filters, meta)}, through ${formatDate(evidence.data.context.as_of)}.`
           : 'Updating evidence.'}
       </div>
+      <RefreshNotice
+        error={evidence.refreshError}
+        onRetry={() => void evidence.refetch()}
+        pending={evidence.isFetching}
+      />
       {evidence.isPending ? (
         <div className="period-loading" aria-busy="true">
           <Loading />
@@ -576,7 +593,7 @@ function WardPage({
         onProvenance={onProvenance}
       />
       <SusceptibilityTrend
-        key={`${query.calendar_year}-${query.as_of}`}
+        followLatest={!pinned}
         query={query}
         state={state}
         meta={meta}
@@ -600,14 +617,14 @@ function WardPage({
 export default function App() {
   const meta = useMeta();
   const state = useReplayState();
-  if (meta.isPending || state.isPending)
+  if ((!meta.data || !state.data) && (meta.isPending || state.isPending))
     return (
       <div className="boot-screen">
         <Brand />
         <Loading label="Preparing your evidence workspace…" />
       </div>
     );
-  if (meta.isError || state.isError)
+  if (!meta.data || !state.data)
     return (
       <div className="boot-screen">
         <Brand />
@@ -622,6 +639,16 @@ export default function App() {
       </div>
     );
   return (
-    <Workspace meta={meta.data} state={state.data} updatesConnected={state.updatesConnected} />
+    <Workspace
+      meta={meta.data}
+      state={state.data}
+      updatesConnected={state.updatesConnected}
+      refreshError={meta.error ?? state.error}
+      refreshing={meta.isFetching || state.isFetching}
+      onRetryRefresh={() => {
+        void meta.refetch();
+        void state.refetch();
+      }}
+    />
   );
 }
