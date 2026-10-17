@@ -3171,6 +3171,10 @@ main:focus {
 .trend-intro .button {
   flex-shrink: 0;
 }
+.trend-chart:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 4px;
+}
 .trend-chart {
   width: 100%;
   overflow-x: auto;

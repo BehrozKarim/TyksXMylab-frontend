@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { ChartNoAxesCombined } from 'lucide-react';
 import type { Analysis, CohortQuery, Meta, ReplayState } from '../api/contracts';
 import { api } from '../api/client';
@@ -28,7 +27,6 @@ export function SusceptibilityTrend({
   onProvenance: (analysis: Analysis) => void;
   onYearChange: (year: number) => void;
 }) {
-  const [enabled, setEnabled] = useState(false);
   const dates = trendDates(query.calendar_year, query.as_of, meta.source.start);
   const result = useAnalysis(
     'trend',
@@ -45,7 +43,7 @@ export function SusceptibilityTrend({
       }
       return points;
     },
-    enabled && dates.length > 0 && state.status !== 'running',
+    dates.length > 0 && state.status !== 'running',
   );
   const points = result.data ?? [];
   const x = (index: number) => 52 + (index / Math.max(1, points.length - 1)) * 684;
@@ -96,18 +94,10 @@ export function SusceptibilityTrend({
       </div>
       {state.status === 'running' ? (
         <p className="inline-notice">
-          Pause dataset playback before loading a trend so all points use one stable snapshot.
+          The chart will load automatically when publication pauses, using one stable snapshot.
         </p>
-      ) : !enabled ? (
-        <div className="trend-intro">
-          <p>
-            Load {dates.length} monthly cutoffs for {query.calendar_year}, using your selected
-            cohort.
-          </p>
-          <Button onClick={() => setEnabled(true)} disabled={!dates.length}>
-            Load monthly trend
-          </Button>
-        </div>
+      ) : !dates.length ? (
+        <p className="inline-notice">No published collection dates are available in this year.</p>
       ) : result.isPending ? (
         <Loading label={`Loading ${dates.length} monthly cutoffs…`} />
       ) : result.isError ? (
@@ -115,7 +105,12 @@ export function SusceptibilityTrend({
       ) : (
         <>
           {points.some((p) => p.windows.last_28d.status === 'available') ? (
-            <div className="trend-chart">
+            <div
+              className="trend-chart"
+              role="region"
+              aria-label="Susceptibility time chart"
+              tabIndex={0}
+            >
               <svg viewBox="0 0 780 260" role="img" aria-label={label}>
                 {[0, 25, 50, 75, 100].map((v) => (
                   <g key={v}>

@@ -33,7 +33,7 @@ these primitives and consumes semantic tokens. No raw palette values in TSX.
 ## Page layouts
 
 Ward: source notice → heading/report date → applied cohort form → two
-window cards → visible paired comparison → opt-in susceptibility chart.
+window cards → visible paired comparison → automatically loaded susceptibility chart.
 The highlighted period is a visual anchor, not a recommended treatment.
 
 Investigation: back link/flag identity → exact population → recent versus baseline
@@ -70,11 +70,11 @@ now uses 13–14px where practical. Headline evidence emphasizes the estimate an
 sample size; detailed counts and uncertainty open on demand.
 
 Ward order: heading and direct investigation action → cohort/report controls →
-Last 12 months → Last 28 days → visible antibiotic comparison → opt-in monthly-cutoff trend.
+Last 12 months → Last 28 days → visible antibiotic comparison → automatically loaded monthly-cutoff trend.
 Unsupported annual aggregates have no card or placeholder. Real backend resistance
 monitoring has its own sidebar page.
 
-Navigation names the actual task: **Investigate evidence** goes directly to
+Navigation names the actual task: **Investigate susceptibility** goes directly to
 `/investigate`. The investigation page uses the selected cohort's real evidence
 and paired comparison. It does not imply an automatic resistance alert exists.
 
@@ -102,3 +102,15 @@ uses separate Current evaluation / Original detection selectors and exact saved-
 exports. An archived investigation cannot borrow a current-run result. Descriptive
 composition tables expand on demand; raw organism-mixture counts have a separate
 population. Do not invent interval graphics for alert payloads without intervals.
+
+## Automatic chart and live publications
+
+The time chart loads on entry and reloads with the selected report/cohort/year.
+Use the shared loading/error states; retain complete same-population snapshots
+during revision refresh with an updating notice. The horizontally scrolling chart
+region is named, keyboard-focusable and uses the existing focus-ring token.
+
+Navigation says **Investigate susceptibility**. Patient search shows the verified
+supplied-data example **P000001**. Feed mode names its source, reporting clock and
+update connection. Imported dataset dates/coverage remain separate from feed
+completeness; do not imply a live feed is complete from seed manifest statistics.

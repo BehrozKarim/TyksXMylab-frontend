@@ -3,6 +3,7 @@
  * Exports always use the original saved backend analysis ID.
  */
 import { z } from 'zod';
+import { feedProvenanceSchema } from './provenance';
 import { measureSchema, comparisonSchema } from './contracts';
 import type {
   AnalysisContext,
@@ -17,6 +18,8 @@ const date = z.iso.date();
 const count = z.number().int().nonnegative();
 const sourceCoverage = z
   .object({
+    coverage_scope: z.literal('imported_dataset_only').default('imported_dataset_only'),
+    includes_feed_data: z.boolean().default(false),
     source_date_span_covers_window: z.boolean(),
     source_fully_imported: z.boolean(),
   })
@@ -48,6 +51,7 @@ const filters = z
   .passthrough();
 const sourceContext = z
   .object({
+    ...feedProvenanceSchema.shape,
     run_id: z.string(),
     state_revision: count,
     method_version: z.string(),
@@ -67,9 +71,10 @@ export const backendEvidenceSchema = z.object({
   windows: z.object({ rolling_12_months: windowSchema, rolling_28_days: windowSchema }),
 });
 export const backendStateSchema = z.object({
+  ...feedProvenanceSchema.shape,
   run_id: z.string(),
   state_revision: count,
-  status: z.enum(['paused', 'running', 'completed', 'error']),
+  status: z.enum(['paused', 'running', 'completed', 'error', 'receiving']),
   demo_date: date,
   seed_through: date,
   replay_through: date,
@@ -161,10 +166,17 @@ function uiContext(
     end_exclusive: `${query.calendar_year + 1}-01-01`,
   };
   const coverage = (w?: z.infer<typeof windowSchema>) => ({
+    coverage_scope: w?.coverage.coverage_scope,
+    includes_feed_data: w?.coverage.includes_feed_data,
     source_covers_requested_window: w?.coverage.source_date_span_covers_window ?? false,
     replay_complete_through_as_of: w?.coverage.source_fully_imported ?? false,
   });
   return {
+    mode: c.mode,
+    clock_mode: c.clock_mode,
+    feed_source_id: c.feed_source_id,
+    feed_source_label: c.feed_source_label,
+    feed_data_digest: c.feed_data_digest,
     run_id: c.run_id,
     state_revision: c.state_revision,
     method_version: c.method_version,

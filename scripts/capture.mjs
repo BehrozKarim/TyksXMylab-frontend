@@ -9,7 +9,7 @@ await page.goto('http://127.0.0.1:5173/ward');
 await page.getByRole('region', { name: 'Last 12 months evidence', exact: true }).waitFor();
 await page.screenshot({ path: 'test-results/ward-desktop.png', fullPage: true });
 await page.screenshot({ path: 'test-results/ward-desktop-viewport.png' });
-await page.getByRole('button', { name: 'Load monthly trend' }).click();
+
 await page.locator('.trend-chart svg').waitFor({ timeout: 90000 });
 await page.screenshot({ path: 'test-results/trend-desktop.png', fullPage: true });
 await page.getByRole('link', { name: 'Investigate cohort' }).click();

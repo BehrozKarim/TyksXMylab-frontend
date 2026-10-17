@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { optionalFeedProvenanceSchema } from './provenance';
 
 export const windowKeys = ['annual', 'rolling_12m', 'last_28d'] as const;
 export type WindowKey = (typeof windowKeys)[number];
@@ -60,11 +61,14 @@ export const filtersSchema = z.object({
 export type Filters = z.infer<typeof filtersSchema>;
 const bounds = z.object({ start_inclusive: date, end_exclusive: date });
 const coverage = z.object({
+  coverage_scope: z.literal('imported_dataset_only').optional(),
+  includes_feed_data: z.boolean().optional(),
   is_year_to_date: z.boolean().optional(),
   source_covers_requested_window: z.boolean(),
   replay_complete_through_as_of: z.boolean(),
 });
 export const contextSchema = z.object({
+  ...optionalFeedProvenanceSchema.shape,
   run_id: z.string(),
   state_revision: count,
   method_version: z.string(),
@@ -134,10 +138,11 @@ export const comparisonSchema = z.object({
 });
 export type Comparison = z.infer<typeof comparisonSchema>;
 export const stateSchema = z.object({
+  ...optionalFeedProvenanceSchema.shape,
   run_id: z.string(),
   state_revision: count,
   method_version: z.string(),
-  status: z.enum(['ready', 'running', 'paused', 'completed', 'error']),
+  status: z.enum(['ready', 'running', 'paused', 'completed', 'error', 'receiving']),
   demo_date: date,
   latest_visible_sample_date: date,
   source_kind: z.string(),

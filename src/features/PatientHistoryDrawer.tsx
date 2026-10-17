@@ -76,20 +76,20 @@ export function PatientHistoryDrawer({
       {!patient ? (
         <>
           <label className="field patient-search">
-            <span>Synthetic patient identifier</span>
+            <span>Patient identifier</span>
             <div className="search-input">
               <Search size={18} />
               <input
                 value={text}
                 onChange={(e) => setText(e.target.value)}
-                placeholder="Enter a patient ID"
+                placeholder="Enter a patient ID (e.g. P000001)"
                 autoComplete="off"
               />
             </div>
           </label>
           {!search ? (
             <EmptyState title="Find a patient">
-              Search a synthetic identifier to inspect samples from the preceding 12 months.
+              Search a patient identifier to inspect samples from the preceding 12 months.
             </EmptyState>
           ) : results.isPending ? (
             <Loading label="Searching patients…" />
@@ -100,7 +100,7 @@ export function PatientHistoryDrawer({
               onRetry={() => void results.refetch()}
             />
           ) : results.data.patients.length === 0 ? (
-            <EmptyState title="No matching patients">Try another synthetic identifier.</EmptyState>
+            <EmptyState title="No matching patients">Try another patient identifier.</EmptyState>
           ) : (
             <div className="patient-results">
               {results.data.patients.map((p) => (
@@ -135,7 +135,7 @@ export function PatientHistoryDrawer({
             </span>
             <div>
               <h3>{patient}</h3>
-              <Badge>Synthetic patient</Badge>
+              <Badge>{state.mode === 'feed' ? 'Patient' : 'Synthetic patient'}</Badge>
             </div>
           </div>
           {history.isPending ? (

@@ -70,7 +70,7 @@ export function ProvenanceDrawer({
               ? [window]
               : 'comparison' in analysis
                 ? [analysis.comparison.window]
-                  : (meta.supported_windows ?? (['rolling_12m', 'last_28d'] as WindowKey[]))
+                : (meta.supported_windows ?? (['rolling_12m', 'last_28d'] as WindowKey[]))
             ).map((key) => (
               <div className="provenance-period" key={key}>
                 <strong>{windowLabels[key]}</strong>
@@ -79,11 +79,27 @@ export function ProvenanceDrawer({
                   [{c.date_bounds[key].start_inclusive}, {c.date_bounds[key].end_exclusive})
                 </code>
                 {!c.coverage[key].source_covers_requested_window && (
-                  <Badge tone="warning">Partial source coverage</Badge>
+                  <Badge tone="warning">Partial imported-dataset coverage</Badge>
                 )}
               </div>
             ))}
           </div>
+          {c.mode === 'feed' && (
+            <div className="drawer-section">
+              <h3>Feed provenance</h3>
+              <p>{c.feed_source_label ?? c.feed_source_id ?? 'External feed'}</p>
+              <p>
+                {c.clock_mode === 'wall_utc' ? 'UTC reporting clock' : 'Simulated reporting clock'}
+              </p>
+              <p className="small-note">
+                File hashes and coverage describe the imported seed dataset only. They do not
+                certify completeness of the external feed.
+              </p>
+              {c.feed_data_digest && (
+                <p className="small-note">Feed digest: {c.feed_data_digest}</p>
+              )}
+            </div>
+          )}
           <div className="drawer-section">
             <h3>How counts are formed</h3>
             <ol className="method-list">
@@ -108,7 +124,7 @@ export function ProvenanceDrawer({
           </div>
           <dl className="provenance-meta">
             <div>
-              <dt>Source dates</dt>
+              <dt>Imported dataset dates</dt>
               <dd>
                 {formatDate(meta.source.start)} – {formatDate(meta.source.end)}
               </dd>

@@ -3,6 +3,7 @@
  */
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import { readFile } from 'node:fs/promises';
 
 test('overview reads published evidence, orders periods, and opens investigation directly', async ({
   page,
@@ -26,7 +27,7 @@ test('overview reads published evidence, orders periods, and opens investigation
   await expect(page.getByRole('button', { name: 'Replay demo' })).toHaveCount(0);
   await expect(page.locator('.fixture-notice')).toHaveCount(0);
   await expect(page.locator('.metric-details').first()).not.toHaveAttribute('open');
-  await page.getByRole('link', { name: 'Investigate evidence', exact: true }).click();
+  await page.getByRole('link', { name: 'Investigate susceptibility', exact: true }).click();
   await expect(page).toHaveURL(/\/investigate\?/);
   await expect(
     page.getByRole('heading', { name: 'Investigate susceptibility', exact: true }),
@@ -44,8 +45,8 @@ test('monthly trend uses guarded published 28-day responses and gaps for suppres
     if (r.url().includes('/api/v1/evidence?') && r.status() === 200) responses.push(r.json());
   });
   await page.goto('/ward');
-  await expect(page.getByRole('button', { name: 'Load monthly trend' })).toBeVisible();
-  await page.getByRole('button', { name: 'Load monthly trend' }).click();
+  await expect(page.getByRole('button', { name: 'Load monthly trend' })).toHaveCount(0);
+
   await expect(page.getByText('Monthly values, counts & exports', { exact: true })).toBeVisible({
     timeout: 100_000,
   });
@@ -74,7 +75,7 @@ test('patient lookup and all-specimen history use real IDs and strict cutoff', a
   const searchResponse = page.waitForResponse(
     (r) => r.url().includes('/api/v1/patients?') && r.status() === 200,
   );
-  await dialog.getByPlaceholder('Enter a patient ID').fill('000');
+  await dialog.getByPlaceholder('Enter a patient ID (e.g. P000001)').fill('000');
   const search = await (await searchResponse).json();
   expect(search.patients.length).toBeGreaterThan(0);
   const patient = search.patients[0].patient_id;
@@ -130,7 +131,7 @@ test('chart year 2025 leaves a September 2026 report unchanged', async ({ page }
     .locator('.trend-panel')
     .evaluate((e) => e.getBoundingClientRect().top + scrollY);
   expect(chartTop).toBeGreaterThan(comparisonTop);
-  await page.getByRole('button', { name: 'Load monthly trend' }).click();
+
   await expect(page.getByText('Monthly values, counts & exports', { exact: true })).toBeVisible({
     timeout: 100_000,
   });
@@ -184,6 +185,7 @@ test('authored backend scenario keeps original detection distinct and survives a
   await request.post(`${origin}/api/v1/replay/step`);
   await page.route('**/api/v1/**', async (route) => {
     const url = new URL(route.request().url());
+    if (url.pathname.endsWith('/updates')) return route.fulfill({ status: 204 });
     const response = await route.fetch({ url: `${origin}${url.pathname}${url.search}` });
     await route.fulfill({ response });
   });
@@ -225,4 +227,81 @@ test('authored backend scenario keeps original detection distinct and survives a
     await request.get(`${origin}/api/v1/analyses/${original.analysis_id}/export?format=json`)
   ).json();
   expect(exported).toEqual(original);
+});
+
+test('a real feed publication refreshes the dashboard through SSE and preserves saved evidence', async ({
+  page,
+  request,
+}) => {
+  const origin = process.env.AEI_ALERT_TEST_URL;
+  const batchPath = process.env.AEI_FEED_TEST_BATCH;
+  test.skip(
+    !origin || !batchPath,
+    'Requires the separate authored scenario and its generated test delivery.',
+  );
+  const started = await request.post(`${origin}/api/v1/feed/start`, {
+    data: {
+      source_id: 'ui-live-test',
+      source_label: 'Authored live-feed validation',
+      clock_mode: 'simulated',
+      as_of: '2026-09-26',
+      seed_through: '2026-09-26',
+    },
+  });
+  expect(started.ok()).toBe(true);
+  const initial = await started.json();
+  await page.route('**/api/v1/**', async (route) => {
+    const url = new URL(route.request().url());
+    if (url.origin === origin) return route.continue();
+    if (url.pathname.endsWith('/updates')) {
+      // Native EventSource follows this redirect; route.fetch would buffer an endless stream.
+      return route.fulfill({ status: 307, headers: { location: `${origin}${url.pathname}` } });
+    }
+    const response = await route.fetch({ url: `${origin}${url.pathname}${url.search}` });
+    await route.fulfill({ response });
+  });
+  await page.goto('/ward');
+  await expect(page.locator('.feed-status')).toContainText('Live updates connected');
+  await expect(page.locator('.feed-status')).toContainText('Receiving results');
+  await expect(page.getByLabel('Report end date')).toHaveValue('2026-09-26');
+  await expect(page.getByText('Monthly values, counts & exports', { exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'How calculated: Last 12 months' }).click();
+  const downloadEvent = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Download JSON', exact: true }).click();
+  const download = await downloadEvent;
+  const frozen = JSON.parse(await readFile((await download.path())!, 'utf8'));
+  expect(frozen.context.state_revision).toBe(initial.state_revision);
+  expect(frozen.context.mode).toBe('feed');
+  await expect(page.getByRole('dialog')).toContainText('do not certify completeness');
+  await page.getByRole('button', { name: 'Close panel' }).click();
+  const metaRefresh = page.waitForResponse((r) => r.url().includes('/api/v1/meta') && r.ok());
+  const payload = JSON.parse(await readFile(batchPath!, 'utf8'));
+  const accepted = await request.post(`${origin}/api/v1/feed/batches`, {
+    data: { ...payload, run_id: initial.run_id },
+  });
+  expect(accepted.status()).toBe(202);
+  const receipt = await accepted.json();
+  await expect
+    .poll(async () => (await (await request.get(`${origin}${receipt.receipt_url}`)).json()).status)
+    .toBe('published');
+  // Connected streams poll only every 30 seconds: this must arrive by SSE, without reload.
+  await expect(page.getByLabel('Report end date')).toHaveValue('2026-09-27', { timeout: 8000 });
+  await metaRefresh;
+  await expect(page.locator('.page-footer')).toContainText('Snapshot 2');
+  await expect(page.getByText('Monthly values, counts & exports', { exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'How calculated: Last 12 months' }).click();
+  const updatedEvent = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Download JSON', exact: true }).click();
+  const updatedDownload = await updatedEvent;
+  const updated = JSON.parse(await readFile((await updatedDownload.path())!, 'utf8'));
+  expect(updated.context.state_revision).toBe(2);
+  expect(updated.context.feed_data_digest).toBeTruthy();
+  expect(updated.windows.rolling_28_days.coverage).toMatchObject({
+    coverage_scope: 'imported_dataset_only',
+    includes_feed_data: true,
+  });
+  const original = await (
+    await request.get(`${origin}/api/v1/analyses/${frozen.analysis_id}/export?format=json`)
+  ).json();
+  expect(original).toEqual(frozen);
 });

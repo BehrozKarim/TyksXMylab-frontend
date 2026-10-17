@@ -89,7 +89,7 @@ export function CohortControls({
               {!a.specimens.includes(draft.specimen)
                 ? ' · specimen not applicable'
                 : !a.organisms.includes(draft.organism)
-                  ? ' · no recorded tests'
+                  ? ' · not in imported test panels'
                   : ''}
             </option>
           ))}

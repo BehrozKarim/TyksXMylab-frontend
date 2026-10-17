@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { feedProvenanceSchema } from './provenance';
 import type { Meta } from './contracts';
 
 const date = z.iso.date();
@@ -53,6 +54,7 @@ export const alertWindowSchema = z
 export const alertAnalysisSchema = z.object({
   analysis_id: z.string(),
   context: z.object({
+    ...feedProvenanceSchema.shape,
     run_id: z.string(),
     state_revision: count,
     demo_date: date,

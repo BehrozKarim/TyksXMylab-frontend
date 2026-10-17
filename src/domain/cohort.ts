@@ -50,7 +50,7 @@ export function readCohort(
     as_of > state.demo_date ||
     as_of < meta.source.start
   ) {
-    issues.push('Reporting date was outside the available range; using the replay date.');
+    issues.push('Reporting date was outside the available range; using the latest reporting date.');
     as_of = state.demo_date;
   }
   const query: CohortQuery = {
@@ -73,10 +73,11 @@ export function readCohort(
     calendar_year: Number(
       pick(
         'calendar_year',
-        Array.from({ length: Number(state.demo_date.slice(0, 4)) - 2023 + 1 }, (_, i) =>
-          String(2023 + i),
+        Array.from(
+          { length: Number(as_of.slice(0, 4)) - Number(meta.source.start.slice(0, 4)) + 1 },
+          (_, i) => String(Number(meta.source.start.slice(0, 4)) + i),
         ),
-        String(Math.min(2026, Number(as_of.slice(0, 4)))),
+        as_of.slice(0, 4),
       ),
     ),
     antibiotic_code: pick(

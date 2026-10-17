@@ -1,7 +1,8 @@
 import { QueryClient, useQuery, useQueryClient } from '@tanstack/react-query';
-import { api, ApiError } from '../api/client';
+import { api, ApiError, DATA_MODE } from '../api/client';
+import { subscribeToUpdates } from '../api/updates';
 import type { ReplayState } from '../api/contracts';
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -33,12 +34,30 @@ export function useMeta() {
   });
 }
 export function useReplayState() {
-  return useQuery({
+  const client = useQueryClient();
+  const [connected, setConnected] = useState(false);
+  useEffect(() => {
+    if (DATA_MODE !== 'api') return;
+    return subscribeToUpdates(
+      () => void client.invalidateQueries({ queryKey: keys.state }),
+      setConnected,
+    );
+  }, [client]);
+  const result = useQuery({
     queryKey: keys.state,
     queryFn: ({ signal }) => api.state(signal),
-    refetchInterval: 2000,
+    refetchInterval: connected ? 30_000 : 2000,
     refetchIntervalInBackground: false,
   });
+  const revision = result.data ? `${result.data.run_id}/${result.data.state_revision}` : undefined;
+  const previous = useRef<string | undefined>(undefined);
+  useEffect(() => {
+    // Feed publication can introduce dictionary entries as well as result revisions.
+    if (revision && previous.current && revision !== previous.current)
+      void client.invalidateQueries({ queryKey: keys.meta });
+    previous.current = revision;
+  }, [revision, client]);
+  return { ...result, updatesConnected: connected };
 }
 export function useAnalysis<T>(
   kind: string,
@@ -49,9 +68,17 @@ export function useAnalysis<T>(
 ) {
   const client = useQueryClient();
   const recoveredAt = useRef(0);
-  return useQuery({
+  return useQuery<T>({
     queryKey: keys.analysis(kind, state, params),
     enabled,
+    placeholderData: (previous, previousQuery) => {
+      const key = previousQuery?.queryKey;
+      // Retain complete same-population snapshots during revision refresh only.
+      // Never borrow values across filters, patient/cursor changes, dates or runs.
+      return key?.[2] === state.run_id && JSON.stringify(key[5]) === JSON.stringify(params)
+        ? previous
+        : undefined;
+    },
     queryFn: async ({ signal }) => {
       try {
         return await fn(signal);

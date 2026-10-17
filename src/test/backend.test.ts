@@ -119,6 +119,40 @@ describe('Published backend adapter', () => {
     expect(data.comparison.cells).toEqual(cells.cells);
     expect(data.context.method_version).toBe('comparison-v1');
   });
+  it('accepts receiving feed runs and preserves feed provenance separately from seed coverage', () => {
+    const raw = backendStateSchema.parse({
+      ...source,
+      mode: 'feed',
+      clock_mode: 'wall_utc',
+      status: 'receiving',
+      feed_source_id: 'lab-adapter',
+      feed_source_label: 'Lab feed',
+      feed_data_digest: 'feed-digest',
+      seed_through: '2026-09-26',
+      replay_through: '2026-09-27',
+      latest_visible_sample_date: '2026-09-27',
+      published_cultures: 50,
+      published_isolates: 50,
+    });
+    expect(mapState(raw)).toMatchObject({
+      status: 'receiving',
+      mode: 'feed',
+      clock_mode: 'wall_utc',
+      feed_source_id: 'lab-adapter',
+    });
+    const report = structuredClone(wireEvidence());
+    Object.assign(report.context, raw);
+    Object.assign(report.windows.rolling_28_days.coverage, {
+      includes_feed_data: true,
+      coverage_scope: 'imported_dataset_only',
+    });
+    const mapped = mapEvidence(backendEvidenceSchema.parse(report), query);
+    expect(mapped.context).toMatchObject({ mode: 'feed', feed_data_digest: 'feed-digest' });
+    expect(mapped.context.coverage.last_28d).toMatchObject({
+      includes_feed_data: true,
+      coverage_scope: 'imported_dataset_only',
+    });
+  });
   it('retains completed replay counters and the actual seed/end dates', () => {
     const state = mapState(
       backendStateSchema.parse({
@@ -189,6 +223,10 @@ describe('Published backend adapter', () => {
 });
 
 describe('Trend cutoffs', () => {
+  it('defaults the chart to the reporting year when a live clock crosses into a new year', () => {
+    const future = { ...initialState, demo_date: '2027-01-02' };
+    expect(readCohort(new URLSearchParams(), meta, future).query.calendar_year).toBe(2027);
+  });
   it('includes past month ends and only the current partial cutoff, never future dates', () => {
     expect(trendDates(2024, '2024-03-15', '2023-10-02')).toEqual([
       '2024-01-31',

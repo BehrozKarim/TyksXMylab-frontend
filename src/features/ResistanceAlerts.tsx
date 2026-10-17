@@ -278,7 +278,7 @@ function AlertEvaluation({ report, meta }: { report: AlertAnalysis; meta: Meta }
                   )}
                   {(!w.coverage.source_date_span_covers_window ||
                     !w.coverage.source_fully_imported) && (
-                    <p className="coverage-warning">Incomplete source coverage</p>
+                    <p className="coverage-warning">Incomplete imported-dataset coverage</p>
                   )}
                 </>
               ) : (
@@ -393,6 +393,21 @@ function AlertEvaluation({ report, meta }: { report: AlertAnalysis; meta: Meta }
             {report.context.rule_version}
           </p>
           <p>Source {report.context.source_manifest_id}</p>
+          {report.context.mode === 'feed' && (
+            <>
+              <p>Feed: {report.context.feed_source_label ?? report.context.feed_source_id}</p>
+              <p>
+                Clock:{' '}
+                {report.context.clock_mode === 'wall_utc'
+                  ? 'UTC reporting date'
+                  : 'Simulated reporting date'}
+              </p>
+              <p>Imported-dataset coverage does not certify external-feed completeness.</p>
+              {report.context.feed_data_digest && (
+                <p>Feed digest: {report.context.feed_data_digest}</p>
+              )}
+            </>
+          )}
           <p>Rule proposal pending partner confirmation.</p>
           <ul>
             {report.context.caveats.map((c) => (

@@ -86,7 +86,7 @@ test('patient dialog includes prior specimens, traps focus and returns it', asyn
   await trigger.click();
   const dialog = page.getByRole('dialog');
   await expect(dialog).toBeVisible();
-  await dialog.getByPlaceholder('Enter a patient ID').fill('P-00142');
+  await dialog.getByPlaceholder('Enter a patient ID (e.g. P000001)').fill('P-00142');
   await dialog.getByRole('button', { name: 'P-00142 Synthetic patient' }).click();
   await expect(dialog.getByText('3 prior cultures')).toBeVisible();
   await expect(dialog.getByText('No growth', { exact: true })).toBeVisible();
@@ -198,7 +198,7 @@ test('shows persistent API failure without fixture fallback and retries the same
   });
   await page.getByLabel('Ward', { exact: true }).selectOption('ICU');
   await page.getByRole('button', { name: 'Apply cohort' }).click();
-  await expect(page.getByText('The evidence service is unavailable.')).toBeVisible();
+  await expect(page.getByText('The evidence service is unavailable.').first()).toBeVisible();
   await expect(page.getByRole('region', { name: 'Last 28 days evidence' })).toHaveCount(0);
   await expect(page.getByLabel('Ward', { exact: true })).toHaveValue('ICU');
   await page.evaluate(async () => {
@@ -206,7 +206,7 @@ test('shows persistent API failure without fixture fallback and retries the same
     const { recover } = await import(module);
     recover();
   });
-  await page.getByRole('button', { name: 'Retry', exact: true }).click();
+  await page.getByRole('button', { name: 'Retry', exact: true }).first().click();
   await expect(page.getByRole('region', { name: 'Last 28 days evidence' })).toContainText(
     '29 tested',
   );

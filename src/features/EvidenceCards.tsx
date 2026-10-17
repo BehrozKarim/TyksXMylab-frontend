@@ -94,7 +94,7 @@ export function EvidenceCards({
               </div>
             )}
             {!cov.source_covers_requested_window && (
-              <p className="coverage-warning">Partial source coverage</p>
+              <p className="coverage-warning">Partial imported-dataset coverage</p>
             )}
           </section>
         );

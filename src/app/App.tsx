@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
+import { useIsFetching, useQueryClient } from '@tanstack/react-query';
 import {
   Activity,
   ArrowDownToLine,
@@ -54,7 +54,16 @@ function Brand() {
     </span>
   );
 }
-function Workspace({ meta, state }: { meta: Meta; state: ReplayState }) {
+function Workspace({
+  meta,
+  state,
+  updatesConnected,
+}: {
+  meta: Meta;
+  state: ReplayState;
+  updatesConnected: boolean;
+}) {
+  const updating = useIsFetching({ queryKey: ['analysis'] }) > 0;
   const [search, setSearch] = useSearchParams();
   const location = useLocation();
   const { query, issues, pinned } = readCohort(search, meta, state);
@@ -138,13 +147,13 @@ function Workspace({ meta, state }: { meta: Meta; state: ReplayState }) {
             <span>Ward overview</span>
           </Link>
           <Link
-            aria-label="Investigate evidence"
+            aria-label="Investigate susceptibility"
             className={`nav-item ${investigation ? 'active' : ''}`}
             aria-current={investigation ? 'page' : undefined}
             to={`/investigate?${search}`}
           >
             <SearchCheck size={19} />
-            <span>Investigate evidence</span>
+            <span>Investigate susceptibility</span>
           </Link>
           {meta.capabilities?.alerts && (
             <Link
@@ -213,7 +222,7 @@ function Workspace({ meta, state }: { meta: Meta; state: ReplayState }) {
           <div className="topbar-right">
             <span className="synthetic-label">
               <span />
-              Synthetic data
+              {state.mode === 'feed' ? 'External feed' : 'Synthetic data'}
             </span>
             <span className="topbar-divider" />
             <Button
@@ -230,6 +239,20 @@ function Workspace({ meta, state }: { meta: Meta; state: ReplayState }) {
           </div>
         </header>
         <main id="main-content" className="main-content" tabIndex={-1}>
+          {state.mode === 'feed' && (
+            <p className="inline-notice feed-status">
+              <strong>{state.feed_source_label ?? 'External feed'}</strong> ·{' '}
+              {updatesConnected ? 'Live updates connected' : 'Checking for updates'}
+              {' · '}
+              {state.clock_mode === 'wall_utc' ? 'UTC reporting date' : 'Simulated reporting date'}
+              {state.status === 'receiving' && ' · Receiving results'}
+            </p>
+          )}
+          {updating && (
+            <p className="small-note" role="status">
+              Updating analyses… Any results still visible belong to their displayed saved snapshot.
+            </p>
+          )}
           {DATA_MODE === 'fixtures' && (
             <div className="fixture-notice">
               <FlaskConical size={15} />
@@ -325,7 +348,8 @@ function Workspace({ meta, state }: { meta: Meta; state: ReplayState }) {
           <footer className="page-footer">
             <span>
               <span className="tiny-dot" />
-              Source coverage: {formatDate(meta.source.start)} – {formatDate(meta.source.end)}
+              Imported dataset: {formatDate(meta.source.start)} – {formatDate(meta.source.end)}
+              {state.mode === 'feed' && ' · Feed completeness is not certified'}
             </span>
             <span>
               {state.method_version} <span className="separator-dot">·</span> Snapshot{' '}
@@ -597,5 +621,7 @@ export default function App() {
         />
       </div>
     );
-  return <Workspace meta={meta.data} state={state.data} />;
+  return (
+    <Workspace meta={meta.data} state={state.data} updatesConnected={state.updatesConnected} />
+  );
 }
