@@ -67,8 +67,10 @@ reversible editing flow.
 **Demo feed** is a header utility opening the shared drawer. It contains the current
 date, published batch count, next-batch action and publication status. Status polling
 continues when the drawer closes, with a header indicator and accessible publication
-announcement. Ordinary startup exposes no demo controls. Source and connection
-status stay concise above the page; reporting-clock details live in the footer.
+announcement. Ordinary startup exposes no demo controls. The workspace does not
+show a source/connection banner or a global analysis-refresh notice. The footer
+contains branding only; method, run, revision and source details remain in evidence
+provenance and exports. Individual sections retain their loading/error states.
 
 **AI summary** is a page action opening an optional drawer. Generation still
 requires an explicit click. Closing and reopening reuses the report-bound job
@@ -86,7 +88,7 @@ The navigation alert count uses the backend's actual active alerts and is shown
 only when monitoring is supported. Explicit fixture mode retains its existing
 legacy alert scenario; it does not pretend to enable the backend alert API.
 
-Demo controls, live-feed notices and summary fallback/error states extend this
+Demo controls, live updates and summary fallback/error states extend this
 same system. They do not introduce a separate palette or alter publication.
 All five evidence support states retain named messages. Below 30 tested isolates,
 percentages/intervals remain suppressed; missing tests never imply resistance.

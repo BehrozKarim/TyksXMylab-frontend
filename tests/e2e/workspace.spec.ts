@@ -165,7 +165,9 @@ test('read-only UI follows backend publication changes without playback controls
   );
   await publish(page, 'reset');
   await expect(page.getByLabel('Report end date')).toHaveValue('2026-09-20');
-  await expect(page.locator('.page-footer')).toContainText('fixture-run-002');
+  await page.getByRole('button', { name: 'How calculated: Last 12 months' }).click();
+  await expect(page.getByRole('dialog')).toContainText('fixture-run-002');
+  await page.getByRole('button', { name: 'Close panel' }).click();
 });
 
 test('desktop and mobile have no serious accessibility violations or horizontal overflow', async ({
@@ -198,7 +200,9 @@ test('recovers from one state_changed response without mixing snapshots', async 
   await page.getByLabel('Compare with B').selectOption('NIT');
   await expect(page.getByLabel('Report end date')).toHaveValue('2026-09-28');
   await expect(page.getByRole('region', { name: 'Last 28 days evidence' })).toContainText('75.0');
-  await expect(page.locator('.page-footer')).toContainText('Snapshot 9');
+  await page.getByRole('button', { name: 'How calculated: Last 12 months' }).click();
+  await expect(page.getByRole('dialog')).toContainText('fixture-run-001 / 9');
+  await page.getByRole('button', { name: 'Close panel' }).click();
 });
 test('shows persistent API failure without fixture fallback and retries the same cohort', async ({
   page,

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useIsFetching, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   Activity,
   ArrowDownToLine,
@@ -68,19 +68,16 @@ function AlertCount({ state }: { state: ReplayState }) {
 function Workspace({
   meta,
   state,
-  updatesConnected,
   refreshError,
   onRetryRefresh,
   refreshing,
 }: {
   meta: Meta;
   state: ReplayState;
-  updatesConnected: boolean;
   refreshError: Error | null;
   onRetryRefresh: () => void;
   refreshing: boolean;
 }) {
-  const updating = useIsFetching({ queryKey: ['analysis'] }) > 0;
   const [search, setSearch] = useSearchParams();
   const location = useLocation();
   const { query, issues, pinned } = readCohort(search, meta, state);
@@ -204,17 +201,6 @@ function Workspace({
             pending={refreshing}
             title="Could not refresh the workspace"
           />
-          {state.mode === 'feed' && (
-            <p className="inline-notice feed-status">
-              <strong>{state.feed_source_label ?? 'External feed'}</strong> ·{' '}
-              {updatesConnected ? 'Live updates connected' : 'Checking for updates'}
-            </p>
-          )}
-          {updating && (
-            <p className="small-note" role="status">
-              Updating analyses… Any results still visible belong to their displayed saved snapshot.
-            </p>
-          )}
           {DATA_MODE === 'fixtures' && (
             <div className="fixture-notice">
               <FlaskConical size={15} />
@@ -309,23 +295,6 @@ function Workspace({
             />
           </Routes>
           <footer className="page-footer">
-            {state.mode === 'feed' && (
-              <span>
-                {state.clock_mode === 'wall_utc'
-                  ? 'UTC reporting date'
-                  : 'Simulated reporting date'}
-                {state.status === 'receiving' && ' · Receiving results'}
-              </span>
-            )}
-            <span>
-              <span className="tiny-dot" />
-              Imported dataset: {formatDate(meta.source.start)} – {formatDate(meta.source.end)}
-              {state.mode === 'feed' && ' · Feed completeness is not certified'}
-            </span>
-            <span>
-              {state.method_version} <span className="separator-dot">·</span> Snapshot{' '}
-              {state.state_revision} <span className="separator-dot">·</span> {state.run_id}
-            </span>
             <span>TYKS × mylab · JunctionX Turku · Prototype</span>
           </footer>
         </main>
@@ -680,7 +649,6 @@ export default function App() {
     <Workspace
       meta={meta.data}
       state={state.data}
-      updatesConnected={state.updatesConnected}
       refreshError={meta.error ?? state.error}
       refreshing={meta.isFetching || state.isFetching}
       onRetryRefresh={() => {

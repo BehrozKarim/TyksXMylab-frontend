@@ -60,6 +60,12 @@ The panel appears only when the launcher sets `VITE_DEMO_CONTROLS=1`. Vite proxi
 does not include these controls. Ctrl+C stops the launcher and its servers; relaunch
 resumes, and `-Restart` creates a fresh demo run. See the backend's `DEMO.md`.
 
+The demo launcher uses a proposed **3-percentage-point resistance-rise threshold**,
+with at least 30 tested isolates in both alert periods. This is an unvalidated demo
+setting. The backend supplies the threshold and alert results; ordinary API startup
+still defaults to 10 points. A fresh default demo reaches the Urology alert after
+the first batch moves the reporting date to 25 September 2026.
+
 ## Report summary panel
 
 In API mode, **AI summary** at the top of the overview opens a separate side panel.

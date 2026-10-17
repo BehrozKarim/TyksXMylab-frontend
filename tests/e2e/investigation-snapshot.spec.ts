@@ -35,7 +35,11 @@ test('detection stays frozen while serving state advances and reset invalidates 
   await expect(page.locator('.investigation-context')).toContainText('Detection snapshot');
 
   await page.evaluate(() => fetch('/api/v1/replay/reset', { method: 'POST' }));
-  await expect(page.locator('.page-footer')).toContainText('fixture-run-002');
+  await page.getByRole('link', { name: 'Back to ward overview' }).click();
+  await expect(page.getByLabel('Report end date')).toHaveValue('2026-09-20');
+  await page.getByRole('button', { name: 'How calculated: Last 12 months' }).click();
+  await expect(page.getByRole('dialog')).toContainText('fixture-run-002');
+  await page.getByRole('button', { name: 'Close panel' }).click();
   const afterReset = await page.evaluate(async (prior) => {
     const params = new URLSearchParams({
       expected_run_id: prior.serving_context.run_id,

@@ -289,8 +289,7 @@ test('a real feed publication refreshes the dashboard through SSE and preserves 
     await route.fulfill({ response });
   });
   await page.goto('/ward');
-  await expect(page.locator('.feed-status')).toContainText('Live updates connected');
-  await expect(page.locator('.feed-status')).toContainText('Receiving results');
+  await expect(page.locator('.feed-status')).toHaveCount(0);
   await expect(page.getByLabel('Report end date')).toHaveValue('2026-09-26');
   await expect(page.getByText('Monthly values, counts & exports', { exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'How calculated: Last 12 months' }).click();
@@ -315,7 +314,6 @@ test('a real feed publication refreshes the dashboard through SSE and preserves 
   // Connected streams poll only every 30 seconds: this must arrive by SSE, without reload.
   await expect(page.getByLabel('Report end date')).toHaveValue('2026-09-27', { timeout: 8000 });
   await metaRefresh;
-  await expect(page.locator('.page-footer')).toContainText('Snapshot 2');
   await expect(page.getByText('Monthly values, counts & exports', { exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'How calculated: Last 12 months' }).click();
   const updatedEvent = page.waitForEvent('download');
