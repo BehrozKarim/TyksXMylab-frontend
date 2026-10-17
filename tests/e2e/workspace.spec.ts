@@ -173,9 +173,12 @@ test('desktop and mobile have no serious accessibility violations or horizontal 
       .analyze();
     expect(results.violations).toEqual([]);
   }
-  await page.getByRole('button', { name: 'Toggle navigation' }).click();
+  await expect(page.getByRole('navigation', { name: 'Main navigation' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Ward overview', exact: true })).toBeVisible();
-  await page.getByRole('button', { name: 'Close navigation', exact: true }).click();
+  await page.getByRole('link', { name: 'Investigate susceptibility', exact: true }).click();
+  await expect(
+    page.getByRole('heading', { name: 'Investigate susceptibility', exact: true }),
+  ).toBeVisible();
 });
 test('recovers from one state_changed response without mixing snapshots', async ({ page }) => {
   await page.evaluate(async () => {

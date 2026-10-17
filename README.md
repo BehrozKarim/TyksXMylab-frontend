@@ -42,18 +42,34 @@ resumes, and `-Restart` creates a fresh demo run. See the backend's `DEMO.md`.
 
 ## Report summary panel
 
-In API mode, **Summarize this report** requests an explanation of the saved evidence
-currently displayed. The panel uses `/api/v1/ai/summaries`, polls pending work, and
+In API mode, **AI summary** at the top of the overview opens a separate side panel.
+Inside it, **Summarize this report** requests an explanation of the saved evidence
+currently displayed. Opening the drawer alone does not call the AI provider. The panel uses `/api/v1/ai/summaries`, polls pending work, and
 labels the result **AI-assisted summary** or **Basic summary** according to the
 backend. Applicable limitations remain visible, supporting facts expand below the
 paragraph, and **View evidence** opens the matching report's provenance.
 
-Generation is explicit. A new analysis clears the old panel and offers
+Closing and reopening the drawer reuses the same report-bound job and result in
+the query cache. Generation is explicit. A new analysis clears the old panel and offers
 **Summarize updated report**; late responses cannot attach to another analysis.
 During revision refresh, a retained summary is labelled as belonging to an older
 report. Errors stay in this panel. Pending polling pauses after two minutes and
 offers **Check status**. No provider credentials or model calls belong in the browser.
 Configure the provider on the backend as described in its `AI_SUMMARY.md`.
+
+## Design and quick access
+
+The UI follows `design_handoff_ward_evidence`: steel-blue colors, locally bundled
+Barlow fonts, sticky top navigation, shared evidence cards and side drawers.
+Alerts, demo controls, live updates and optional AI use the same design system.
+See `design-system/MASTER.md` for details and supported-data differences.
+
+**Saved queries** in the filter footer saves up to 12 named applied selections.
+Reopen one to restore its ward, specimen, organism, antibiotics and population
+filters. Queries following the latest samples advance with the publication date;
+pinned queries keep their chosen date. Shortcuts are stored in this browser's
+local storage, without patient histories, report contents or credentials. Query
+restoration rejects selections that no longer exist in the available dictionaries.
 
 ## Dates and overlapping overview periods
 
@@ -179,7 +195,7 @@ backup while connected. The stream closes and queued work cancels on unmount.
 
 Feed ingestion remains an operational backend API. No feed token is exposed to
 the browser, and viewing this UI does not start or reset an ingestion run.
-Sidebar **Investigate susceptibility** opens `/investigate`. Patient search uses
+Top navigation **Investigate susceptibility** opens `/investigate`. Patient search uses
 the verified supplied-data example `P000001` in its placeholder.
 
 ## Replay is a backend demonstration tool
@@ -253,10 +269,10 @@ standard Docker setup instead uses port 55432. No backend source was edited.
 Screenshots are ignored in `test-results/`; the capture script expects API mode
 and a running backend/Vite preview. Direct Chromium Playwright scripts are used
 because `playwright-interactive` is not installed. Production authentication,
-connecting a real hospital feed, Flink, localization, saved cohorts and adjusted analyses
+connecting a real hospital feed, Flink, localization, shared saved queries and adjusted analyses
 remain outside this frontend.
 
-Latest validation: production build, ESLint, 39 unit tests, 19 fixture-browser
-tests and all 9 API/browser tests passed (including separate authored alert
-and live-feed scenarios). Desktop/mobile accessibility and overflow checks passed. Refreshed
-screenshots had no browser page errors.
+Redesign verification adds saved-query restoration and error handling, an optional
+AI drawer with cached reopening, alert tabs with exact snapshot exports, and
+1185px/768px/390px screenshot and accessibility checks. The browser-only component
+harness is excluded from the production entry. No backend source was edited.
