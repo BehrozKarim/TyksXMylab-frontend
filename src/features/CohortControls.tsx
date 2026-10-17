@@ -39,8 +39,7 @@ export function CohortControls({
   return (
     <form className="cohort-panel" onSubmit={submit} aria-label="Select evidence cohort">
       <div className="filter-top">
-        <span className="eyebrow">Your evidence cohort</span>
-        <span className="filter-caption">One organism. One specimen. A clear context.</span>
+        <span className="eyebrow">Select your cohort</span>
       </div>
       <div className="filter-grid">
         <Select
@@ -110,7 +109,7 @@ export function CohortControls({
           <SlidersHorizontal size={15} />
           Population filters{active > 0 && <span className="count-badge">{active}</span>}
         </Button>
-        <span className="filter-current">
+        <span className="filter-current" title="Applied only after clicking Apply cohort">
           {draft.sex === 'F' ? 'Women' : draft.sex === 'M' ? 'Men' : 'All sexes'}
           <span className="separator-dot">·</span>
           {draft.age_min !== null || draft.age_max !== null
@@ -134,6 +133,15 @@ export function CohortControls({
       </div>
       {advanced && (
         <div id="advanced-filters" className="advanced-filters">
+          <Select
+            id="dedup-scope"
+            label="First isolate selection"
+            value={draft.dedup_scope ?? 'selected_cohort'}
+            onChange={(e) => set('dedup_scope', e.target.value as CohortQuery['dedup_scope'])}
+          >
+            <option value="selected_cohort">Within selected ward</option>
+            <option value="all_wards">Across all wards first</option>
+          </Select>
           <Select
             id="sex"
             label="Sex"

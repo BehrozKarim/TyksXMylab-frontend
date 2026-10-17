@@ -1,8 +1,8 @@
-import { ArrowRight, CalendarDays, CircleHelp, Clock3, Layers3 } from 'lucide-react';
+import { ArrowRight, CircleHelp, Clock3, Layers3 } from 'lucide-react';
 import type { Evidence, WindowKey, WindowMeasure } from '../api/contracts';
 import { Badge, Button } from '../components/ui';
 import { IntervalPlot } from '../components/IntervalPlot';
-import { formatRange, number, percentage, windowLabels } from '../domain/formatters';
+import { formatRange, number, windowLabels } from '../domain/formatters';
 
 const supportTitles: Record<WindowMeasure['status'], string> = {
   available: 'Available',
@@ -22,17 +22,15 @@ export function EvidenceCards({
 }) {
   return (
     <div className="period-grid">
-      {(['annual', 'rolling_12m', 'last_28d'] as const).map((key, index) => {
+      {(['rolling_12m', 'last_28d'] as const).map((key) => {
         const m = evidence.windows[key];
+        const title = windowLabels[key];
+        const Icon = key === 'rolling_12m' ? Layers3 : Clock3;
+        const featured = key === 'rolling_12m' && m.status === 'available';
         const cov = evidence.context.coverage[key];
-        const Icon = [CalendarDays, Layers3, Clock3][index];
-        const title =
-          key === 'annual'
-            ? `Calendar year ${evidence.context.filters.calendar_year}`
-            : windowLabels[key];
         return (
           <section
-            className={`period-card ${index === 0 && m.status === 'available' ? 'period-card--featured' : ''}`}
+            className={`period-card ${featured ? 'period-card--featured' : ''}`}
             key={key}
             aria-label={`${title} evidence`}
           >
@@ -41,16 +39,13 @@ export function EvidenceCards({
                 <Icon size={17} />
               </span>
               <h3>{title}</h3>
-              {key === 'annual' && cov.is_year_to_date && (
-                <span className="period-tag">To date</span>
-              )}
               <Button
                 variant="ghost"
                 className="icon-button"
                 aria-label={`How calculated: ${title}`}
                 onClick={() => onProvenance(key)}
               >
-                <CircleHelp size={16} />
+                <CircleHelp size={17} />
               </Button>
             </div>
             <p className="period-date">{formatRange(evidence.context.date_bounds[key])}</p>
@@ -60,18 +55,22 @@ export function EvidenceCards({
                   {m.susceptibility_pct!.toFixed(1)}
                   <span>%</span>
                 </div>
-                <p className="measure-label">susceptible to {evidence.antibiotic_code}</p>
-                <div className="period-counts">
-                  <strong>
-                    {number(m.n_s)} / {number(m.n_tested)}
-                  </strong>{' '}
-                  tested isolates<span>{percentage(m.resistance_pct)} resistant</span>
-                </div>
-                <IntervalPlot
-                  value={m.susceptibility_pct!}
-                  lower={m.ci95.susceptibility.lower!}
-                  upper={m.ci95.susceptibility.upper!}
-                />
+                <p className="measure-label">susceptible · {number(m.n_tested)} tested isolates</p>
+                <details className="metric-details">
+                  <summary>Counts & uncertainty</summary>
+                  <div className="period-counts">
+                    {m.n_s} susceptible · {m.n_r} resistant
+                  </div>
+                  <IntervalPlot
+                    value={m.susceptibility_pct!}
+                    lower={m.ci95.susceptibility.lower!}
+                    upper={m.ci95.susceptibility.upper!}
+                  />
+                  <div className="period-footer">
+                    <span>{m.n_eligible} eligible</span>
+                    <span>{m.n_not_tested} not tested</span>
+                  </div>
+                </details>
               </>
             ) : (
               <div className="support-state">
@@ -84,24 +83,18 @@ export function EvidenceCards({
                 <p>
                   {m.reason ??
                     (m.status === 'insufficient_data'
-                      ? 'Percentages and intervals are hidden below 30 tested isolates.'
-                      : `${m.n_eligible} eligible isolates. No percentage is reported.`)}
+                      ? 'Estimates require at least 30 tested isolates.'
+                      : `${m.n_eligible} eligible isolates; ${m.n_not_tested} not tested.`)}
                 </p>
                 {key === 'last_28d' && (
                   <Button variant="ghost" onClick={onLongerWindow}>
-                    Use the 12-month comparison <ArrowRight size={14} />
+                    View 12-month evidence <ArrowRight size={14} />
                   </Button>
                 )}
               </div>
             )}
-            <div className="period-footer">
-              <span>{number(m.n_eligible)} eligible</span>
-              <span>{m.n_not_tested} not tested</span>
-            </div>
             {!cov.source_covers_requested_window && (
-              <p className="coverage-warning">
-                Partial source coverage · requested dates extend beyond source data.
-              </p>
+              <p className="coverage-warning">Partial source coverage</p>
             )}
           </section>
         );

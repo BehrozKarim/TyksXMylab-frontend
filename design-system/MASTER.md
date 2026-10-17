@@ -32,8 +32,8 @@ these primitives and consumes semantic tokens. No raw palette values in TSX.
 
 ## Page layouts
 
-Ward: explicit fixture notice → heading/date/export → applied cohort form → three
-window cards → paired comparison beside review flags → replay strip/provenance.
+Ward: source notice → heading/report date → applied cohort form → two
+window cards → visible paired comparison → opt-in susceptibility chart.
 The highlighted period is a visual anchor, not a recommended treatment.
 
 Investigation: back link/flag identity → exact population → recent versus baseline
@@ -62,3 +62,43 @@ component composition, accessible interactions and responsive review. Local
 ui-ux-pro-max search returned applicable minimal/data-dense style guidance but
 irrelevant marketing page patterns; those patterns were discarded in favor of the
 user's screenshots and project plan.
+
+## Readability and API integration update — 17 October 2026
+
+The existing tokens and components remain the single system. Main supporting text
+now uses 13–14px where practical. Headline evidence emphasizes the estimate and
+sample size; detailed counts and uncertainty open on demand.
+
+Ward order: heading and direct investigation action → cohort/report controls →
+Last 12 months → Last 28 days → visible antibiotic comparison → opt-in monthly-cutoff trend.
+Unsupported annual aggregates have no card or placeholder. Real backend resistance
+monitoring has its own sidebar page.
+
+Navigation names the actual task: **Investigate evidence** goes directly to
+`/investigate`. The investigation page uses the selected cohort's real evidence
+and paired comparison. It does not imply an automatic resistance alert exists.
+
+Replay controls are absent from routine pages and drawers. Historical report dates
+can be selected directly. Backend replay remains a development/demo API.
+
+The trend uses API-provided 28-day estimates at month-end cutoffs. Suppressed
+points are gaps; exact values/counts/intervals and per-point exports are available
+in an expandable table. No fabricated smoothing, extrapolation or monthly average.
+
+## Period semantics and monitoring update — 17 October 2026
+
+Remove unsupported calendar-year cards completely. The overview uses two equal
+columns, Last 12 months then Last 28 days; stack them on narrow screens. Label their
+time overlap directly. The rolling-year overview is not an alert's disjoint baseline.
+
+Report end date is the single date control above the cohort. Its helper names both
+headline periods. Chart year lives only inside the time-chart panel, with a helper
+stating the report end date stays unchanged. Visible antibiotic comparison precedes
+the time chart. Playback is absent from routine navigation and overlays.
+
+Resistance alerts are an explicit sidebar destination. The monitoring page names
+its configured populations, support states and current monitoring date. Investigation
+uses separate Current evaluation / Original detection selectors and exact saved-ID
+exports. An archived investigation cannot borrow a current-run result. Descriptive
+composition tables expand on demand; raw organism-mixture counts have a separate
+population. Do not invent interval graphics for alert payloads without intervals.

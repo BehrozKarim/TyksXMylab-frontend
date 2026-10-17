@@ -38,7 +38,7 @@ export function ReviewFlags({
             this earlier report.
           </p>
           <Button onClick={onFollow}>
-            Follow replay date <ArrowRight size={14} />
+            Use latest date <ArrowRight size={14} />
           </Button>
         </div>
       ) : result.isPending ? (

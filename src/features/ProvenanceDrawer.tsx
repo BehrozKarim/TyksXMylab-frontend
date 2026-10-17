@@ -66,28 +66,33 @@ export function ProvenanceDrawer({
           </div>
           <div className="drawer-section">
             <h3>Reporting periods</h3>
-            {(window ? [window] : (['annual', 'rolling_12m', 'last_28d'] as WindowKey[])).map(
-              (key) => (
-                <div className="provenance-period" key={key}>
-                  <strong>{windowLabels[key]}</strong>
-                  <span>{formatRange(c.date_bounds[key])}</span>
-                  <code>
-                    [{c.date_bounds[key].start_inclusive}, {c.date_bounds[key].end_exclusive})
-                  </code>
-                  {!c.coverage[key].source_covers_requested_window && (
-                    <Badge tone="warning">Partial source coverage</Badge>
-                  )}
-                </div>
-              ),
-            )}
+            {(window
+              ? [window]
+              : 'comparison' in analysis
+                ? [analysis.comparison.window]
+                  : (meta.supported_windows ?? (['rolling_12m', 'last_28d'] as WindowKey[]))
+            ).map((key) => (
+              <div className="provenance-period" key={key}>
+                <strong>{windowLabels[key]}</strong>
+                <span>{formatRange(c.date_bounds[key])}</span>
+                <code>
+                  [{c.date_bounds[key].start_inclusive}, {c.date_bounds[key].end_exclusive})
+                </code>
+                {!c.coverage[key].source_covers_requested_window && (
+                  <Badge tone="warning">Partial source coverage</Badge>
+                )}
+              </div>
+            ))}
           </div>
           <div className="drawer-section">
             <h3>How counts are formed</h3>
             <ol className="method-list">
               <li>Resolve the latest visible isolate revisions.</li>
               <li>
-                Keep the first isolate per patient, organism and specimen in each period, across
-                wards.
+                Keep the first isolate per patient, organism and specimen in each period,
+                {c.filters.dedup_scope === 'selected_cohort'
+                  ? ' within the selected ward.'
+                  : ' across wards before applying the ward filter.'}
               </li>
               <li>Apply the selected ward and population filters.</li>
               <li>
@@ -97,8 +102,8 @@ export function ProvenanceDrawer({
               <li>Hide percentages and intervals below {meta.minimum_tested} tested isolates.</li>
             </ol>
             <p className="small-note">
-              Intervals: {meta.interval_method}. Missing tests do not imply resistance.
-              Repeat-removal counts are not supplied by this contract fixture.
+              Intervals: {meta.interval_method}. Missing tests do not imply resistance. Full source
+              and demographic completeness metadata are included in the saved API export.
             </p>
           </div>
           <dl className="provenance-meta">

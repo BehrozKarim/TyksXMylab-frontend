@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ArrowLeft, ArrowRight, FlaskConical, Search, UserRound } from 'lucide-react';
-import type { ReplayState } from '../api/contracts';
+import type { Meta, ReplayState } from '../api/contracts';
 import { api } from '../api/client';
 import { useAnalysis } from '../app/queries';
 import {
@@ -18,16 +18,24 @@ export function PatientHistoryDrawer({
   onClose,
   state,
   asOf,
+  meta,
 }: {
   open: boolean;
   onClose: () => void;
   state: ReplayState;
   asOf: string;
+  meta: Meta;
 }) {
   const [text, setText] = useState('');
   const [search, setSearch] = useState('');
   const [patient, setPatient] = useState('');
   const [expanded, setExpanded] = useState(false);
+  const [exportError, setExportError] = useState('');
+  const [exporting, setExporting] = useState(false);
+  const [page, setPage] = useState<{ cursor?: string; previous: (string | undefined)[] }>({
+    previous: [],
+  });
+  useEffect(() => setPage({ previous: [] }), [patient, asOf, state.run_id, state.state_revision]);
   useEffect(() => {
     const timer = setTimeout(() => setSearch(text.trim()), 300);
     return () => clearTimeout(timer);
@@ -42,10 +50,22 @@ export function PatientHistoryDrawer({
   const history = useAnalysis(
     'history',
     state,
-    { patient, asOf },
-    (signal) => api.history(patient, asOf, state, signal),
+    { patient, asOf, cursor: page.cursor },
+    (signal) => api.history(patient, asOf, state, signal, page.cursor),
     open && !!patient,
   );
+  const downloadPage = async (format: 'csv' | 'json') => {
+    if (!history.data) return;
+    setExporting(true);
+    setExportError('');
+    try {
+      await api.export(history.data.analysis_id, format);
+    } catch (error) {
+      setExportError((error as Error).message);
+    } finally {
+      setExporting(false);
+    }
+  };
   return (
     <Drawer
       open={open}
@@ -62,7 +82,7 @@ export function PatientHistoryDrawer({
               <input
                 value={text}
                 onChange={(e) => setText(e.target.value)}
-                placeholder="Search, e.g. P-00142"
+                placeholder="Enter a patient ID"
                 autoComplete="off"
               />
             </div>
@@ -95,6 +115,11 @@ export function PatientHistoryDrawer({
                   <ArrowRight size={16} />
                 </button>
               ))}
+              {'has_more' in results.data && results.data.has_more && (
+                <p className="small-note">
+                  More matches are available. Enter more of the identifier to narrow the search.
+                </p>
+              )}
             </div>
           )}
         </>
@@ -135,7 +160,11 @@ export function PatientHistoryDrawer({
               ) : (
                 <>
                   <div className="history-toolbar">
-                    <strong>{history.data.cultures.length} prior cultures</strong>
+                    <strong>
+                      {history.data.cultures.length} prior cultures
+                      {(page.previous.length > 0 || history.data.has_more) &&
+                        ` · page ${page.previous.length + 1}`}
+                    </strong>
                     <Button
                       variant="ghost"
                       onClick={() => setExpanded(!expanded)}
@@ -183,8 +212,13 @@ export function PatientHistoryDrawer({
                                     {i.tests.slice(0, expanded ? undefined : 3).map((t) => (
                                       <tr key={t.antibiotic_code}>
                                         <td>
-                                          {t.label}
-                                          {t.screening && (
+                                          {meta.antibiotics.find(
+                                            (a) => a.code === t.antibiotic_code,
+                                          )?.label ?? t.label}
+                                          {(t.screening ||
+                                            meta.antibiotics.find(
+                                              (a) => a.code === t.antibiotic_code,
+                                            )?.screening) && (
                                             <small className="screening-label">
                                               Screening test
                                             </small>
@@ -200,6 +234,7 @@ export function PatientHistoryDrawer({
                                   </tbody>
                                 </table>
                               </DataTable>
+                              {i.tests.length === 0 && <p>No recorded susceptibility results.</p>}
                             </div>
                           ))
                         )}
@@ -208,10 +243,49 @@ export function PatientHistoryDrawer({
                   </div>
                 </>
               )}
+              {(page.previous.length > 0 || history.data.has_more) && (
+                <div className="history-pagination">
+                  <Button
+                    disabled={!page.previous.length}
+                    onClick={() =>
+                      setPage((p) => ({
+                        cursor: p.previous.at(-1),
+                        previous: p.previous.slice(0, -1),
+                      }))
+                    }
+                  >
+                    Previous page
+                  </Button>
+                  <Button
+                    disabled={!history.data.next_cursor}
+                    onClick={() =>
+                      setPage((p) => ({
+                        cursor: history.data.next_cursor!,
+                        previous: [...p.previous, p.cursor],
+                      }))
+                    }
+                  >
+                    Next page
+                  </Button>
+                </div>
+              )}
               <p className="small-note">
                 Collection dates do not establish when results became available. Unlisted
                 antibiotics have no recorded result.
               </p>
+              <div className="history-pagination">
+                <Button disabled={exporting} onClick={() => void downloadPage('csv')}>
+                  Export this page · CSV
+                </Button>
+                <Button disabled={exporting} onClick={() => void downloadPage('json')}>
+                  JSON
+                </Button>
+              </div>
+              {exportError && (
+                <p className="form-error" role="alert">
+                  {exportError}
+                </p>
+              )}
             </>
           )}
         </>

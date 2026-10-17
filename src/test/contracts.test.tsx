@@ -98,7 +98,7 @@ describe('Evidence boundary', () => {
           new URLSearchParams({ antibiotic_code: a }),
           initialState,
           'single',
-        ).windows[window as 'annual'];
+        ).windows[window as 'annual']!;
         expect(pair.n_eligible).toBe(standalone.n_eligible);
         expect(pair.cells.both_s + pair.cells.a_only_s).toBe(standalone.n_s);
       }
@@ -142,7 +142,7 @@ describe('Context and display', () => {
       initialState,
       'test',
     );
-    expect(response.windows.annual.status).toBe('available');
+    expect(response.windows.annual!.status).toBe('available');
     expect(response.context.coverage.annual.source_covers_requested_window).toBe(false);
     expect(response.context.coverage.annual.is_year_to_date).toBe(false);
   });

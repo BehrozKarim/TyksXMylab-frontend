@@ -10,8 +10,22 @@ import {
   stateSchema,
 } from './contracts';
 import type { AnalysisContext, CohortQuery, ReplayState } from './contracts';
+import { alertListSchema, resistanceInvestigationSchema } from './alerts';
+import {
+  backendEvidenceSchema,
+  backendComparisonSchema,
+  backendStateSchema,
+  backendMetaSchema,
+  backendPatientsSchema,
+  backendHistorySchema,
+  mapEvidence,
+  mapComparison,
+  mapState,
+  mapMeta,
+  mapHistory,
+} from './backend';
 
-export const DATA_MODE = import.meta.env.VITE_DATA_MODE ?? 'fixtures';
+export const DATA_MODE = import.meta.env.VITE_DATA_MODE ?? 'api';
 export const API_BASE = (import.meta.env.VITE_API_BASE_URL ?? '/api/v1').replace(/\/$/, '');
 export class ApiError extends Error {
   constructor(
@@ -53,7 +67,7 @@ async function request<T>(
     throw new ApiError(
       data.error?.message ?? `Request failed (${response.status}). Please try again.`,
       response.status,
-      data.error?.code,
+      data.error?.code === 'stale_state' ? 'state_changed' : data.error?.code,
     );
   }
   const result = schema.safeParse(await response.json());
@@ -87,21 +101,79 @@ export function assertContext(context: AnalysisContext, state: ReplayState, quer
     throw new ApiError('The response does not match the selected cohort.', 502, 'invalid_context');
 }
 function cohortParams(q: CohortQuery) {
-  const { antibiotic_b: _b, window: _w, ...rest } = q;
+  const { antibiotic_b: _b, window: _w, calendar_year, ...rest } = q;
   void _b;
   void _w;
-  return rest;
+  return DATA_MODE === 'api'
+    ? { ...rest, dedup_scope: q.dedup_scope ?? 'selected_cohort' }
+    : { ...rest, calendar_year };
 }
 export const api = {
-  meta: (signal?: AbortSignal) => request('/meta', metaSchema, {}, signal),
-  state: (signal?: AbortSignal) => request('/state', stateSchema, {}, signal),
-  async evidence(query: CohortQuery, state: ReplayState, signal?: AbortSignal) {
+  async resistanceAlerts(state: ReplayState, signal?: AbortSignal) {
+    const data = await request('/alerts', alertListSchema, guard(state), signal);
+    if (
+      data.run_id !== state.run_id ||
+      data.state_revision !== state.state_revision ||
+      data.monitoring_as_of !== state.demo_date ||
+      data.monitoring_revision > state.state_revision ||
+      data.monitors.some(
+        (m) =>
+          m.context.run_id !== state.run_id ||
+          m.context.state_revision !== data.monitoring_revision ||
+          m.context.monitoring_as_of !== data.monitoring_as_of,
+      ) ||
+      data.alerts.some(
+        (a) =>
+          a.run_id !== state.run_id ||
+          !data.monitors.some((m) => m.context.monitor_id === a.monitor_id),
+      )
+    )
+      throw new ApiError('Resistance monitoring is updating.', 409, 'state_changed');
+    return data;
+  },
+  async resistanceInvestigation(id: string, state: ReplayState, signal?: AbortSignal) {
     const data = await request(
-      '/evidence',
-      evidenceSchema,
-      { ...cohortParams(query), ...guard(state) },
+      `/investigations/${encodeURIComponent(id)}`,
+      resistanceInvestigationSchema,
+      guard(state),
       signal,
     );
+    if (data.alert.investigation_id !== id)
+      throw new ApiError(
+        'This response belongs to a different investigation.',
+        502,
+        'invalid_context',
+      );
+    const current = data.current_analysis;
+    if (
+      current &&
+      (current.context.run_id !== state.run_id ||
+        current.context.state_revision !== state.state_revision ||
+        current.context.monitoring_as_of !== state.demo_date ||
+        current.context.monitor_id !== data.alert.monitor_id)
+    )
+      throw new ApiError('This investigation is updating.', 409, 'state_changed');
+    return data;
+  },
+  meta: async (signal?: AbortSignal) =>
+    DATA_MODE === 'api'
+      ? mapMeta(await request('/meta', backendMetaSchema, {}, signal))
+      : request('/meta', metaSchema, {}, signal),
+  state: async (signal?: AbortSignal) =>
+    DATA_MODE === 'api'
+      ? mapState(await request('/state', backendStateSchema, {}, signal))
+      : request('/state', stateSchema, {}, signal),
+  async evidence(query: CohortQuery, state: ReplayState, signal?: AbortSignal) {
+    const params = { ...cohortParams(query), ...guard(state) };
+    const data =
+      DATA_MODE === 'api'
+        ? mapEvidence(await request('/evidence', backendEvidenceSchema, params, signal), query)
+        : await request(
+            '/evidence',
+            evidenceSchema,
+            { ...cohortParams(query), ...guard(state) },
+            signal,
+          );
     assertContext(data.context, state, query);
     if (data.antibiotic_code !== query.antibiotic_code)
       throw new ApiError('The response has a different antibiotic.', 502, 'invalid_context');
@@ -109,19 +181,39 @@ export const api = {
   },
   async comparison(query: CohortQuery, state: ReplayState, signal?: AbortSignal) {
     const { antibiotic_code, ...params } = cohortParams(query);
-    const data = await request(
-      '/comparisons',
-      comparisonSchema,
-      {
-        ...params,
-        antibiotic_a: antibiotic_code,
-        antibiotic_b: query.antibiotic_b,
-        window: query.window,
-        ...guard(state),
-      },
-      signal,
+    const window =
+      DATA_MODE === 'api'
+        ? query.window === 'rolling_12m'
+          ? 'rolling_12_months'
+          : 'rolling_28_days'
+        : query.window;
+    const p = {
+      ...params,
+      antibiotic_a: antibiotic_code,
+      antibiotic_b: query.antibiotic_b,
+      window,
+      ...guard(state),
+    };
+    const data =
+      DATA_MODE === 'api'
+        ? mapComparison(await request('/comparisons', backendComparisonSchema, p, signal), query)
+        : await request(
+            '/comparisons',
+            comparisonSchema,
+            {
+              ...params,
+              antibiotic_a: antibiotic_code,
+              antibiotic_b: query.antibiotic_b,
+              window: query.window,
+              ...guard(state),
+            },
+            signal,
+          );
+    assertContext(
+      data.context,
+      DATA_MODE === 'api' ? { ...state, method_version: 'comparison-v1' } : state,
+      query,
     );
-    assertContext(data.context, state, query);
     if (
       data.comparison.antibiotic_a !== query.antibiotic_code ||
       data.comparison.antibiotic_b !== query.antibiotic_b ||
@@ -170,16 +262,62 @@ export const api = {
       );
     return data;
   },
-  patients: (search: string, as_of: string, state: ReplayState, signal?: AbortSignal) =>
-    request('/patients', patientsSchema, { search, as_of, ...guard(state) }, signal),
-  async history(id: string, as_of: string, state: ReplayState, signal?: AbortSignal) {
+  async patients(search: string, as_of: string, state: ReplayState, signal?: AbortSignal) {
+    if (DATA_MODE !== 'api')
+      return request('/patients', patientsSchema, { search, as_of, ...guard(state) }, signal);
     const data = await request(
-      `/patients/${encodeURIComponent(id)}/history`,
-      historySchema,
-      { as_of, ...guard(state) },
+      '/patients',
+      backendPatientsSchema,
+      { search, as_of, ...guard(state) },
       signal,
     );
-    assertContext(data.context, state);
+    if (
+      data.run_id !== state.run_id ||
+      data.state_revision !== state.state_revision ||
+      data.as_of !== as_of
+    )
+      throw new ApiError('Patient search is updating.', 409, 'state_changed');
+    return {
+      has_more: data.has_more,
+      patients: data.patients.map((p) => ({
+        ...p,
+        label: `${p.visible_cultures} samples · latest ${p.latest_sample_date}`,
+      })),
+    };
+  },
+  async history(
+    id: string,
+    as_of: string,
+    state: ReplayState,
+    signal?: AbortSignal,
+    cursor?: string,
+  ) {
+    const params = {
+      as_of,
+      ...guard(state),
+      ...(cursor ? { cursor } : {}),
+      ...(DATA_MODE === 'api' ? { limit: 25 } : {}),
+    };
+    const data =
+      DATA_MODE === 'api'
+        ? mapHistory(
+            await request(
+              `/patients/${encodeURIComponent(id)}/history`,
+              backendHistorySchema,
+              params,
+              signal,
+            ),
+          )
+        : await request(
+            `/patients/${encodeURIComponent(id)}/history`,
+            historySchema,
+            { as_of, ...guard(state) },
+            signal,
+          );
+    assertContext(
+      data.context,
+      DATA_MODE === 'api' ? { ...state, method_version: 'history-v1' } : state,
+    );
     if (
       data.patient_id !== id ||
       data.cutoff !== as_of ||
@@ -192,15 +330,26 @@ export const api = {
       );
     return data;
   },
-  replay: (action: 'start' | 'pause' | 'step' | 'reset') =>
-    request(
+  replay: async (action: 'start' | 'pause' | 'step' | 'reset', state?: ReplayState) => {
+    const body =
+      DATA_MODE === 'api'
+        ? { ...(state ? guard(state) : {}), ...(action === 'start' ? { interval_seconds: 4 } : {}) }
+        : action === 'start'
+          ? { days_per_tick: 1, interval_ms: 4000 }
+          : {};
+    if (DATA_MODE === 'api')
+      return mapState(
+        await request(`/replay/${action}`, backendStateSchema, {}, undefined, 'POST', body),
+      );
+    return request(
       `/replay/${action}`,
       stateSchema,
       {},
       undefined,
       'POST',
       action === 'start' ? { days_per_tick: 1, interval_ms: 4000 } : {},
-    ),
+    );
+  },
   async export(id: string, format: 'csv' | 'json') {
     const response = await fetch(
       `${API_BASE}/analyses/${encodeURIComponent(id)}/export?format=${format}`,

@@ -74,7 +74,8 @@ export function useAnalysis<T>(
       count < 1 &&
       !(
         error instanceof ApiError &&
-        (error.status < 500 || ['invalid_contract', 'invalid_context'].includes(error.code))
+        ((error.status < 500 && error.code !== 'publication_busy') ||
+          ['invalid_contract', 'invalid_context'].includes(error.code))
       ),
   });
 }

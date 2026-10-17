@@ -55,6 +55,7 @@ export const filtersSchema = z.object({
   age_min: count.nullable(),
   age_max: count.nullable(),
   calendar_year: z.number().int(),
+  dedup_scope: z.enum(['selected_cohort', 'all_wards']).optional(),
 });
 export type Filters = z.infer<typeof filtersSchema>;
 const bounds = z.object({ start_inclusive: date, end_exclusive: date });
@@ -82,7 +83,11 @@ export const evidenceSchema = z.object({
   analysis_id: z.string(),
   context: contextSchema,
   antibiotic_code: z.string(),
-  windows: z.object({ annual: measureSchema, rolling_12m: measureSchema, last_28d: measureSchema }),
+  windows: z.object({
+    annual: measureSchema.optional(),
+    rolling_12m: measureSchema,
+    last_28d: measureSchema,
+  }),
 });
 export type Evidence = z.infer<typeof evidenceSchema>;
 export const comparisonSchema = z.object({
@@ -138,6 +143,7 @@ export const stateSchema = z.object({
   source_kind: z.string(),
   replay_bounds: z.object({ start: date, end: date }),
   published_bundles: count,
+  published_isolates: count.optional(),
 });
 export type ReplayState = z.infer<typeof stateSchema>;
 export const metaSchema = z.object({
@@ -158,6 +164,8 @@ export const metaSchema = z.object({
   method_version: z.string(),
   interval_method: z.string(),
   minimum_tested: count,
+  supported_windows: z.array(z.enum(windowKeys)).optional(),
+  capabilities: z.object({ alerts: z.boolean(), calendar_year: z.boolean() }).optional(),
 });
 export type Meta = z.infer<typeof metaSchema>;
 export const alertSchema = z.object({
@@ -213,6 +221,8 @@ export const historySchema = z.object({
   patient_id: z.string(),
   lookback_start: date,
   cutoff: date,
+  has_more: z.boolean().optional(),
+  next_cursor: z.string().nullable().optional(),
   cultures: z.array(
     z.object({
       culture_id: z.string(),

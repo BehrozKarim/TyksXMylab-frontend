@@ -1,16 +1,31 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
+async function publish(page: Page, action: string) {
+  await page.evaluate(async (a) => {
+    const r = await fetch(`/api/v1/replay/${a}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: '{}',
+    });
+    if (!r.ok) throw new Error('Publication failed');
+  }, action);
+}
 import AxeBuilder from '@axe-core/playwright';
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/ward');
   await expect(
-    page.getByRole('region', { name: 'Calendar year 2026 evidence', exact: true }),
+    page.getByRole('region', { name: 'Last 12 months evidence', exact: true }),
   ).toBeVisible();
+  await page.locator('.fixture-flags > summary').click();
 });
 test('renders all windows and a common-denominator comparison', async ({ page }) => {
-  await expect(page.getByRole('region', { name: 'Calendar year 2026 evidence' })).toContainText(
-    '82.4',
-  );
+  expect(await page.locator('.period-title h3').allTextContents()).toEqual([
+    'Last 12 months',
+    'Last 28 days',
+  ]);
+  await expect(
+    page.getByText('The last 12 months includes the recent 28 days.', { exact: false }),
+  ).toBeVisible();
   await expect(page.getByRole('region', { name: 'Last 12 months evidence' })).toContainText('79.6');
   await expect(page.getByRole('region', { name: 'Last 28 days evidence' })).toContainText('75.0');
   await expect(page.getByText('40 paired isolates')).toBeVisible();
@@ -35,6 +50,7 @@ test('preserves counts when paired support is below 30', async ({ page }) => {
   await expect(page.getByText('Only 26 paired tests')).toBeVisible();
   await expect(page.locator('.paired-chart')).toHaveCount(0);
   await expect(page.getByRole('region', { name: 'Last 28 days evidence' })).toContainText('75.0');
+  await page.getByText('Paired counts & missing tests', { exact: true }).click();
   await expect(page.getByRole('region', { name: 'Paired susceptibility counts' })).toContainText(
     '17',
   );
@@ -51,23 +67,26 @@ test('distinguishes no tests and empty cohort', async ({ page }) => {
     'No eligible isolates in this period',
   );
 });
-test('keeps date pinning and incomplete source coverage explicit', async ({ page }) => {
-  await page.getByLabel('Annual view').selectOption('2023');
-  await expect(page.getByRole('region', { name: 'Calendar year 2023 evidence' })).toContainText(
-    'Partial source coverage',
-  );
-  await page.getByLabel('Samples through').fill('2026-09-20');
+test('chart year is separate from the report end date and pinning remains explicit', async ({
+  page,
+}) => {
+  await page.getByLabel('Chart year').selectOption('2025');
+  await expect(page.getByLabel('Report end date')).toHaveValue('2026-09-27');
+  await expect(page.getByRole('region', { name: 'Last 12 months evidence' })).toContainText('79.6');
+  await expect(page.locator('#chart-year-help')).toContainText('Showing 2025 in this chart only');
+  await page.getByLabel('Report end date').fill('2026-09-20');
   await expect(page.getByText('Viewing a pinned report')).toBeVisible();
   await expect(page.getByRole('link', { name: 'Inspect evidence' })).toHaveCount(0);
-  await page.getByRole('button', { name: 'Follow replay date' }).first().click();
+  await page.getByRole('button', { name: 'Use latest date' }).first().click();
   await expect(page.getByRole('link', { name: 'Inspect evidence' })).toBeVisible();
 });
+
 test('patient dialog includes prior specimens, traps focus and returns it', async ({ page }) => {
   const trigger = page.getByRole('button', { name: 'Patient history', exact: true }).last();
   await trigger.click();
   const dialog = page.getByRole('dialog');
   await expect(dialog).toBeVisible();
-  await dialog.getByPlaceholder('Search, e.g. P-00142').fill('P-00142');
+  await dialog.getByPlaceholder('Enter a patient ID').fill('P-00142');
   await dialog.getByRole('button', { name: 'P-00142 Synthetic patient' }).click();
   await expect(dialog.getByText('3 prior cultures')).toBeVisible();
   await expect(dialog.getByText('No growth', { exact: true })).toBeVisible();
@@ -108,38 +127,38 @@ test('export remains tied to the opened snapshot while replay advances', async (
   ).readFile((await download.path())!, 'utf8');
   const snapshot = JSON.parse(original);
   await page.keyboard.press('Escape');
-  await page.getByRole('button', { name: 'Step', exact: true }).click();
-  await expect(page.getByLabel('Samples through')).toHaveValue('2026-09-28');
+  await publish(page, 'step');
+  await expect(page.getByLabel('Report end date')).toHaveValue('2026-09-28');
   const stillFrozen = await page.evaluate(async (id) => {
     const res = await fetch(`/api/v1/analyses/${id}/export?format=json`);
     return await res.json();
   }, snapshot.analysis_id);
   expect(stillFrozen).toEqual(snapshot);
-  await page.getByRole('button', { name: 'Reset', exact: true }).click();
-  await expect(page.getByLabel('Samples through')).toHaveValue('2026-09-20');
+  await publish(page, 'reset');
+  await expect(page.getByLabel('Report end date')).toHaveValue('2026-09-20');
   const afterReset = await page.evaluate(async (id) => {
     const res = await fetch(`/api/v1/analyses/${id}/export?format=json`);
     return await res.json();
   }, snapshot.analysis_id);
   expect(afterReset).toEqual(snapshot);
 });
-test('replay supports start, pause, clock-only steps and reset', async ({ page }) => {
-  await page.getByRole('button', { name: 'Start', exact: true }).click();
-  await expect(page.getByRole('button', { name: 'Pause', exact: true })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Step', exact: true })).toBeDisabled();
-  await page.getByRole('button', { name: 'Pause', exact: true }).click();
+test('read-only UI follows backend publication changes without playback controls', async ({
+  page,
+}) => {
+  await expect(page.getByRole('button', { name: 'Replay demo', exact: true })).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'Play days', exact: true })).toHaveCount(0);
   for (const date of ['2026-09-28', '2026-09-29', '2026-09-30']) {
-    await page.getByRole('button', { name: 'Step', exact: true }).click();
-    await expect(page.getByLabel('Samples through')).toHaveValue(date);
+    await publish(page, 'step');
+    await expect(page.getByLabel('Report end date')).toHaveValue(date);
   }
-  await expect(page.locator('.replay-title')).toContainText('320 published bundles');
   await expect(page.getByRole('region', { name: 'Last 28 days evidence' })).toContainText(
     '29 tested',
   );
-  await page.getByRole('button', { name: 'Reset', exact: true }).click();
-  await expect(page.getByLabel('Samples through')).toHaveValue('2026-09-20');
+  await publish(page, 'reset');
+  await expect(page.getByLabel('Report end date')).toHaveValue('2026-09-20');
   await expect(page.locator('.page-footer')).toContainText('fixture-run-002');
 });
+
 test('desktop and mobile have no serious accessibility violations or horizontal overflow', async ({
   page,
 }) => {
@@ -165,7 +184,7 @@ test('recovers from one state_changed response without mixing snapshots', async 
     fault('state_changed');
   });
   await page.getByLabel('Compare with B').selectOption('NIT');
-  await expect(page.getByLabel('Samples through')).toHaveValue('2026-09-28');
+  await expect(page.getByLabel('Report end date')).toHaveValue('2026-09-28');
   await expect(page.getByRole('region', { name: 'Last 28 days evidence' })).toContainText('75.0');
   await expect(page.locator('.page-footer')).toContainText('Snapshot 9');
 });
@@ -198,7 +217,7 @@ test('rejects legacy statistics at the facade instead of reinterpreting them', a
     const { fault } = await import(module);
     fault('legacy');
   });
-  await page.getByLabel('Annual view').selectOption('2025');
+  await page.getByLabel('Chart year').selectOption('2025');
   await expect(
     page.getByText(
       'The API returned an incompatible evidence contract. Check the /api/v1 integration.',

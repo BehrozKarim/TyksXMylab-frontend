@@ -4,7 +4,6 @@ import {
   Activity,
   ArrowDownToLine,
   ArrowRight,
-  BellDot,
   BookOpen,
   ChevronRight,
   CircleHelp,
@@ -14,6 +13,8 @@ import {
   Microscope,
   PanelLeftClose,
   UsersRound,
+  SearchCheck,
+  BellDot,
 } from 'lucide-react';
 import { Link, Navigate, Route, Routes, useLocation, useSearchParams } from 'react-router-dom';
 import { api, DATA_MODE } from '../api/client';
@@ -27,10 +28,12 @@ import { CohortControls } from '../features/CohortControls';
 import { EvidenceCards } from '../features/EvidenceCards';
 import { AntibioticComparison } from '../features/AntibioticComparison';
 import { ReviewFlags } from '../features/ReviewFlags';
-import { ReplayController } from '../features/ReplayController';
 import { PatientHistoryDrawer } from '../features/PatientHistoryDrawer';
 import { ProvenanceDrawer } from '../features/ProvenanceDrawer';
 import { InvestigationPage } from '../features/InvestigationPage';
+import { CohortInvestigation } from '../features/CohortInvestigation';
+import { SusceptibilityTrend } from '../features/SusceptibilityTrend';
+import { ResistanceAlerts, ResistanceInvestigation } from '../features/ResistanceAlerts';
 
 function Brand() {
   return (
@@ -88,7 +91,8 @@ function Workspace({ meta, state }: { meta: Meta; state: ReplayState }) {
     document.addEventListener('keydown', close);
     return () => document.removeEventListener('keydown', close);
   }, [navOpen]);
-  const investigation = location.pathname.startsWith('/investigate/');
+  const investigation = location.pathname.startsWith('/investigate');
+  const alertsPage = location.pathname.startsWith('/alerts');
   const serialized = writeCohort(query, pinned).toString();
   const searchString = search.toString();
   useEffect(() => {
@@ -126,29 +130,33 @@ function Workspace({ meta, state }: { meta: Meta; state: ReplayState }) {
         <nav>
           <Link
             aria-label="Ward overview"
-            className={`nav-item ${!investigation ? 'active' : ''}`}
-            aria-current={!investigation ? 'page' : undefined}
+            className={`nav-item ${!investigation && !alertsPage ? 'active' : ''}`}
+            aria-current={!investigation && !alertsPage ? 'page' : undefined}
             to={`/ward?${search}`}
           >
             <LayoutDashboard size={19} />
             <span>Ward overview</span>
           </Link>
           <Link
-            aria-label="Review changes"
+            aria-label="Investigate evidence"
             className={`nav-item ${investigation ? 'active' : ''}`}
             aria-current={investigation ? 'page' : undefined}
-            to={`/ward?${search}#review`}
-            onClick={() => {
-              setNavOpen(false);
-              setTimeout(
-                () => document.getElementById('review')?.scrollIntoView({ behavior: 'smooth' }),
-                50,
-              );
-            }}
+            to={`/investigate?${search}`}
           >
-            <BellDot size={19} />
-            <span>Review changes</span>
+            <SearchCheck size={19} />
+            <span>Investigate evidence</span>
           </Link>
+          {meta.capabilities?.alerts && (
+            <Link
+              className={`nav-item ${alertsPage ? 'active' : ''}`}
+              aria-label="Resistance alerts"
+              aria-current={alertsPage ? 'page' : undefined}
+              to={`/alerts?${search}`}
+            >
+              <BellDot size={19} />
+              <span>Resistance alerts</span>
+            </Link>
+          )}
           <button className="nav-item" aria-label="Patient history" onClick={showPatients}>
             <UsersRound size={19} />
             <span>Patient history</span>
@@ -165,8 +173,8 @@ function Workspace({ meta, state }: { meta: Meta; state: ReplayState }) {
             <span className="sidebar-lab-icon">
               <Microscope size={23} />
             </span>
-            <h3>Evidence, with context.</h3>
-            <p>A clearer view of your ward’s microbiology.</p>
+            <h3>Tyks × Mylab</h3>
+            <p>Laboratory susceptibility research.</p>
             <button onClick={showGuide}>
               About this workspace <ArrowRight size={14} />
             </button>
@@ -199,7 +207,7 @@ function Workspace({ meta, state }: { meta: Meta; state: ReplayState }) {
             <span className="topbar-title">Clinical surveillance</span>
             <ChevronRight size={14} />
             <span className="topbar-current">
-              {investigation ? 'Investigation' : 'Ward overview'}
+              {alertsPage ? 'Resistance alerts' : investigation ? 'Investigation' : 'Ward overview'}
             </span>
           </div>
           <div className="topbar-right">
@@ -222,26 +230,29 @@ function Workspace({ meta, state }: { meta: Meta; state: ReplayState }) {
           </div>
         </header>
         <main id="main-content" className="main-content" tabIndex={-1}>
-          <div className="fixture-notice">
-            <FlaskConical size={15} />
-            <span>
-              {DATA_MODE === 'fixtures' ? (
-                <>
-                  <strong>Fixture preview</strong>
-                  <span className="notice-divider">/</span>Authored examples for exploring the
-                  interface. Not findings from the source dataset.
-                </>
-              ) : (
-                <>
-                  <strong>Synthetic research workspace</strong>
-                  <span className="notice-divider">/</span>Connected to the configured evidence API.
-                </>
-              )}
-            </span>
-            <button onClick={showGuide}>
-              Details <ArrowRight size={13} />
-            </button>
-          </div>
+          {DATA_MODE === 'fixtures' && (
+            <div className="fixture-notice">
+              <FlaskConical size={15} />
+              <span>
+                {DATA_MODE === 'fixtures' ? (
+                  <>
+                    <strong>Fixture preview</strong>
+                    <span className="notice-divider">/</span>Authored examples for exploring the
+                    interface. Not findings from the source dataset.
+                  </>
+                ) : (
+                  <>
+                    <strong>Synthetic research workspace</strong>
+                    <span className="notice-divider">/</span>Connected to the configured evidence
+                    API.
+                  </>
+                )}
+              </span>
+              <button onClick={showGuide}>
+                Details <ArrowRight size={13} />
+              </button>
+            </div>
+          )}
           {issues.length > 0 && (
             <div className="validation-notice" role="alert">
               <strong>Some link values needed attention.</strong> {issues.join(' ')} The controls
@@ -266,9 +277,36 @@ function Workspace({ meta, state }: { meta: Meta; state: ReplayState }) {
               }
             />
             <Route
+              path="/investigate"
+              element={
+                <CohortInvestigation
+                  state={state}
+                  meta={meta}
+                  query={query}
+                  onApply={apply}
+                  onProvenance={showProvenance}
+                />
+              }
+            />
+            <Route
               path="/investigate/:investigationId"
               element={
-                <InvestigationPage state={state} meta={meta} onProvenance={showProvenance} />
+                DATA_MODE === 'api' ? (
+                  <ResistanceInvestigation state={state} meta={meta} />
+                ) : (
+                  <InvestigationPage state={state} meta={meta} onProvenance={showProvenance} />
+                )
+              }
+            />
+            <Route
+              path="/alerts"
+              element={
+                <ResistanceAlerts
+                  state={state}
+                  meta={meta}
+                  reportDate={query.as_of}
+                  onLatest={() => apply({ ...query, as_of: state.demo_date }, false)}
+                />
               }
             />
             <Route
@@ -284,14 +322,6 @@ function Workspace({ meta, state }: { meta: Meta; state: ReplayState }) {
               }
             />
           </Routes>
-          <ReplayController
-            state={state}
-            onReset={() => {
-              setPatientOpen(false);
-              setProvenance(null);
-              apply({ ...query, as_of: state.replay_bounds.start }, false);
-            }}
-          />
           <footer className="page-footer">
             <span>
               <span className="tiny-dot" />
@@ -311,6 +341,7 @@ function Workspace({ meta, state }: { meta: Meta; state: ReplayState }) {
           onClose={() => setPatientOpen(false)}
           state={state}
           asOf={query.as_of}
+          meta={meta}
         />
       )}
       <ProvenanceDrawer
@@ -330,8 +361,8 @@ function Workspace({ meta, state }: { meta: Meta; state: ReplayState }) {
           <Activity size={30} />
           <h3>Every number needs its context.</h3>
           <p>
-            Choose one organism and one specimen, then inspect annual, rolling 12-month and recent
-            28-day evidence together.
+            Choose a cohort, read its last 12-month and 28-day evidence, then investigate the
+            counts.
           </p>
         </div>
         <div className="drawer-section">
@@ -348,23 +379,25 @@ function Workspace({ meta, state }: { meta: Meta; state: ReplayState }) {
         <div className="drawer-section">
           <h3>About this preview</h3>
           <p>
-            The backend currently provides legacy reference statistics. The planned evidence facade
-            is pending. This preview uses clearly labeled, authored API fixtures for the complete
-            interaction flow.
+            {DATA_MODE === 'fixtures'
+              ? 'This preview uses authored fixtures for interface testing.'
+              : 'Evidence is requested from the published dataset API. Each export retains its original analysis snapshot.'}
           </p>
           <p>
-            Replay advances a simulated historical clock. It is not a live hospital feed. The source
-            dataset covers 2 October 2023 through 27 September 2026.
+            The source contains synthetic microbiology samples. The report end date sets both
+            rolling periods; the chart year applies only to the time chart.
           </p>
         </div>
-        <div className="drawer-section">
-          <h3>Explore support states</h3>
-          <p>
-            In fixture mode: Urology demonstrates available evidence; Intensive care shows a sparse
-            recent cohort; Geriatrics shows missing tests; Health centre North shows an empty
-            cohort. Mecillinam demonstrates a paired denominator below 30.
-          </p>
-        </div>
+        {DATA_MODE === 'fixtures' && (
+          <div className="drawer-section">
+            <h3>Explore support states</h3>
+            <p>
+              In fixture mode: Urology demonstrates available evidence; Intensive care shows a
+              sparse recent cohort; Geriatrics shows missing tests; Health centre North shows an
+              empty cohort. Mecillinam demonstrates a paired denominator below 30.
+            </p>
+          </div>
+        )}
         <div className="small-note">
           Tyks × Mylab · JunctionX Turku
           <br />A prototype using synthetic microbiology evidence.
@@ -400,14 +433,18 @@ function WardPage({
       <div className="page-heading">
         <div>
           <div className="page-eyebrow">
-            <span className="eyebrow">Ward intelligence</span>
+            <span className="eyebrow">Antibiotic susceptibility</span>
             <span className="heading-dash" />
             <span className="heading-hospital">Tyks × Mylab</span>
           </div>
-          <h1 tabIndex={-1}>Your ward. In perspective.</h1>
-          <p>Explore the evidence behind local antibiotic susceptibility.</p>
+          <h1 tabIndex={-1}>Ward overview</h1>
+          <p>Choose a cohort. See how susceptibility compares over time.</p>
         </div>
         <div className="heading-actions">
+          <Link className="button button--primary" to={`/investigate${search}`}>
+            <SearchCheck size={17} />
+            Investigate cohort
+          </Link>
           <Button
             disabled={!evidence.data}
             onClick={() => evidence.data && onProvenance(evidence.data)}
@@ -418,15 +455,12 @@ function WardPage({
         </div>
       </div>
       <div className="overview-toolbar">
-        <div className="overview-label">
-          <LayoutDashboard size={17} />
-          <h2>Ward overview</h2>
-        </div>
         <div className="date-controls">
           <label className="field inline-field">
-            <span>Samples through</span>
+            <span>Report end date</span>
             <input
               type="date"
+              aria-describedby="report-date-help"
               value={query.as_of}
               min={meta.source.start}
               max={state.demo_date}
@@ -446,35 +480,24 @@ function WardPage({
               }}
             />
           </label>
-          <label className="field inline-field">
-            <span>Annual view</span>
-            <select
-              value={query.calendar_year}
-              onChange={(e) => onApply({ ...query, calendar_year: Number(e.target.value) })}
-            >
-              {Array.from(
-                { length: Number(query.as_of.slice(0, 4)) - 2023 + 1 },
-                (_, i) => 2023 + i,
-              ).map((y) => (
-                <option key={y}>{y}</option>
-              ))}
-            </select>
-          </label>
           {pinned ? (
             <Button
               variant="ghost"
               onClick={() => onApply({ ...query, as_of: state.demo_date }, false)}
             >
-              Follow replay date
+              Use latest date
             </Button>
           ) : (
             <span className="following-label">
               <span />
-              Following replay
+              Latest published samples
             </span>
           )}
         </div>
       </div>
+      <p id="report-date-help" className="report-date-help">
+        Both headline periods end on this date. The chart year below affects only the time chart.
+      </p>
       <CohortControls key={JSON.stringify(query)} query={query} meta={meta} onApply={onApply} />
       <div className="applied-context">
         <p>
@@ -492,11 +515,10 @@ function WardPage({
             <strong>{drugLabel(query.antibiotic_code, meta)}</strong> · observed laboratory
             susceptibility
           </p>
+          <p className="period-overlap-note">
+            The last 12 months includes the recent 28 days. These are overlapping time periods.
+          </p>
         </div>
-        <span className="interval-legend">
-          <span className="mini-interval" />
-          95% confidence interval
-        </span>
       </div>
       <div aria-live="polite" className="sr-only">
         {evidence.data
@@ -506,7 +528,7 @@ function WardPage({
       {evidence.isPending ? (
         <div className="period-loading" aria-busy="true">
           <Loading />
-          {[1, 2].map((n) => (
+          {[1].map((n) => (
             <div className="skeleton-card" key={n} />
           ))}
         </div>
@@ -522,35 +544,32 @@ function WardPage({
           }}
         />
       )}
-      <div className="ward-detail-grid">
-        <AntibioticComparison
-          query={query}
-          state={state}
-          meta={meta}
-          onChange={onApply}
-          onProvenance={onProvenance}
-        />
-        <div className="ward-right-column" id="review">
+      <AntibioticComparison
+        query={query}
+        state={state}
+        meta={meta}
+        onChange={onApply}
+        onProvenance={onProvenance}
+      />
+      <SusceptibilityTrend
+        key={`${query.calendar_year}-${query.as_of}`}
+        query={query}
+        state={state}
+        meta={meta}
+        onProvenance={onProvenance}
+        onYearChange={(year) => onApply({ ...query, calendar_year: year })}
+      />
+      {DATA_MODE === 'fixtures' && (
+        <details className="data-disclosure fixture-flags" id="review">
+          <summary>Authored resistance-alert scenario</summary>
           <ReviewFlags
             state={state}
             asOf={query.as_of}
             search={search}
             onFollow={() => onApply({ ...query, as_of: state.demo_date }, false)}
           />
-          <div className="evidence-note">
-            <span className="note-icon">
-              <Microscope size={20} />
-            </span>
-            <div>
-              <h3>Laboratory evidence, with limits.</h3>
-              <p>
-                Observed susceptibility describes this cohort. It does not establish antibiotic
-                efficacy or recommend a treatment.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
+        </details>
+      )}
     </>
   );
 }

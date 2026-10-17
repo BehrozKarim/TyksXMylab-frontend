@@ -73,7 +73,7 @@ export function AntibioticComparison({
         </Select>
       </div>
       <div className="segmented" role="group" aria-label="Comparison period">
-        {(['annual', 'rolling_12m', 'last_28d'] as const).map((key) => (
+        {(meta.supported_windows ?? (['rolling_12m', 'last_28d'] as const)).map((key) => (
           <button
             key={key}
             type="button"
@@ -161,45 +161,48 @@ export function AntibioticComparison({
                 </p>
               </div>
             )}
-            <DataTable label="Paired susceptibility counts">
-              <table className="paired-table">
-                <caption className="sr-only">
-                  Both antibiotics tested on the same {c.n_paired} isolates
-                </caption>
-                <thead>
-                  <tr>
-                    <th scope="col">Paired result</th>
-                    <th scope="col">Isolates</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {[
-                    {
-                      label: `Susceptible to both ${c.antibiotic_a} and ${c.antibiotic_b}`,
-                      value: c.cells.both_s,
-                    },
-                    { label: `Susceptible to ${c.antibiotic_a} only`, value: c.cells.a_only_s },
-                    { label: `Susceptible to ${c.antibiotic_b} only`, value: c.cells.b_only_s },
-                    { label: 'Resistant to both', value: c.cells.both_r },
-                  ].map((row) => (
-                    <tr key={row.label}>
-                      <td>{row.label}</td>
-                      <td>{row.value}</td>
+            <details className="data-disclosure">
+              <summary>Paired counts & missing tests</summary>
+              <DataTable label="Paired susceptibility counts">
+                <table className="paired-table">
+                  <caption className="sr-only">
+                    Both antibiotics tested on the same {c.n_paired} isolates
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">Paired result</th>
+                      <th scope="col">Isolates</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </DataTable>
-            <div className="comparison-footnote">
-              <span>
-                {c.n_eligible} eligible · {c.n_missing_either} missing either test
-                <br />
-                {c.n_missing_a} missing A · {c.n_missing_b} missing B
-              </span>
-              <Button variant="ghost" onClick={() => onProvenance(result.data!)}>
-                How calculated <ArrowRight size={14} />
-              </Button>
-            </div>
+                  </thead>
+                  <tbody>
+                    {[
+                      {
+                        label: `Susceptible to both ${c.antibiotic_a} and ${c.antibiotic_b}`,
+                        value: c.cells.both_s,
+                      },
+                      { label: `Susceptible to ${c.antibiotic_a} only`, value: c.cells.a_only_s },
+                      { label: `Susceptible to ${c.antibiotic_b} only`, value: c.cells.b_only_s },
+                      { label: 'Resistant to both', value: c.cells.both_r },
+                    ].map((row) => (
+                      <tr key={row.label}>
+                        <td>{row.label}</td>
+                        <td>{row.value}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </DataTable>
+              <div className="comparison-footnote">
+                <span>
+                  {c.n_eligible} eligible · {c.n_missing_either} missing either test
+                  <br />
+                  {c.n_missing_a} missing A · {c.n_missing_b} missing B
+                </span>
+                <Button variant="ghost" onClick={() => onProvenance(result.data!)}>
+                  How calculated <ArrowRight size={14} />
+                </Button>
+              </div>
+            </details>
             <p className="small-note">
               Historical laboratory susceptibility. This comparison does not establish clinical
               suitability or treatment success.

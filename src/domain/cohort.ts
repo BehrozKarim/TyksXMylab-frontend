@@ -11,6 +11,7 @@ export const defaults: Omit<CohortQuery, 'as_of'> = {
   antibiotic_code: 'CIP',
   antibiotic_b: 'TMP',
   window: 'last_28d',
+  dedup_scope: 'selected_cohort',
 };
 export function readCohort(
   search: URLSearchParams,
@@ -19,6 +20,8 @@ export function readCohort(
 ): { query: CohortQuery; issues: string[]; pinned: boolean } {
   const issues: string[] = [];
   const pick = (key: string, choices: string[], fallback: string) => {
+    if (!choices.includes(fallback))
+      fallback = choices.includes('') ? '' : (choices[0] ?? fallback);
     const value = search.get(key);
     if (value === null) return fallback;
     if (!choices.includes(value)) {
@@ -60,6 +63,11 @@ export function readCohort(
     specimen: pick('specimen', meta.specimens, defaults.specimen) as CohortQuery['specimen'],
     organism: pick('organism', meta.organisms, defaults.organism),
     sex: (pick('sex', ['', ...meta.sexes.map((s) => s.code)], '') as CohortQuery['sex']) || null,
+    dedup_scope: pick(
+      'dedup_scope',
+      ['selected_cohort', 'all_wards'],
+      'selected_cohort',
+    ) as CohortQuery['dedup_scope'],
     age_min: age('age_min'),
     age_max: age('age_max'),
     calendar_year: Number(
@@ -98,6 +106,8 @@ export function readCohort(
     meta.antibiotics.find((a) => a.code === query.antibiotic_code)?.screening
   )
     query.antibiotic_b = '';
+  if (!(meta.supported_windows ?? ['rolling_12m', 'last_28d']).includes(query.window))
+    query.window = 'rolling_12m';
   return { query, issues, pinned };
 }
 export function writeCohort(q: CohortQuery, pinned: boolean) {
