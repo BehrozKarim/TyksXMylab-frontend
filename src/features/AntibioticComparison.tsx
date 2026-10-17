@@ -77,18 +77,21 @@ export function AntibioticComparison({
               </option>
             ))}
         </Select>
-      </div>
-      <div className="segmented" role="group" aria-label="Comparison period">
-        {(meta.supported_windows ?? (['rolling_12m', 'last_28d'] as const)).map((key) => (
-          <button
-            key={key}
-            type="button"
-            aria-pressed={query.window === key}
-            onClick={() => onChange({ ...query, window: key })}
-          >
-            {windowLabels[key]}
-          </button>
-        ))}
+        <div className="comparison-window">
+          <span className="field-label">Comparison period</span>
+          <div className="segmented" role="group" aria-label="Comparison period">
+            {(meta.supported_windows ?? (['rolling_12m', 'last_28d'] as const)).map((key) => (
+              <button
+                key={key}
+                type="button"
+                aria-pressed={query.window === key}
+                onClick={() => onChange({ ...query, window: key })}
+              >
+                {windowLabels[key]}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
       {!query.antibiotic_b || query.antibiotic_code === 'FOX' ? (
         <EmptyState title="Choose two antibiotics">
@@ -107,7 +110,7 @@ export function AntibioticComparison({
               <Badge>{c.n_paired} paired isolates</Badge>
             </div>
             {c.status === 'available' ? (
-              <>
+              <div className="comparison-results">
                 <div
                   className="paired-chart"
                   aria-label="Historical laboratory susceptibility on the same isolates"
@@ -148,7 +151,7 @@ export function AntibioticComparison({
                     </strong>
                   </div>
                 </div>
-              </>
+              </div>
             ) : (
               <div className="inline-notice">
                 <CircleHelp size={18} />

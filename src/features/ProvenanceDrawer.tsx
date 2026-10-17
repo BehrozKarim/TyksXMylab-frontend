@@ -1,3 +1,4 @@
+import { notifyExport } from '../components/export-notifications';
 import { useState } from 'react';
 import { Download, FileJson, Fingerprint } from 'lucide-react';
 import type { Analysis, Meta, WindowKey } from '../api/contracts';
@@ -23,6 +24,7 @@ export function ProvenanceDrawer({
     setError('');
     try {
       await api.export(analysis.analysis_id, format);
+      notifyExport(format);
     } catch (e) {
       setError((e as Error).message);
     } finally {

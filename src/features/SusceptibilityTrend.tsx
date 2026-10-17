@@ -1,4 +1,4 @@
-import { ChartNoAxesCombined } from 'lucide-react';
+import { RefreshCw } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTrendRefresh } from '../app/useTrendRefresh';
@@ -92,7 +92,7 @@ function TrendView({
     if (current) void result.refetch();
   };
   const x = (index: number) => 52 + (index / Math.max(1, points.length - 1)) * 684;
-  const y = (value: number) => 210 - value * 1.7;
+  const y = (value: number) => 240 - value * 2;
   let segment = '';
   const segments: string[] = [];
   points.forEach((p, i) => {
@@ -107,11 +107,12 @@ function TrendView({
   return (
     <Panel className="trend-panel">
       <SectionHeading
+        eyebrow="Trend"
         title="Susceptibility over time"
         description="28-day estimates sampled at each month end, up to the report end date."
         action={
           <Button onClick={refreshNow} disabled={result.isFetching || state.status === 'running'}>
-            <ChartNoAxesCombined size={17} /> Refresh now
+            <RefreshCw size={17} /> Refresh now
           </Button>
         }
       />
@@ -169,7 +170,7 @@ function TrendView({
               aria-label="Susceptibility time chart"
               tabIndex={0}
             >
-              <svg viewBox="0 0 780 260" role="img" aria-label={label}>
+              <svg viewBox="0 0 780 290" role="img" aria-label={label}>
                 {[0, 25, 50, 75, 100].map((v) => (
                   <g key={v}>
                     <line x1="52" x2="736" y1={y(v)} y2={y(v)} className="trend-grid" />
@@ -185,6 +186,14 @@ function TrendView({
                   const m = p.windows.last_28d;
                   return (
                     <g key={p.analysis_id}>
+                      {m.susceptibility_pct === null && (
+                        <>
+                          <line x1={x(i)} x2={x(i)} y1={y(100)} y2={y(0)} className="trend-gap" />
+                          <text x={x(i)} y="228" textAnchor="middle">
+                            {m.n_tested < 30 ? '<30 tests' : 'Unavailable'}
+                          </text>
+                        </>
+                      )}
                       {m.susceptibility_pct !== null && (
                         <circle
                           cx={x(i)}
@@ -198,7 +207,7 @@ function TrendView({
                           </title>
                         </circle>
                       )}
-                      <text x={x(i)} y="240" textAnchor="middle">
+                      <text x={x(i)} y="270" textAnchor="middle">
                         {new Intl.DateTimeFormat('en', { month: 'short', timeZone: 'UTC' }).format(
                           new Date(`${p.context.as_of}T12:00:00Z`),
                         )}

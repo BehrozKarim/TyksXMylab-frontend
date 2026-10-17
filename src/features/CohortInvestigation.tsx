@@ -61,6 +61,9 @@ export function CohortInvestigation({
           <strong>{cohortLabel(query, meta)}</strong>
           <p>Your selected cohort, including the applied population filters.</p>
         </div>
+        <Link className="button button--ghost" to={`/ward${location.search}`}>
+          Change cohort →
+        </Link>
       </div>
       {result.isPending ? (
         <Loading />

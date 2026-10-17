@@ -55,7 +55,9 @@ export function EvidenceCards({
                   {m.susceptibility_pct!.toFixed(1)}
                   <span>%</span>
                 </div>
-                <p className="measure-label">susceptible · {number(m.n_tested)} tested isolates</p>
+                <p className="measure-label">
+                  susceptible · <strong>{number(m.n_tested)}</strong> tested isolates
+                </p>
                 <details className="metric-details">
                   <summary>Counts & uncertainty</summary>
                   <div className="period-counts">
@@ -74,7 +76,7 @@ export function EvidenceCards({
               </>
             ) : (
               <div className="support-state">
-                <Badge tone="warning">
+                <Badge tone="success">
                   {m.status === 'insufficient_data'
                     ? `${m.n_tested} tested · minimum 30`
                     : 'Evidence unavailable'}

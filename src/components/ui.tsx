@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes, HTMLAttributes, ReactNode, SelectHTMLAttributes } from 'react';
+import type { ComponentProps, HTMLAttributes, ReactNode, SelectHTMLAttributes } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { AlertCircle, ArrowRight, LoaderCircle, X } from 'lucide-react';
 
@@ -6,7 +6,7 @@ export function Button({
   variant = 'secondary',
   className = '',
   ...props
-}: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'primary' | 'secondary' | 'ghost' }) {
+}: ComponentProps<'button'> & { variant?: 'primary' | 'secondary' | 'ghost' }) {
   return <button className={`button button--${variant} ${className}`} {...props} />;
 }
 export function Badge({
@@ -138,12 +138,14 @@ export function RefreshNotice({
 export function Drawer({
   open,
   onClose,
+  onClosed,
   title,
   description,
   children,
 }: {
   open: boolean;
   onClose: () => void;
+  onClosed?: () => void;
   title: string;
   description: string;
   children: ReactNode;
@@ -165,6 +167,7 @@ export function Drawer({
               const trigger = document.querySelector<HTMLElement>('[data-drawer-return="true"]');
               trigger?.focus();
               trigger?.removeAttribute('data-drawer-return');
+              onClosed?.();
             });
           }}
         >
@@ -172,6 +175,7 @@ export function Drawer({
             <div>
               <span className="eyebrow">Ward Evidence</span>
               <Dialog.Title>{title}</Dialog.Title>
+              <Dialog.Description className="drawer-description">{description}</Dialog.Description>
             </div>
             <Dialog.Close asChild>
               <Button variant="ghost" className="icon-button" aria-label="Close panel">
@@ -179,7 +183,6 @@ export function Drawer({
               </Button>
             </Dialog.Close>
           </div>
-          <Dialog.Description className="drawer-description">{description}</Dialog.Description>
           <div className="drawer-body">{children}</div>
         </Dialog.Content>
       </Dialog.Portal>
