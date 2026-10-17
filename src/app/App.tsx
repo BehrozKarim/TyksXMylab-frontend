@@ -35,6 +35,7 @@ import { CohortInvestigation } from '../features/CohortInvestigation';
 import { SusceptibilityTrend } from '../features/SusceptibilityTrend';
 import { ResistanceAlerts, ResistanceInvestigation } from '../features/ResistanceAlerts';
 import { DemoControls } from '../features/DemoControls';
+import { AiSummaryPanel } from '../features/AiSummaryPanel';
 
 function Brand() {
   return (
@@ -587,6 +588,7 @@ function WardPage({
           }}
         />
       )}
+      {DATA_MODE === 'api' && <AiSummaryPanel evidence={evidence.data} state={state} onEvidence={onProvenance} />}
       <AntibioticComparison
         query={query}
         state={state}
