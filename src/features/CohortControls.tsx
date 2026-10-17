@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { useState } from 'react';
 import { ArrowRight, RotateCcw, SlidersHorizontal } from 'lucide-react';
 import type { CohortQuery, Meta } from '../api/contracts';
 import { Button, Select } from '../components/ui';
@@ -8,14 +8,12 @@ export function CohortControls({
   query,
   meta,
   onApply,
-  children,
-  shortcuts,
+  onCancel,
 }: {
   query: CohortQuery;
   meta: Meta;
   onApply: (q: CohortQuery) => void;
-  children?: ReactNode;
-  shortcuts?: ReactNode;
+  onCancel?: () => void;
 }) {
   const [draft, setDraft] = useState(query);
   const [advanced, setAdvanced] = useState(false);
@@ -42,7 +40,6 @@ export function CohortControls({
   };
   return (
     <form className="cohort-panel" onSubmit={submit} aria-label="Select evidence cohort">
-      <div className="filter-date-row">{children}</div>
       <div className="filter-grid">
         <Select
           id="ward"
@@ -176,7 +173,11 @@ export function CohortControls({
           <RotateCcw size={14} />
           Reset filters
         </Button>
-        {shortcuts}
+        {onCancel && (
+          <Button type="button" variant="ghost" onClick={onCancel}>
+            Cancel
+          </Button>
+        )}
         <Button type="submit" variant="primary" className="apply-button">
           Apply cohort <ArrowRight size={16} />
         </Button>

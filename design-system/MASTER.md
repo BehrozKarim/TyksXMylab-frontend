@@ -26,15 +26,26 @@ Sticky top navigation replaces the sidebar. It is one row at 1180px and above;
 smaller widths put the horizontally scrollable navigation on a second row.
 The content maximum is 1320px with 32px insets (18px on small screens).
 
-Ward order: page actions → report date/cohort form → applied population → two
-headline evidence periods → paired antibiotic comparison → susceptibility trend.
-Primary filters share one divider grid, population filters expand underneath,
-and reset/apply actions are grouped in the footer.
+Ward order: page actions → applied query summary and report date → two headline
+evidence periods → paired antibiotic comparison → susceptibility trend.
+The current ward, organism, specimen and antibiotic use a labeled definition grid,
+with sex, age and first-isolate scope always visible below. Edit query expands the
+existing filter grid in place; Apply cohort closes it and Cancel discards the draft.
+The report date remains visible outside the editor. On mobile the summary uses two
+columns with wrapping values; labels and restrictions are never clipped.
 
 Evidence periods share a joint card. Comparison controls use three columns,
 with bars and difference statistics below. The chart uses round points and a
 2px line; missing evidence remains a gap. Tables and charts can scroll inside
 labeled containers without making the document overflow.
+
+The trend uses an explicit susceptibility (%) axis, a 28-day period-ending axis,
+antibiotic line key and available-cutoff count. Unreported values use dashes in a
+separate availability row, never a value at 0%. Month buttons reveal date, counts
+and status on hover, focus or click/tap; the status region is announced accessibly.
+The axes sit outside the horizontal chart scroller so mobile users retain context.
+Low count, no tests, empty cohort and non-applicability use the backend status
+rather than deriving a generic low-count message from a zero denominator.
 
 Investigation has an evidence column and a context sidebar; it stacks below
 960px. Alert investigations have Evidence overview, Population context and
@@ -42,17 +53,22 @@ Timeline and history tabs, with keyboard navigation. Current evaluation and
 original detection remain independently selectable, exportable snapshots.
 
 Drawers use the same 580px surface, header, close button and focus behavior.
-Patient history, provenance, reading guidance, saved queries and AI summaries
+Patient history, provenance, reading guidance, demo feed and AI summaries
 all reuse it. Export success is announced in a 2600ms toast after a successful
 export response, including while a drawer is open.
 
 ## Faster access and optional AI
 
-**Saved queries** in the filter footer stores up to 12 named applied selections
-in this browser. A saved query either follows the latest published date or keeps
-an explicit report date. Restoration validates against the current dictionaries;
-invalid selections are never silently substituted. No patient history or result
-payloads are stored with a shortcut.
+The overview does not expose saved/favorite/recent queries or remembered defaults.
+The existing saved-query module is retained without a UI entry point; previous local
+storage is not deleted. Access centers on an explicit applied selection and a short,
+reversible editing flow.
+
+**Demo feed** is a header utility opening the shared drawer. It contains the current
+date, published batch count, next-batch action and publication status. Status polling
+continues when the drawer closes, with a header indicator and accessible publication
+announcement. Ordinary startup exposes no demo controls. Source and connection
+status stay concise above the page; reporting-clock details live in the footer.
 
 **AI summary** is a page action opening an optional drawer. Generation still
 requires an explicit click. Closing and reopening reuses the report-bound job

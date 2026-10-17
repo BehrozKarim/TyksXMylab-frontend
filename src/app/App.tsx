@@ -8,6 +8,7 @@ import {
   FlaskConical,
   UsersRound,
   SearchCheck,
+  SlidersHorizontal,
 } from 'lucide-react';
 import { Link, Navigate, Route, Routes, useLocation, useSearchParams } from 'react-router-dom';
 import { api, DATA_MODE } from '../api/client';
@@ -29,7 +30,6 @@ import { SusceptibilityTrend } from '../features/SusceptibilityTrend';
 import { ResistanceAlerts, ResistanceInvestigation } from '../features/ResistanceAlerts';
 import { DemoControls } from '../features/DemoControls';
 import { AiSummaryDrawer } from '../features/AiSummaryPanel';
-import { QuickQueries } from '../features/QuickQueries';
 import { ExportToast } from '../components/ExportToast';
 
 function Brand() {
@@ -175,10 +175,13 @@ function Workspace({
             </button>
           </nav>
           <div className="app-header-right">
-            <span className="synthetic-label">
-              <span />
-              {state.mode === 'feed' ? 'External feed' : 'Synthetic data'}
-            </span>
+            <DemoControls state={state} />
+            {import.meta.env.VITE_DEMO_CONTROLS !== '1' && (
+              <span className="synthetic-label">
+                <span />
+                {state.mode === 'feed' ? 'External feed' : 'Synthetic data'}
+              </span>
+            )}
             <Button
               variant="ghost"
               className="icon-button"
@@ -195,7 +198,6 @@ function Workspace({
       </header>
       <div className="app-body">
         <div className="workspace-notices">
-          <DemoControls state={state} />
           <RefreshNotice
             error={refreshError}
             onRetry={onRetryRefresh}
@@ -206,9 +208,6 @@ function Workspace({
             <p className="inline-notice feed-status">
               <strong>{state.feed_source_label ?? 'External feed'}</strong> ·{' '}
               {updatesConnected ? 'Live updates connected' : 'Checking for updates'}
-              {' · '}
-              {state.clock_mode === 'wall_utc' ? 'UTC reporting date' : 'Simulated reporting date'}
-              {state.status === 'receiving' && ' · Receiving results'}
             </p>
           )}
           {updating && (
@@ -259,7 +258,6 @@ function Workspace({
                   pinned={pinned}
                   search={`?${search}`}
                   onApply={apply}
-                  onPatients={showPatients}
                   onProvenance={showProvenance}
                 />
               }
@@ -311,6 +309,14 @@ function Workspace({
             />
           </Routes>
           <footer className="page-footer">
+            {state.mode === 'feed' && (
+              <span>
+                {state.clock_mode === 'wall_utc'
+                  ? 'UTC reporting date'
+                  : 'Simulated reporting date'}
+                {state.status === 'receiving' && ' · Receiving results'}
+              </span>
+            )}
             <span>
               <span className="tiny-dot" />
               Imported dataset: {formatDate(meta.source.start)} – {formatDate(meta.source.end)}
@@ -422,7 +428,6 @@ function WardPage({
   pinned,
   search,
   onApply,
-  onPatients,
   onProvenance,
 }: {
   meta: Meta;
@@ -431,9 +436,15 @@ function WardPage({
   pinned: boolean;
   search: string;
   onApply: (q: CohortQuery, pinned?: boolean) => void;
-  onPatients: () => void;
   onProvenance: (a: Analysis, w?: WindowKey) => void;
 }) {
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [editorVersion, setEditorVersion] = useState(0);
+  const editTrigger = useRef<HTMLButtonElement>(null);
+  const closeFilters = () => {
+    setFiltersOpen(false);
+    editTrigger.current?.focus();
+  };
   const evidence = useAnalysis('evidence', state, query, (signal) =>
     api.evidence(query, state, signal),
   );
@@ -447,7 +458,6 @@ function WardPage({
             <span className="heading-hospital">Tyks × Mylab</span>
           </div>
           <h1 tabIndex={-1}>Ward overview</h1>
-          <p>Choose a cohort. See how susceptibility compares over time.</p>
         </div>
         <div className="heading-actions">
           {DATA_MODE === 'api' && (
@@ -466,16 +476,53 @@ function WardPage({
           </Button>
         </div>
       </div>
-      <CohortControls
-        key={JSON.stringify(query)}
-        query={query}
-        meta={meta}
-        onApply={onApply}
-        shortcuts={
-          <QuickQueries query={query} pinned={pinned} meta={meta} state={state} onApply={onApply} />
-        }
-      >
-        <div className="overview-toolbar">
+      <section className="query-panel" aria-label="Current evidence query">
+        <div className="query-panel-heading">
+          <span className="eyebrow">Current query</span>
+          <Button
+            ref={editTrigger}
+            aria-expanded={filtersOpen}
+            aria-controls="query-editor"
+            onClick={() => {
+              setFiltersOpen(!filtersOpen);
+              setEditorVersion((v) => v + 1);
+            }}
+          >
+            <SlidersHorizontal size={16} aria-hidden="true" />
+            {filtersOpen ? 'Close filters' : 'Edit query'}
+          </Button>
+        </div>
+        <dl className="query-summary">
+          <div>
+            <dt>Ward</dt>
+            <dd>{meta.wards.find((w) => w.code === query.ward_code)?.label ?? 'All wards'}</dd>
+          </div>
+          <div>
+            <dt>Organism</dt>
+            <dd>{query.organism}</dd>
+          </div>
+          <div>
+            <dt>Specimen</dt>
+            <dd>{query.specimen}</dd>
+          </div>
+          <div>
+            <dt>Antibiotic</dt>
+            <dd>{drugLabel(query.antibiotic_code, meta)}</dd>
+          </div>
+        </dl>
+        <div className="applied-context query-population">
+          <p>
+            {query.sex === 'F' ? 'women' : query.sex === 'M' ? 'men' : 'All sexes'} ·{' '}
+            {query.age_min !== null || query.age_max !== null
+              ? `Ages ${query.age_min ?? 0}–${query.age_max ?? '120+'}`
+              : 'All ages'}
+            {' · '}
+            {query.dedup_scope === 'all_wards'
+              ? 'First isolate across all wards'
+              : 'First isolate within selected cohort'}
+          </p>
+        </div>
+        <div className="query-reporting">
           <div className="date-controls">
             <label className="field inline-field">
               <span>Report end date</span>
@@ -516,20 +563,24 @@ function WardPage({
               </span>
             )}
           </div>
+          <p id="report-date-help" className="sr-only">
+            Both headline periods end on this date. The chart year below affects only the time
+            chart.
+          </p>
         </div>
-        <p id="report-date-help" className="report-date-help">
-          Both headline periods end on this date. The chart year below affects only the time chart.
-        </p>
-      </CohortControls>
-      <div className="applied-context">
-        <p>
-          <span className="context-indicator" /> {cohortLabel(query, meta)}
-        </p>
-        <Button variant="ghost" onClick={onPatients}>
-          <UsersRound size={16} />
-          Patient history <ArrowRight size={14} />
-        </Button>
-      </div>
+        <div id="query-editor" hidden={!filtersOpen}>
+          <CohortControls
+            key={`${JSON.stringify(query)}-${editorVersion}`}
+            query={query}
+            meta={meta}
+            onApply={(next) => {
+              onApply(next);
+              closeFilters();
+            }}
+            onCancel={closeFilters}
+          />
+        </div>
+      </section>
       <div className="evidence-section-title">
         <div>
           <span className="eyebrow">Evidence · two overlapping periods</span>

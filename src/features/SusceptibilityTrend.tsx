@@ -4,7 +4,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useTrendRefresh } from '../app/useTrendRefresh';
 import type { Analysis, CohortQuery, Evidence, Meta, ReplayState } from '../api/contracts';
 import { api } from '../api/client';
-import { trendDates } from '../domain/trend';
+import { trendDates, trendStatusLabel } from '../domain/trend';
 import { useAnalysis } from '../app/queries';
 import {
   Button,
@@ -16,7 +16,8 @@ import {
   Select,
   RefreshNotice,
 } from '../components/ui';
-import { formatDate, percentage } from '../domain/formatters';
+import { SusceptibilityTimeChart } from './SusceptibilityTimeChart';
+import { drugLabel, formatDate, percentage } from '../domain/formatters';
 
 export function SusceptibilityTrend({
   followLatest,
@@ -91,18 +92,6 @@ function TrendView({
     refresh();
     if (current) void result.refetch();
   };
-  const x = (index: number) => 52 + (index / Math.max(1, points.length - 1)) * 684;
-  const y = (value: number) => 240 - value * 2;
-  let segment = '';
-  const segments: string[] = [];
-  points.forEach((p, i) => {
-    const value = p.windows.last_28d.susceptibility_pct;
-    if (value === null) {
-      if (segment) segments.push(segment);
-      segment = '';
-    } else segment += `${segment ? ' L' : 'M'}${x(i)},${y(value)}`;
-  });
-  if (segment) segments.push(segment);
   const label = '28-day susceptibility at monthly collection cutoffs';
   return (
     <Panel className="trend-panel">
@@ -163,69 +152,11 @@ function TrendView({
         <ErrorPanel error={result.error} onRetry={refreshNow} />
       ) : (
         <>
-          {points.some((p) => p.windows.last_28d.status === 'available') ? (
-            <div
-              className="trend-chart"
-              role="region"
-              aria-label="Susceptibility time chart"
-              tabIndex={0}
-            >
-              <svg viewBox="0 0 780 290" role="img" aria-label={label}>
-                {[0, 25, 50, 75, 100].map((v) => (
-                  <g key={v}>
-                    <line x1="52" x2="736" y1={y(v)} y2={y(v)} className="trend-grid" />
-                    <text x="40" y={y(v) + 4} textAnchor="end">
-                      {v}%
-                    </text>
-                  </g>
-                ))}
-                {segments.map((d, i) => (
-                  <path key={i} d={d} className="trend-line" />
-                ))}
-                {points.map((p, i) => {
-                  const m = p.windows.last_28d;
-                  return (
-                    <g key={p.analysis_id}>
-                      {m.susceptibility_pct === null && (
-                        <>
-                          <line x1={x(i)} x2={x(i)} y1={y(100)} y2={y(0)} className="trend-gap" />
-                          <text x={x(i)} y="228" textAnchor="middle">
-                            {m.n_tested < 30 ? '<30 tests' : 'Unavailable'}
-                          </text>
-                        </>
-                      )}
-                      {m.susceptibility_pct !== null && (
-                        <circle
-                          cx={x(i)}
-                          cy={y(m.susceptibility_pct)}
-                          r="5"
-                          className="trend-point"
-                        >
-                          <title>
-                            {formatDate(p.context.as_of)}: {percentage(m.susceptibility_pct)},{' '}
-                            {m.n_tested} tested
-                          </title>
-                        </circle>
-                      )}
-                      <text x={x(i)} y="270" textAnchor="middle">
-                        {new Intl.DateTimeFormat('en', { month: 'short', timeZone: 'UTC' }).format(
-                          new Date(`${p.context.as_of}T12:00:00Z`),
-                        )}
-                      </text>
-                    </g>
-                  );
-                })}
-              </svg>
-            </div>
-          ) : (
-            <p className="inline-notice">
-              No monthly cutoff has 30 tested isolates. Counts remain available below.
-            </p>
-          )}
-          <p className="small-note">
-            Gaps indicate fewer than 30 tests or unavailable evidence. All points use the same
-            published snapshot; they do not reproduce when results became known.
-          </p>
+          <SusceptibilityTimeChart
+            points={points}
+            antibiotic={drugLabel(points[0]?.antibiotic_code ?? query.antibiotic_code, meta)}
+            year={snapshot.query.calendar_year}
+          />
           <details className="data-disclosure">
             <summary>Monthly values, counts & exports</summary>
             <DataTable label={label}>
@@ -247,7 +178,7 @@ function TrendView({
                         <td>{formatDate(p.context.as_of)}</td>
                         <td>
                           {m.susceptibility_pct === null
-                            ? 'Not reported'
+                            ? trendStatusLabel(m)
                             : percentage(m.susceptibility_pct)}
                         </td>
                         <td>{m.n_tested}</td>

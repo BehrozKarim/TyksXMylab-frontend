@@ -1,8 +1,11 @@
+import { useState } from 'react';
+import { FlaskConical } from 'lucide-react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { z } from 'zod';
 import type { ReplayState } from '../api/contracts';
-import { Button, RefreshNotice } from '../components/ui';
 import { API_BASE } from '../api/client';
+import { Button, Drawer, RefreshNotice } from '../components/ui';
+import { rememberTrigger } from '../components/focus';
 
 const statusSchema = z.object({
   phase: z.enum(['starting', 'ready', 'processing', 'complete', 'error']),
@@ -37,6 +40,7 @@ export function DemoControls({ state }: { state: ReplayState }) {
 }
 
 function ManualFeed({ state }: { state: ReplayState }) {
+  const [open, setOpen] = useState(false);
   const client = useQueryClient();
   const key = ['demo-control', state.run_id];
   const status = useQuery({
@@ -63,53 +67,98 @@ function ManualFeed({ state }: { state: ReplayState }) {
   const busy = send.isPending || data?.phase === 'processing';
   const last = data?.last_publication;
   return (
-    <section className="demo-controls inline-notice" aria-label="Demo controls">
-      <div className="demo-controls-row">
-        <div>
-          <strong>Demo controls</strong>
-          <p>Synthetic laboratory results arrive only when you send a batch.</p>
-        </div>
-        <Button
-          variant="primary"
-          disabled={!matches || data?.phase !== 'ready' || busy || status.isError}
-          onClick={() => data?.next_batch && send.mutate(data.next_batch.delivery_id)}
-        >
-          {busy ? 'Processing batch…' : 'Send next lab batch'}
-        </Button>
-      </div>
-      <p role="status" aria-live="polite">
-        {!data
-          ? 'Connecting to demo controls…'
-          : !matches
-            ? 'Demo run changed. Ask the demo owner to initialize it again.'
-            : busy
-              ? 'Processing — waiting for publication.'
-              : data.phase === 'complete'
-                ? 'All demo batches published. The demo owner can start a new run.'
-                : data.phase === 'error'
-                  ? data.error
-                  : data.next_batch
-                    ? `Ready: ${data.next_batch.cultures} cultures dated ${data.next_batch.as_of}.`
-                    : 'Preparing the next batch…'}
-      </p>
-      {last && (
-        <p>
-          Published {last.cultures} cultures · {last.as_of} · revision {last.revision}. The
-          dashboard updates automatically.
-        </p>
-      )}
-      {!!data?.skipped_batches && (
-        <p>{data.skipped_batches} previously published batches skipped.</p>
-      )}
-      <RefreshNotice
-        error={status.error ?? send.error}
-        onRetry={() => {
-          send.reset();
-          void status.refetch();
+    <>
+      <Button
+        className="demo-feed-trigger"
+        aria-label="Demo feed"
+        aria-haspopup="dialog"
+        aria-expanded={open}
+        data-busy={busy || undefined}
+        onClick={() => {
+          rememberTrigger();
+          setOpen(true);
         }}
-        pending={status.isFetching}
-        title="Could not confirm demo status"
-      />
-    </section>
+      >
+        <FlaskConical size={16} aria-hidden="true" />
+        Demo feed
+        <span
+          className="demo-feed-dot"
+          data-error={status.isError || data?.phase === 'error' || undefined}
+          aria-hidden="true"
+        />
+      </Button>
+      <span className="sr-only" role="status">
+        {busy
+          ? 'Demo feed: processing laboratory results.'
+          : last
+            ? `Demo feed: ${last.cultures} cultures published through ${last.as_of}, revision ${last.revision}.`
+            : ''}
+      </span>
+      <Drawer
+        open={open}
+        onClose={() => setOpen(false)}
+        title="Demo feed"
+        description="Send synthetic lab results and watch the evidence update automatically."
+      >
+        <section className="demo-controls" aria-label="Demo controls">
+          <dl className="demo-feed-summary">
+            <div>
+              <dt>Current report date</dt>
+              <dd>{state.demo_date}</dd>
+            </div>
+            <div>
+              <dt>Published batches</dt>
+              <dd>{data?.published_batches ?? '—'}</dd>
+            </div>
+          </dl>
+          <div className="demo-controls-row">
+            <div>
+              <strong>Publish laboratory results</strong>
+              <p>Each click sends the next batch. Close this panel to see the updated dashboard.</p>
+            </div>
+            <Button
+              variant="primary"
+              disabled={!matches || data?.phase !== 'ready' || busy || status.isError}
+              onClick={() => data?.next_batch && send.mutate(data.next_batch.delivery_id)}
+            >
+              {busy ? 'Processing batch…' : 'Send next lab batch'}
+            </Button>
+          </div>
+          <p role="status" aria-live="polite">
+            {!data
+              ? 'Connecting to demo controls…'
+              : !matches
+                ? 'Demo run changed. Ask the demo owner to initialize it again.'
+                : busy
+                  ? 'Processing — waiting for publication.'
+                  : data.phase === 'complete'
+                    ? 'All demo batches published. The demo owner can start a new run.'
+                    : data.phase === 'error'
+                      ? data.error
+                      : data.next_batch
+                        ? `Ready: ${data.next_batch.cultures} cultures dated ${data.next_batch.as_of}.`
+                        : 'Preparing the next batch…'}
+          </p>
+          {last && (
+            <p>
+              Published {last.cultures} cultures · {last.as_of} · revision {last.revision}. The
+              dashboard updates automatically.
+            </p>
+          )}
+          {!!data?.skipped_batches && (
+            <p>{data.skipped_batches} previously published batches skipped.</p>
+          )}
+          <RefreshNotice
+            error={status.error ?? send.error}
+            onRetry={() => {
+              send.reset();
+              void status.refetch();
+            }}
+            pending={status.isFetching}
+            title="Could not confirm demo status"
+          />
+        </section>
+      </Drawer>
+    </>
   );
 }

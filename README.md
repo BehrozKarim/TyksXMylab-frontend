@@ -19,6 +19,12 @@ after 30 days. Build again after changing Vite environment variables.
 
 ## Run
 
+After pulling changes, run `npm ci` before starting the frontend. The redesigned
+app imports the bundled Barlow font packages; missing packages can make Vite return
+HTTP 500 for `src/main.tsx` and leave a blank page. For the integrated live demo,
+use the sibling backend's `DEMO.md` and its existing `scripts/start-demo.ps1`
+launcher; it supplies the API URL and server-side demo-control proxy configuration.
+
 ```powershell
 npm ci
 npm run dev -- --port 5173
@@ -43,7 +49,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\start-demo.ps1
 ```
 
 This launches PostgreSQL, the backend and this frontend with an isolated synthetic
-dataset. In **Demo controls**, press **Send next lab batch**. One batch travels through
+dataset. Open **Demo feed** in the header, then press **Send next lab batch**. One batch travels through
 the real HTTP feed; the button is disabled until publication finishes, and the existing
 SSE connection refreshes the dashboard. There are no automatic deliveries. The trend
 retains its separate 30-second refresh limit. Use **Use latest date** to follow arrivals.
@@ -78,12 +84,13 @@ navigation, shared evidence cards and side drawers.
 Alerts, demo controls, live updates and optional AI use the same design system.
 See `design-system/MASTER.md` for details and supported-data differences.
 
-**Saved queries** in the filter footer saves up to 12 named applied selections.
-Reopen one to restore its ward, specimen, organism, antibiotics and population
-filters. Queries following the latest samples advance with the publication date;
-pinned queries keep their chosen date. Shortcuts are stored in this browser's
-local storage, without patient histories, report contents or credentials. Query
-restoration rejects selections that no longer exist in the available dictionaries.
+Ward Overview starts with a compact **Current query** summary and the report date,
+followed by the evidence. **Edit query** expands the existing ward, organism,
+specimen, antibiotic and population filters in place. **Apply cohort** applies the
+selection and closes the editor; **Cancel** discards unapplied changes. Active sex,
+age and isolate-selection restrictions remain visible when the editor is closed.
+Favorites, recent queries and remembered default queries are not part of this flow.
+Demo publishing lives in the header's **Demo feed** drawer and appears only in demo mode.
 
 ## Dates and overlapping overview periods
 
@@ -164,7 +171,13 @@ can update it sooner. Snapshot cutoff/revision and waiting/loading status are
 displayed. Changing comparison B or its period does not reload the chart.
 The backend still has no true monthly-aggregate/series endpoint. The chart
 requests its 28-day evidence at month-end cutoffs for the chart year. These
-are rolling estimates sampled monthly, not complete calendar-month aggregates.
+are rolling estimates sampled monthly, not complete calendar-month aggregates. The chart labels
+susceptibility (%) and the 28-day period end, identifies the antibiotic and shows
+how many cutoffs have reportable estimates. Missing estimates stay off the plotted
+line and appear as dashes in a separate availability row. Focus, hover or select a
+month to see its exact date, tested/eligible counts and reporting status. Low support,
+no tests, no eligible isolates and non-applicability remain distinct, including in
+the expanded table. Axis labels stay visible while the month strip scrolls on mobile.
 One historical request runs at a time; all results must share one run/revision. Sparse
 or unavailable percentages are gaps. An expandable table retains counts, supplied
 intervals and each point's frozen export. Historical cutoffs use the current published
