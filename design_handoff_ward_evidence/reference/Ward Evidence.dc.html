@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/industry-f4cf08d9-fb36-412b-992d-6abd09874f33/styles.css">
+<script src="_ds/industry-f4cf08d9-fb36-412b-992d-6abd09874f33/_ds_bundle.js"></script>
+<style>
+body{margin:0}
+a{color:var(--color-accent-700)}a:hover{color:var(--color-accent-900)}
+summary{list-style:none}summary::-webkit-details-marker{display:none}
+:root{--ev-card:color-mix(in srgb,#fff 72%,var(--color-bg))}
+.blueprint{border-radius:16px;background:var(--ev-card);box-shadow:var(--shadow-sm);overflow:hidden}
+.btn,.btn-icon,.seg{border-radius:10px}.input{border-radius:10px;background:var(--color-bg);min-height:40px}.tag{border-radius:999px;padding:3px 11px}
+.table th{text-transform:none;letter-spacing:0;font-size:13px;font-weight:500}
+@media (min-width:1180px){header [data-nav]{order:2 !important;flex:0 1 auto !important;border-top:0 !important}header [data-right]{order:3 !important}}
+button{font-family:inherit}
+</style>
+</helmet>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-arrow-right" viewBox="0 0 24 24"><g style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></g></symbol>
+<symbol id="i-arrow-left" viewBox="0 0 24 24"><g style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></g></symbol>
+<symbol id="i-download" viewBox="0 0 24 24"><g style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></g></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><g style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></g></symbol>
+<symbol id="i-search-check" viewBox="0 0 24 24"><g style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="m8 11 2 2 4-4"/><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></g></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><g style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></g></symbol>
+<symbol id="i-info" viewBox="0 0 24 24"><g style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></g></symbol>
+<symbol id="i-help" viewBox="0 0 24 24"><g style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></g></symbol>
+<symbol id="i-alert" viewBox="0 0 24 24"><g style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></g></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24"><g style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></g></symbol>
+<symbol id="i-users" viewBox="0 0 24 24"><g style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></g></symbol>
+<symbol id="i-user" viewBox="0 0 24 24"><g style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></g></symbol>
+<symbol id="i-book" viewBox="0 0 24 24"><g style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></g></symbol>
+<symbol id="i-flask" viewBox="0 0 24 24"><g style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M10 2v7.527a2 2 0 0 1-.211.896L4.72 20.55a1 1 0 0 0 .9 1.45h12.76a1 1 0 0 0 .9-1.45l-5.069-10.127A2 2 0 0 1 14 9.527V2"/><path d="M8.5 2h7"/><path d="M7 16h10"/></g></symbol>
+<symbol id="i-sliders" viewBox="0 0 24 24"><g style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><line x1="21" x2="14" y1="4" y2="4"/><line x1="10" x2="3" y1="4" y2="4"/><line x1="21" x2="12" y1="12" y2="12"/><line x1="8" x2="3" y1="12" y2="12"/><line x1="21" x2="16" y1="20" y2="20"/><line x1="12" x2="3" y1="20" y2="20"/><line x1="14" x2="14" y1="2" y2="6"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="16" x2="16" y1="18" y2="22"/></g></symbol>
+<symbol id="i-reset" viewBox="0 0 24 24"><g style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></g></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><g style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></g></symbol>
+<symbol id="i-layers" viewBox="0 0 24 24"><g style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></g></symbol>
+<symbol id="i-refresh" viewBox="0 0 24 24"><g style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></g></symbol>
+<symbol id="i-chevron" viewBox="0 0 24 24"><g style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="m6 9 6 6 6-6"/></g></symbol>
+<symbol id="i-file" viewBox="0 0 24 24"><g style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></g></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><g style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></g></symbol>
+<symbol id="i-compare" viewBox="0 0 24 24"><g style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><circle cx="5" cy="6" r="3"/><path d="M12 6h5a2 2 0 0 1 2 2v7"/><path d="m15 9-3-3 3-3"/><circle cx="19" cy="18" r="3"/><path d="M12 18H7a2 2 0 0 1-2-2V9"/><path d="m9 15 3 3-3 3"/></g></symbol>
+<symbol id="i-calendar" viewBox="0 0 24 24"><g style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></g></symbol>
+<symbol id="i-activity" viewBox="0 0 24 24"><g style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/></g></symbol>
+<symbol id="i-microscope" viewBox="0 0 24 24"><g style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M6 18h8"/><path d="M3 22h18"/><path d="M14 22a7 7 0 1 0 0-14h-1"/><path d="M9 14h2"/><path d="M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z"/><path d="M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3"/></g></symbol>
+</defs></svg>
+
+<div style="min-height:100vh;background:var(--color-bg);color:var(--color-text);font-family:var(--font-body)">
+
+<header style="position:sticky;top:0;z-index:30;background:var(--color-bg);border-bottom:1px solid var(--color-divider)">
+  <div style="max-width:1320px;margin:0 auto;padding:0 32px;display:flex;align-items:stretch;gap:0 36px;flex-wrap:wrap">
+    <button onClick="{{ goHome }}" aria-label="Ward Evidence home" style="order:1;min-height:68px;background:none;border:0;padding:0;cursor:pointer;display:flex;align-items:center;gap:14px;color:inherit">
+      <span style="width:38px;height:38px;border-radius:12px;background:var(--color-accent);display:grid;place-items:center;color:var(--color-bg)">
+        
+        <svg width="22" height="22" viewBox="0 0 40 40"><path d="M9 11v13a6 6 0 0 0 11 3 6 6 0 0 0 11-3V11M20 14v13" style="fill:none;stroke:currentColor;stroke-width:3.3;stroke-linecap:round"></path></svg>
+      </span>
+      <span style="display:flex;flex-direction:column;align-items:flex-start;gap:3px">
+        <span style="font-family:var(--font-heading);font-weight:600;font-size:27px;letter-spacing:-.02em;line-height:.9">ward<span style="color:var(--color-accent)">evidence</span></span>
+        <span style="font-size:10px;letter-spacing:.14em;color:color-mix(in srgb,var(--color-text) 65%,transparent)">TYKS × MYLAB</span>
+      </span>
+    </button>
+    <nav data-nav aria-label="Main navigation" style="order:3;flex:1 1 100%;min-height:46px;border-top:1px solid var(--color-divider);display:flex;align-items:center;gap:4px;margin:0 -16px;padding:4px 0;overflow-x:auto">
+      <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="3">
+        <button onClick="{{ n.go }}" style="position:relative;height:38px;border-radius:999px;background:none;border:0;cursor:pointer;display:flex;align-items:center;gap:8px;padding:0 16px;color:var(--color-text);font-size:15px;white-space:nowrap" style-hover="background:color-mix(in srgb,var(--color-accent) 8%,transparent)">
+          <sc-if value="{{ n.active }}"><i style="position:absolute;inset:0;border-radius:999px;background:color-mix(in srgb,var(--color-accent) 16%,transparent)"></i></sc-if>
+          <span style="position:relative">{{ n.label }}</span>
+          <sc-if value="{{ n.hasBadge }}"><span class="tag" style="position:relative;background:var(--color-accent-900);color:var(--color-bg);padding:0 8px">{{ n.badge }}</span></sc-if>
+        </button>
+      </sc-for>
+      <button onClick="{{ openPatients }}" style="position:relative;height:38px;border-radius:999px;background:none;border:0;cursor:pointer;display:flex;align-items:center;gap:8px;padding:0 16px;color:var(--color-text);font-size:15px;white-space:nowrap" style-hover="background:color-mix(in srgb,var(--color-accent) 8%,transparent)">
+        <svg width="17" height="17" style="color:var(--color-accent-700)"><use href="#i-users"></use></svg><span>Patient history</span>
+      </button>
+    </nav>
+    <div data-right style="order:2;margin-left:auto;display:flex;align-items:center;gap:12px">
+      <span class="tag tag-outline" style="display:inline-flex;align-items:center;gap:8px"><i style="width:7px;height:7px;border-radius:50%;background:var(--color-accent)"></i>{{ dataTag }}</span>
+      <button class="btn btn-ghost btn-icon" aria-label="About this workspace" onClick="{{ openGuide }}"><svg width="19" height="19"><use href="#i-help"></use></svg></button>
+      <span aria-label="Research workspace" style="width:36px;height:36px;border-radius:50%;background:var(--color-accent-200);color:var(--color-accent-900);display:grid;place-items:center;font-family:var(--font-heading);font-weight:600;font-size:15px;letter-spacing:.04em">WE</span>
+    </div>
+  </div>
+</header>
+
+<div style="max-width:1320px;margin:0 auto;padding:0 32px">
+  <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:14px;border:1px solid var(--color-divider);border-radius:12px;background:var(--ev-card);padding:8px 16px;font-size:13px">
+    <svg width="15" height="15" style="color:var(--color-accent-700)"><use href="#i-flask"></use></svg>
+    <span><strong>Fixture preview</strong><span style="margin:0 8px;opacity:.5">/</span>Authored examples for exploring the interface. Not findings from the source dataset.</span>
+    <button class="btn btn-ghost" style="font-size:13px;padding:2px 6px" onClick="{{ openGuide }}">Details<svg width="13" height="13"><use href="#i-arrow-right"></use></svg></button>
+  </div>
+  <sc-if value="{{ showFeed }}">
+    <div style="display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--color-divider);padding:10px 0;font-size:13px"><i style="width:7px;height:7px;border-radius:50%;background:var(--color-accent)"></i><span><strong>External feed</strong> · Live updates connected · UTC reporting date · Receiving results</span></div>
+  </sc-if>
+  <sc-if value="{{ showStale }}">
+    <div role="status" class="blueprint" style="margin:18px 0 0;padding:14px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+      
+      <svg width="20" height="20" style="color:var(--color-accent-700);flex:none"><use href="#i-alert"></use></svg>
+      <div style="flex:1 1 280px"><strong>Could not refresh the workspace</strong><div style="font-size:13px;color:color-mix(in srgb,var(--color-text) 72%,transparent)">Showing the last successful snapshot. Results may be out of date. Network request failed.</div></div>
+      <button class="btn btn-secondary" onClick="{{ retryRefresh }}">Retry refresh</button>
+    </div>
+  </sc-if>
+</div>
+
+<main id="main-content" style="max-width:1320px;margin:0 auto;padding:36px 32px 72px">
+
+<sc-if value="{{ isWard }}" hint-placeholder-val="{{ true }}">
+<div>
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap">
+    <div style="min-width:0;flex:1 1 480px">
+      <div style="display:flex;align-items:center;gap:12px;font-size:13px;font-weight:500;color:color-mix(in srgb,var(--color-text) 70%,transparent)"><span>Antibiotic susceptibility</span><i style="width:36px;height:1px;background:var(--color-divider)"></i><span>Tyks × Mylab</span></div>
+      <h1 tabindex="-1" style="font-size:46px;line-height:1.05;letter-spacing:-.02em;margin:10px 0 10px">Ward overview</h1>
+      <p style="font-size:16px;margin:0;color:color-mix(in srgb,var(--color-text) 72%,transparent)">Choose a cohort. See how susceptibility compares over time.</p>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-primary" onClick="{{ goInvestigate }}" style="padding:12px 20px;font-size:16px"><svg width="17" height="17"><use href="#i-search-check"></use></svg>Investigate cohort</button>
+      <button class="btn btn-secondary" disabled="{{ exportDisabled }}" onClick="{{ exportEvidence }}" style="padding:12px 20px;font-size:16px"><svg width="16" height="16"><use href="#i-download"></use></svg>Export snapshot</button>
+    </div>
+  </div>
+
+  <form class="blueprint" onSubmit="{{ onApply }}" aria-label="Select evidence cohort" style="margin-top:36px">
+    
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));margin:0 -1px -1px 0;clip-path:inset(0 1px 1px 0)">
+      <div style="grid-column:1/-1;box-shadow:inset -1px -1px 0 var(--color-divider);padding:18px 22px;display:flex;align-items:center;gap:18px 28px;flex-wrap:wrap">
+        <label class="field" style="min-width:200px"><span style="display:block;font-size:13px;font-weight:500;margin-bottom:6px;color:color-mix(in srgb,var(--color-text) 70%,transparent)">Report end date</span>
+          <input type="date" class="input" aria-describedby="report-date-help" value="{{ reportDate }}" min="{{ minDate }}" max="{{ maxDate }}" onChange="{{ onDate }}">
+        </label>
+        <sc-if value="{{ pinned }}"><button type="button" class="btn btn-secondary" onClick="{{ useLatest }}" style="margin-top:20px">Use latest date</button></sc-if>
+        <sc-if value="{{ notPinned }}"><span style="margin-top:20px;display:inline-flex;align-items:center;gap:8px;font-size:13px"><i style="width:7px;height:7px;border-radius:50%;background:var(--color-accent)"></i>Latest published samples</span></sc-if>
+        <p id="report-date-help" style="margin:20px 0 0;flex:1 1 300px;font-size:13px;color:color-mix(in srgb,var(--color-text) 72%,transparent)">Both headline periods end on this date. The chart year below affects only the time chart.</p>
+      </div>
+      <div style="box-shadow:inset -1px -1px 0 var(--color-divider);padding:16px 22px" class="field"><label for="ward" style="font-size:13px;font-weight:500">Ward</label>
+        <select id="ward" class="input" value="{{ dWard }}" onChange="{{ onWard }}"><sc-for list="{{ wardOpts }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for></select></div>
+      <div style="box-shadow:inset -1px -1px 0 var(--color-divider);padding:16px 22px" class="field"><label for="specimen" style="font-size:13px;font-weight:500">Specimen</label>
+        <select id="specimen" class="input" value="{{ dSpecimen }}" onChange="{{ onSpecimen }}"><sc-for list="{{ specimenOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.value }}">{{ o.label }}</option></sc-for></select></div>
+      <div style="box-shadow:inset -1px -1px 0 var(--color-divider);padding:16px 22px" class="field"><label for="organism" style="font-size:13px;font-weight:500">Organism</label>
+        <select id="organism" class="input" value="{{ dOrganism }}" onChange="{{ onOrganism }}"><sc-for list="{{ organismOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o.value }}">{{ o.label }}</option></sc-for></select></div>
+      <div style="box-shadow:inset -1px -1px 0 var(--color-divider);padding:16px 22px" class="field"><label for="antibiotic" style="font-size:13px;font-weight:500">Primary antibiotic</label>
+        <select id="antibiotic" class="input" value="{{ dDrug }}" onChange="{{ onDrug }}"><sc-for list="{{ drugOpts }}" as="o" hint-placeholder-count="6"><option value="{{ o.value }}" disabled="{{ o.disabled }}">{{ o.label }}</option></sc-for></select></div>
+    </div>
+    <sc-if value="{{ advanced }}">
+      <div id="advanced-filters" style="border-top:1px solid var(--color-divider);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:16px 20px;padding:18px 22px">
+        <div class="field"><label for="dedup" style="font-size:13px;font-weight:500">First isolate selection</label>
+          <select id="dedup" class="input" value="{{ dDedup }}" onChange="{{ onDedup }}"><option value="selected_cohort">Within selected ward</option><option value="all_wards">Across all wards first</option></select></div>
+        <div class="field"><label for="sex" style="font-size:13px;font-weight:500">Sex</label>
+          <select id="sex" class="input" value="{{ dSex }}" onChange="{{ onSex }}"><option value="">All sexes</option><option value="F">Women</option><option value="M">Men</option></select></div>
+        <div class="field"><label for="agemin" style="font-size:13px;font-weight:500">Minimum age</label>
+          <input id="agemin" class="input" type="number" min="0" max="120" step="1" placeholder="Any" value="{{ dAgeMin }}" onChange="{{ onAgeMin }}"></div>
+        <div class="field"><label for="agemax" style="font-size:13px;font-weight:500">Maximum age</label>
+          <input id="agemax" class="input" type="number" min="0" max="120" step="1" placeholder="Any" value="{{ dAgeMax }}" onChange="{{ onAgeMax }}"></div>
+        <sc-if value="{{ hasFormError }}"><p role="alert" style="grid-column:1/-1;margin:0;font-size:13px;color:var(--color-accent-800);display:flex;gap:8px;align-items:center"><svg width="16" height="16"><use href="#i-alert"></use></svg>{{ formError }}</p></sc-if>
+      </div>
+    </sc-if>
+    <div style="border-top:1px solid var(--color-divider);padding:12px 22px;display:flex;align-items:center;gap:8px 20px;flex-wrap:wrap">
+      <button type="button" class="btn btn-ghost" aria-expanded="{{ advanced }}" onClick="{{ toggleAdvanced }}"><svg width="15" height="15"><use href="#i-sliders"></use></svg>Population filters<sc-if value="{{ hasActive }}"><span class="tag" style="background:var(--color-accent-900);color:var(--color-bg);padding:0 7px">{{ activeFilters }}</span></sc-if></button>
+      <span style="font-size:13px;color:color-mix(in srgb,var(--color-text) 72%,transparent)" title="Applied only after clicking Apply cohort">{{ filterSummary }}</span>
+      <button type="button" class="btn btn-ghost" onClick="{{ onReset }}"><svg width="14" height="14"><use href="#i-reset"></use></svg>Reset filters</button>
+      <button type="submit" class="btn btn-primary" style="margin-left:auto;padding:10px 22px;font-size:15px">Apply cohort<svg width="16" height="16"><use href="#i-arrow-right"></use></svg></button>
+    </div>
+  </form>
+
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:14px;font-size:14px">
+    <p style="margin:0;display:flex;align-items:center;gap:10px"><i style="width:8px;height:8px;border-radius:50%;background:var(--color-accent)"></i>{{ cohortText }}</p>
+    <button class="btn btn-ghost" onClick="{{ openPatients }}"><svg width="16" height="16"><use href="#i-users"></use></svg>Patient history<svg width="14" height="14"><use href="#i-arrow-right"></use></svg></button>
+  </div>
+
+  <div style="margin-top:40px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap">
+      <div>
+        <div style="font-size:13px;font-weight:500;color:var(--color-accent-700)">Evidence · two overlapping periods</div>
+        <h2 style="font-size:28px;line-height:1.15;letter-spacing:-.02em;margin:8px 0 6px">Susceptibility at a glance</h2>
+        <p style="margin:0;font-size:15px"><strong>{{ drugName }}</strong> · observed laboratory susceptibility</p>
+      </div>
+      <p style="margin:0;max-width:340px;font-size:13px;color:color-mix(in srgb,var(--color-text) 72%,transparent);border-left:1px solid var(--color-divider);padding-left:14px">The last 12 months includes the recent 28 days. These are overlapping time periods.</p>
+    </div>
+
+    <sc-if value="{{ isLoading }}">
+      <div class="blueprint" aria-busy="true" style="margin-top:22px">
+        
+        <div role="status" style="padding:14px 22px;font-size:14px;border-bottom:1px solid var(--color-divider);display:flex;gap:10px;align-items:center"><i style="width:9px;height:9px;border:1.5px solid var(--color-accent)"></i>Loading evidence…</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));margin:0 -1px -1px 0;clip-path:inset(0 1px 1px 0)">
+          <div style="box-shadow:inset -1px -1px 0 var(--color-divider);height:300px;background-image:repeating-linear-gradient(135deg,var(--color-divider) 0 1px,transparent 1px 9px)"></div>
+          <div style="box-shadow:inset -1px -1px 0 var(--color-divider);height:300px;background-image:repeating-linear-gradient(135deg,var(--color-divider) 0 1px,transparent 1px 9px)"></div>
+        </div>
+      </div>
+    </sc-if>
+    <sc-if value="{{ isError }}">
+      <div role="alert" class="blueprint" style="margin-top:22px;padding:22px 24px;display:flex;gap:16px;align-items:flex-start">
+        
+        <svg width="22" height="22" style="flex:none;color:var(--color-accent-700)"><use href="#i-alert"></use></svg>
+        <div><strong style="font-size:17px">Could not load evidence</strong><p style="margin:4px 0 12px;font-size:14px">The evidence service did not respond. Please try again.</p><button class="btn btn-secondary" onClick="{{ retryEvidence }}">Retry<svg width="15" height="15"><use href="#i-arrow-right"></use></svg></button></div>
+      </div>
+    </sc-if>
+    <sc-if value="{{ isOk }}">
+      <div class="blueprint" style="margin-top:22px">
+        
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));margin:0 -1px -1px 0;clip-path:inset(0 1px 1px 0)">
+          <sc-for list="{{ periods }}" as="p" hint-placeholder-count="2">
+            <section aria-label="{{ p.title }}" style="position:relative;box-shadow:inset -1px -1px 0 var(--color-divider);padding:28px 30px 24px">
+              <sc-if value="{{ p.featured }}"><i style="position:absolute;left:0;top:0;right:0;height:3px;background:var(--color-accent)"></i></sc-if>
+              <div style="display:flex;align-items:center;gap:10px">
+                <sc-if value="{{ p.isR12 }}"><svg width="19" height="19" style="color:var(--color-accent-700)"><use href="#i-layers"></use></svg></sc-if>
+                <sc-if value="{{ p.isD28 }}"><svg width="19" height="19" style="color:var(--color-accent-700)"><use href="#i-clock"></use></svg></sc-if>
+                <h3 style="margin:0;font-size:26px">{{ p.title }}</h3>
+                <button class="btn btn-ghost btn-icon" style="margin-left:auto" aria-label="How calculated" onClick="{{ p.help }}"><svg width="18" height="18"><use href="#i-help"></use></svg></button>
+              </div>
+              <p style="margin:6px 0 0;font-size:13px;color:color-mix(in srgb,var(--color-text) 72%,transparent)">{{ p.range }}</p>
+              <sc-if value="{{ p.ok }}">
+                <div style="margin-top:26px;font-family:var(--font-heading);font-weight:600;font-size:84px;line-height:.9;letter-spacing:-.03em;font-variant-numeric:tabular-nums">{{ p.value }}<span style="font-size:34px;color:var(--color-accent);letter-spacing:0;margin-left:3px">%</span></div>
+                <p style="margin:14px 0 0;font-size:15px">susceptible · <strong>{{ p.tested }}</strong> tested isolates</p>
+                <details style="margin-top:22px;border-top:1px solid var(--color-divider);padding-top:12px">
+                  <summary style="display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:500;color:var(--color-accent-700);cursor:pointer"><span>Counts &amp; uncertainty</span><svg width="16" height="16"><use href="#i-chevron"></use></svg></summary>
+                  <div style="padding-top:12px">
+                    <div style="font-size:14px">{{ p.counts }}</div>
+                    <div style="margin-top:14px">
+                      <div style="position:relative;height:22px;border-left:1px solid var(--color-divider);border-right:1px solid var(--color-divider)"><i style="position:absolute;left:0;right:0;top:50%;height:1px;background:var(--color-divider)"></i><i style="position:absolute;left:25%;top:6px;bottom:6px;width:1px;background:var(--color-divider)"></i><i style="position:absolute;left:50%;top:4px;bottom:4px;width:1px;background:var(--color-divider)"></i><i style="position:absolute;left:75%;top:6px;bottom:6px;width:1px;background:var(--color-divider)"></i><i style="{{ p.ciStyle }}"></i><i style="{{ p.dotStyle }}"></i></div>
+                      <div style="display:flex;justify-content:space-between;font-size:11px;color:color-mix(in srgb,var(--color-text) 70%,transparent);margin-top:4px"><span>0%</span><span>50%</span><span>100%</span></div>
+                      <p style="margin:6px 0 0;font-size:13px">95% interval <strong>{{ p.ciText }}</strong></p>
+                    </div>
+                    <div style="display:flex;gap:18px;margin-top:12px;font-size:13px;color:color-mix(in srgb,var(--color-text) 72%,transparent)"><span>{{ p.elig }} eligible</span><span>{{ p.nt }} not tested</span></div>
+                  </div>
+                </details>
+              </sc-if>
+              <sc-if value="{{ p.notOk }}">
+                <div style="margin-top:24px;min-height:180px">
+                  <span class="tag tag-outline">{{ p.badge }}</span>
+                  <h3 style="margin:14px 0 6px;font-size:28px">{{ p.stateTitle }}</h3>
+                  <p style="margin:0 0 10px;font-size:14px;max-width:420px">{{ p.stateText }}</p>
+                  <sc-if value="{{ p.showLonger }}"><button class="btn btn-ghost" onClick="{{ p.longer }}">View 12-month evidence<svg width="14" height="14"><use href="#i-arrow-right"></use></svg></button></sc-if>
+                </div>
+              </sc-if>
+              <sc-if value="{{ p.partial }}"><p style="margin:14px 0 0;font-size:12px;display:flex;gap:6px;align-items:center;color:var(--color-accent-800)"><svg width="14" height="14"><use href="#i-alert"></use></svg>Partial imported-dataset coverage</p></sc-if>
+            </section>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isInvestigate }}" hint-placeholder-val="{{ false }}">
+<div>
+  <button class="btn btn-ghost" onClick="{{ goWard }}" style="margin-bottom:18px"><svg width="16" height="16"><use href="#i-arrow-left"></use></svg>Back to ward overview</button>
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap">
+    <div style="min-width:0;flex:1 1 480px">
+      <div style="display:flex;align-items:center;gap:12px;font-size:13px;font-weight:500;color:color-mix(in srgb,var(--color-text) 70%,transparent)"><span>Cohort investigation</span></div>
+      <h1 tabindex="-1" style="font-size:46px;line-height:1.05;letter-spacing:-.02em;margin:10px 0 10px">Investigate susceptibility</h1>
+      <p style="font-size:16px;margin:0;color:color-mix(in srgb,var(--color-text) 72%,transparent)">Inspect the counts and uncertainty behind {{ drugName }}.</p>
+    </div>
+    <button class="btn btn-secondary" disabled="{{ exportDisabled }}" onClick="{{ exportEvidence }}" style="padding:12px 20px;font-size:16px"><svg width="16" height="16"><use href="#i-download"></use></svg>Export snapshot</button>
+  </div>
+  <div class="blueprint" style="margin-top:32px;padding:16px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+    
+    <div style="flex:1 1 300px"><strong style="font-size:16px">{{ cohortText }}</strong><div style="font-size:13px;color:color-mix(in srgb,var(--color-text) 72%,transparent)">Your selected cohort, including the applied population filters.</div></div>
+    <button class="btn btn-ghost" onClick="{{ goWard }}">Change cohort<svg width="14" height="14"><use href="#i-arrow-right"></use></svg></button>
+  </div>
+
+  <sc-if value="{{ isLoading }}"><div role="status" class="blueprint" style="margin-top:28px;padding:22px;display:flex;gap:10px;align-items:center"><i style="width:9px;height:9px;border:1.5px solid var(--color-accent)"></i>Loading evidence…</div></sc-if>
+  <sc-if value="{{ isError }}"><div role="alert" class="blueprint" style="margin-top:28px;padding:22px 24px"><strong>Could not load evidence</strong><p style="margin:4px 0 12px;font-size:14px">The evidence service did not respond. Please try again.</p><button class="btn btn-secondary" onClick="{{ retryEvidence }}">Retry</button></div></sc-if>
+  <sc-if value="{{ isOk }}">
+    <section class="blueprint" style="margin-top:28px">
+      
+      <div style="padding:26px 30px 22px">
+        <h2 style="font-size:28px;line-height:1.15;margin:0 0 6px">Evidence behind the estimate</h2>
+        <p style="margin:0;font-size:14px;color:color-mix(in srgb,var(--color-text) 72%,transparent)">Each period selects its first isolates independently.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));margin:0 -1px -1px 0;clip-path:inset(0 1px 1px 0);border-top:1px solid var(--color-divider)">
+        <sc-for list="{{ periods }}" as="p" hint-placeholder-count="2">
+          <div style="box-shadow:inset -1px -1px 0 var(--color-divider);padding:26px 30px">
+            <div style="font-size:13px;font-weight:500;color:color-mix(in srgb,var(--color-text) 70%,transparent)">{{ p.title }}</div>
+            <div style="font-family:var(--font-heading);font-weight:600;font-size:64px;line-height:.95;letter-spacing:-.025em;margin:10px 0 8px;font-variant-numeric:tabular-nums">{{ p.big }}</div>
+            <p style="margin:0;font-size:15px">{{ p.susText }}</p>
+            <p style="margin:2px 0 0;font-size:13px;color:color-mix(in srgb,var(--color-text) 72%,transparent)">{{ p.range }}</p>
+            <sc-if value="{{ p.ok }}">
+              <div style="margin-top:16px">
+                <div style="position:relative;height:22px;border-left:1px solid var(--color-divider);border-right:1px solid var(--color-divider)"><i style="position:absolute;left:0;right:0;top:50%;height:1px;background:var(--color-divider)"></i><i style="position:absolute;left:25%;top:6px;bottom:6px;width:1px;background:var(--color-divider)"></i><i style="position:absolute;left:50%;top:4px;bottom:4px;width:1px;background:var(--color-divider)"></i><i style="position:absolute;left:75%;top:6px;bottom:6px;width:1px;background:var(--color-divider)"></i><i style="{{ p.ciStyle }}"></i><i style="{{ p.dotStyle }}"></i></div>
+                <div style="display:flex;justify-content:space-between;font-size:11px;color:color-mix(in srgb,var(--color-text) 70%,transparent);margin-top:4px"><span>0%</span><span>50%</span><span>100%</span></div>
+                <p style="margin:6px 0 0;font-size:13px">95% interval <strong>{{ p.ciText }}</strong></p>
+              </div>
+            </sc-if>
+            <sc-if value="{{ p.notOk }}"><p style="margin:16px 0 0;font-size:14px">At least 30 tests are required for an estimate.</p></sc-if>
+          </div>
+        </sc-for>
+      </div>
+      <div style="padding:8px 30px 16px;border-top:1px solid var(--color-divider)">
+        <details style="padding:8px 0">
+          <summary style="display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:500;color:var(--color-accent-700);cursor:pointer"><span>Full count table</span><svg width="16" height="16"><use href="#i-chevron"></use></svg></summary>
+          <div style="overflow-x:auto;margin-top:10px"><table class="table"><thead><tr><th>Period</th><th>Eligible</th><th>Tested</th><th>Susceptible</th><th>Resistant</th><th>Not tested</th></tr></thead><tbody>
+            <sc-for list="{{ periods }}" as="p" hint-placeholder-count="2"><tr><td><strong>{{ p.title }}</strong></td><td>{{ p.elig }}</td><td>{{ p.tested }}</td><td>{{ p.s }}</td><td>{{ p.r }}</td><td>{{ p.nt }}</td></tr></sc-for>
+          </tbody></table></div>
+        </details>
+        <button class="btn btn-ghost" onClick="{{ openEvidenceProv }}" style="margin-top:4px">Calculation &amp; provenance<svg width="14" height="14"><use href="#i-arrow-right"></use></svg></button>
+      </div>
+    </section>
+  </sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ showComparison }}" hint-placeholder-val="{{ true }}">
+<section id="comparison" class="blueprint" style="margin-top:40px">
+  
+  <div style="padding:26px 30px 22px;display:flex;justify-content:space-between;gap:16px;align-items:flex-start">
+    <div><div style="font-size:13px;font-weight:500;color:var(--color-accent-700)">A shared isolate set</div><h2 style="font-size:28px;line-height:1.15;letter-spacing:-.02em;margin:8px 0 0">Antibiotic comparison</h2></div>
+    <svg width="26" height="26" style="color:var(--color-accent-700);flex:none"><use href="#i-compare"></use></svg>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));margin:0 -1px -1px 0;clip-path:inset(0 1px 1px 0);border-top:1px solid var(--color-divider)">
+    <div style="box-shadow:inset -1px -1px 0 var(--color-divider);padding:16px 30px"><div style="font-size:13px;font-weight:500;margin-bottom:8px;color:color-mix(in srgb,var(--color-text) 70%,transparent)">Antibiotic A</div><div style="display:flex;align-items:center;gap:10px;font-size:16px"><i style="width:10px;height:10px;background:var(--color-accent-700)"></i>{{ drugName }}<span class="tag tag-accent">Primary</span></div></div>
+    <div class="field" style="box-shadow:inset -1px -1px 0 var(--color-divider);padding:16px 30px"><label for="antibiotic-b" style="font-size:13px;font-weight:500">Compare with B</label>
+      <select id="antibiotic-b" class="input" value="{{ drugB }}" onChange="{{ onDrugB }}"><sc-for list="{{ drugBOpts }}" as="o" hint-placeholder-count="6"><option value="{{ o.value }}" disabled="{{ o.disabled }}">{{ o.label }}</option></sc-for></select></div>
+    <div style="box-shadow:inset -1px -1px 0 var(--color-divider);padding:16px 30px"><div style="font-size:13px;font-weight:500;margin-bottom:8px;color:color-mix(in srgb,var(--color-text) 70%,transparent)">Comparison period</div>
+      <div class="seg" role="group" aria-label="Comparison period"><sc-for list="{{ cmpWins }}" as="w" hint-placeholder-count="2"><label class="seg-opt"><input type="radio" name="cmpw" checked="{{ w.checked }}" onChange="{{ w.pick }}"><span>{{ w.label }}</span></label></sc-for></div></div>
+  </div>
+  <div style="border-top:1px solid var(--color-divider)">
+    <sc-if value="{{ cmpEmpty }}"><div style="padding:44px 30px;text-align:center"><svg width="26" height="26" style="color:var(--color-accent-700)"><use href="#i-alert"></use></svg><h3 style="margin:10px 0 4px;font-size:26px">Choose two antibiotics</h3><p style="margin:0;font-size:14px">Select a second non-screening antibiotic to compare observed tests.</p></div></sc-if>
+    <sc-if value="{{ cmpLoading }}"><div role="status" style="padding:30px;display:flex;gap:10px;align-items:center"><i style="width:9px;height:9px;border:1.5px solid var(--color-accent)"></i>Loading evidence…</div></sc-if>
+    <sc-if value="{{ cmpHas }}" hint-placeholder-val="{{ false }}">
+      <div>
+        <div style="padding:16px 30px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:14px"><span>{{ cmpRange }}</span><span class="tag tag-neutral">{{ cmpPaired }}</span></div>
+        <sc-if value="{{ cmpOk }}">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));margin:0 -1px -1px 0;clip-path:inset(0 1px 1px 0);border-top:1px solid var(--color-divider)">
+            <div style="box-shadow:inset -1px -1px 0 var(--color-divider);padding:26px 30px" aria-label="Historical laboratory susceptibility on the same isolates">
+              <sc-for list="{{ cmpRows }}" as="r" hint-placeholder-count="2">
+                <div style="display:grid;grid-template-columns:64px 1fr 76px;align-items:center;gap:14px;margin-bottom:14px">
+                  <span style="font-family:var(--font-heading);font-weight:600;font-size:24px">{{ r.code }}</span>
+                  <div style="height:30px;border:1px solid var(--color-divider);border-radius:8px;overflow:hidden"><div style="{{ r.barStyle }}"></div></div>
+                  <strong style="font-family:var(--font-heading);font-weight:600;font-size:26px;text-align:right">{{ r.valueStr }}</strong>
+                </div>
+              </sc-for>
+              <div style="display:flex;justify-content:space-between;margin-left:78px;margin-right:90px;font-size:11px;color:color-mix(in srgb,var(--color-text) 70%,transparent)"><span>0%</span><span>50%</span><span>100%</span></div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));margin:0 -1px -1px 0;clip-path:inset(0 1px 1px 0)">
+              <div style="box-shadow:inset -1px -1px 0 var(--color-divider);padding:26px 30px"><div style="font-size:13px;font-weight:500;color:color-mix(in srgb,var(--color-text) 70%,transparent)">Net difference · B minus A</div><div style="font-family:var(--font-heading);font-weight:600;font-size:44px;line-height:1;margin-top:8px;letter-spacing:-.02em">{{ cmpNet }}<small style="font-size:22px;margin-left:4px">pp</small></div></div>
+              <div style="box-shadow:inset -1px -1px 0 var(--color-divider);padding:26px 30px"><div style="font-size:13px;font-weight:500;color:color-mix(in srgb,var(--color-text) 70%,transparent)">Additional isolates susceptible to B</div><div style="font-family:var(--font-heading);font-weight:600;font-size:44px;line-height:1;margin-top:8px;letter-spacing:-.02em">{{ cmpAddedN }}<small style="font-size:22px;margin-left:6px">({{ cmpAddedPct }})</small></div></div>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ cmpNo }}"><div style="margin:0 30px 18px;padding:16px 18px;border:1px solid var(--color-divider);border-radius:12px;display:flex;gap:12px;align-items:flex-start"><svg width="18" height="18" style="flex:none;color:var(--color-accent-700);margin-top:2px"><use href="#i-help"></use></svg><p style="margin:0;font-size:14px"><strong>{{ cmpNoTitle }}</strong><br>Percentages are hidden until at least 30 isolates have both results.</p></div></sc-if>
+        <div style="padding:6px 30px 20px;border-top:1px solid var(--color-divider)">
+          <details style="padding:8px 0">
+            <summary style="display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:500;color:var(--color-accent-700);cursor:pointer"><span>Paired counts &amp; missing tests</span><svg width="16" height="16"><use href="#i-chevron"></use></svg></summary>
+            <div role="table" aria-label="Paired susceptibility counts" style="margin-top:10px"><div role="row" style="display:grid;align-items:center;gap:12px;padding:10px 8px;border-bottom:1px solid color-mix(in srgb,var(--color-text) 10%,transparent);font-size:14px;grid-template-columns:1fr 90px;font-size:13px;font-weight:500;color:color-mix(in srgb,var(--color-text) 70%,transparent);border-bottom:1px solid var(--color-divider)"><span role="columnheader">Paired result</span><span role="columnheader">Isolates</span></div><sc-for list="{{ cmpTable }}" as="ct"><div role="row" style="display:grid;align-items:center;gap:12px;padding:10px 8px;border-bottom:1px solid color-mix(in srgb,var(--color-text) 10%,transparent);font-size:14px;grid-template-columns:1fr 90px"><span role="cell">{{ ct.label }}</span><span role="cell">{{ ct.value }}</span></div></sc-for></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px;font-size:13px;color:color-mix(in srgb,var(--color-text) 72%,transparent)"><span>{{ cmpFoot1 }}<br>{{ cmpFoot2 }}</span><button class="btn btn-ghost" onClick="{{ openCmpProv }}">How calculated<svg width="14" height="14"><use href="#i-arrow-right"></use></svg></button></div>
+          </details>
+          <p style="margin:6px 0 0;font-size:13px;color:color-mix(in srgb,var(--color-text) 72%,transparent)">Historical laboratory susceptibility. This comparison does not establish clinical suitability or treatment success.</p>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+</section>
+</sc-if>
+
+<sc-if value="{{ isWard }}" hint-placeholder-val="{{ true }}">
+<section class="blueprint" style="margin-top:40px">
+  
+  <div style="padding:26px 30px 22px;display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap">
+    <div><div style="font-size:13px;font-weight:500;color:var(--color-accent-700)">Trend</div><h2 style="font-size:28px;line-height:1.15;letter-spacing:-.02em;margin:8px 0 6px">Susceptibility over time</h2><p style="margin:0;font-size:14px;color:color-mix(in srgb,var(--color-text) 72%,transparent)">28-day estimates sampled at each month end, up to the report end date.</p></div>
+    <button class="btn btn-secondary" disabled="{{ refreshing }}" onClick="{{ refreshNow }}"><svg width="16" height="16"><use href="#i-refresh"></use></svg>Refresh now</button>
+  </div>
+  <div style="border-top:1px solid var(--color-divider);padding:16px 30px;display:flex;align-items:flex-end;gap:12px 28px;flex-wrap:wrap">
+    <div class="field" style="min-width:150px"><label for="chart-year" style="font-size:13px;font-weight:500">Chart year</label>
+      <select id="chart-year" class="input" value="{{ chartYear }}" aria-describedby="chart-year-help" onChange="{{ onYear }}"><sc-for list="{{ yearOpts }}" as="y" hint-placeholder-count="4"><option value="{{ y.value }}">{{ y.label }}</option></sc-for></select></div>
+    <p id="chart-year-help" style="margin:0;flex:1 1 300px;font-size:13px;color:color-mix(in srgb,var(--color-text) 72%,transparent)">{{ yearHelp }}</p>
+  </div>
+  <div role="status" style="border-top:1px solid var(--color-divider);padding:10px 30px;font-size:12px;letter-spacing:.02em;color:color-mix(in srgb,var(--color-text) 72%,transparent)">{{ trFresh }}</div>
+  <sc-if value="{{ trLoading }}"><div style="border-top:1px solid var(--color-divider);padding:30px;display:flex;gap:10px;align-items:center"><i style="width:9px;height:9px;border:1.5px solid var(--color-accent)"></i>{{ trLoadingText }}</div></sc-if>
+  <sc-if value="{{ trReady }}" hint-placeholder-val="{{ false }}">
+    <div style="border-top:1px solid var(--color-divider)">
+      <sc-if value="{{ trNoDates }}"><p style="margin:0;padding:24px 30px;font-size:14px">No published collection dates are available in this year.</p></sc-if>
+      <sc-if value="{{ trNoAvail }}"><p style="margin:0;padding:24px 30px;font-size:14px">No monthly cutoff has 30 tested isolates. Counts remain available below.</p></sc-if>
+      <sc-if value="{{ trChart }}">
+        <div role="region" aria-label="Susceptibility time chart" tabindex="0" style="overflow-x:auto;padding:22px 30px 6px">
+          <svg viewBox="0 0 780 290" role="img" aria-label="28-day susceptibility at monthly collection cutoffs" style="width:100%;min-width:600px;height:auto;display:block">
+            <sc-for list="{{ trGrid }}" as="g" hint-placeholder-count="5"><g><line x1="52" x2="736" y1="{{ g.y }}" y2="{{ g.y }}" style="stroke:var(--color-divider);stroke-width:1"></line><text x="40" y="{{ g.ty }}" style="text-anchor:end;font-size:11px;fill:var(--color-neutral-700);font-family:var(--font-body)">{{ g.label }}</text></g></sc-for>
+            <sc-for list="{{ trSegs }}" as="s" hint-placeholder-count="1"><path d="{{ s.d }}" style="fill:none;stroke:var(--color-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"></path></sc-for>
+            <sc-for list="{{ trPts }}" as="q" hint-placeholder-count="9"><g>
+              <sc-if value="{{ q.has }}"><circle cx="{{ q.x }}" cy="{{ q.y }}" r="5" style="fill:#fff;stroke:var(--color-accent-700);stroke-width:2"><title>{{ q.title }}</title></circle></sc-if>
+              <sc-if value="{{ q.gap }}"><g><line x1="{{ q.x }}" x2="{{ q.x }}" y1="20" y2="250" style="stroke:var(--color-divider);stroke-dasharray:3 4"></line><text x="{{ q.x }}" y="238" style="text-anchor:middle;font-size:10px;fill:var(--color-neutral-700);font-family:var(--font-body)">&lt;30 tests</text><title>{{ q.title }}</title></g></sc-if>
+              <text x="{{ q.x }}" y="274" style="text-anchor:middle;font-size:11px;fill:var(--color-neutral-700);font-family:var(--font-body)">{{ q.month }}</text>
+            </g></sc-for>
+          </svg>
+        </div>
+      </sc-if>
+      <p style="margin:0;padding:6px 30px 14px;font-size:13px;color:color-mix(in srgb,var(--color-text) 72%,transparent)">Gaps indicate fewer than 30 tests or unavailable evidence. All points use the same published snapshot; they do not reproduce when results became known.</p>
+      <div style="padding:6px 30px 18px;border-top:1px solid var(--color-divider)">
+        <details style="padding:8px 0">
+          <summary style="display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:500;color:var(--color-accent-700);cursor:pointer"><span>Monthly values, counts &amp; exports</span><svg width="16" height="16"><use href="#i-chevron"></use></svg></summary>
+          <div style="overflow-x:auto;margin-top:10px"><div role="table" aria-label="Monthly values" style="min-width:560px"><div role="row" style="display:grid;align-items:center;gap:12px;padding:10px 8px;border-bottom:1px solid color-mix(in srgb,var(--color-text) 10%,transparent);font-size:14px;grid-template-columns:1.3fr 1fr .8fr 1.3fr 90px;font-size:13px;font-weight:500;color:color-mix(in srgb,var(--color-text) 70%,transparent);border-bottom:1px solid var(--color-divider)"><span role="columnheader">28-day period ending</span><span role="columnheader">Susceptible</span><span role="columnheader">Tested</span><span role="columnheader">95% interval</span><span role="columnheader">Snapshot</span></div><sc-for list="{{ trRows }}" as="tw"><div role="row" style="display:grid;align-items:center;gap:12px;padding:10px 8px;border-bottom:1px solid color-mix(in srgb,var(--color-text) 10%,transparent);font-size:14px;grid-template-columns:1.3fr 1fr .8fr 1.3fr 90px"><span role="cell">{{ tw.date }}</span><span role="cell">{{ tw.val }}</span><span role="cell">{{ tw.tested }}</span><span role="cell">{{ tw.ci }}</span><span role="cell"><button class="btn btn-ghost" onClick="{{ tw.inspect }}">Inspect</button></span></div></sc-for></div></div>
+        </details>
+      </div>
+    </div>
+  </sc-if>
+</section>
+</sc-if>
+
+<sc-if value="{{ isInvestigate }}" hint-placeholder-val="{{ false }}">
+<p style="margin:28px 0 0;font-size:13px;color:color-mix(in srgb,var(--color-text) 72%,transparent)">The overview periods overlap. For increases detected against a separate preceding baseline, <a href="#alerts" onClick="{{ goAlerts }}">view resistance alerts</a>.</p>
+</sc-if>
+
+<sc-if value="{{ isAlerts }}" hint-placeholder-val="{{ false }}">
+<div>
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap">
+    <div style="min-width:0;flex:1 1 480px">
+      <div style="display:flex;align-items:center;gap:12px;font-size:13px;font-weight:500;color:color-mix(in srgb,var(--color-text) 70%,transparent)"><span>Resistance monitoring</span></div>
+      <h1 tabindex="-1" style="font-size:46px;line-height:1.05;letter-spacing:-.02em;margin:10px 0 10px">Resistance alerts</h1>
+      <p style="font-size:16px;margin:0;color:color-mix(in srgb,var(--color-text) 72%,transparent)">Review increases in resistance within the monitored patient groups.</p>
+    </div>
+    <span class="blueprint" style="width:52px;height:52px;display:grid;place-items:center;color:var(--color-accent-700)"><svg width="24" height="24"><use href="#i-bell"></use></svg></span>
+  </div>
+
+  <sc-if value="{{ alertsPinned }}">
+    <div class="blueprint" style="margin-top:36px;padding:48px 30px;text-align:center">
+      <svg width="28" height="28" style="color:var(--color-accent-700)"><use href="#i-clock"></use></svg>
+      <h3 style="margin:12px 0 6px;font-size:30px">Alerts follow the latest monitoring date</h3>
+      <p style="margin:0 auto 18px;font-size:15px;max-width:520px">Your report ends on {{ reportDateLong }}. Current alerts belong to 27 September 2026.</p>
+      <button class="btn btn-primary" onClick="{{ useLatestMonitoring }}" style="padding:10px 22px;font-size:15px">View latest monitoring</button>
+    </div>
+  </sc-if>
+  <sc-if value="{{ alertsLive }}">
+    <div>
+      <div style="margin-top:36px;display:flex;flex-wrap:wrap;gap:16px"><div style="flex:1 1 220px;border:1px solid var(--color-divider);border-radius:12px;padding:16px 24px"><span style="font-size:13px;font-weight:500;display:block;color:color-mix(in srgb,var(--color-text) 70%,transparent)">Monitoring date</span><strong style="font-family:var(--font-heading);font-size:30px;font-weight:600">27 Sep 2026</strong></div><div style="flex:1 1 220px;border:1px solid var(--color-divider);border-radius:12px;padding:16px 24px"><span style="font-size:13px;font-weight:500;display:block;color:color-mix(in srgb,var(--color-text) 70%,transparent)">Monitored groups</span><strong style="font-family:var(--font-heading);font-size:30px;font-weight:600">{{ monitorCount }}</strong></div><div style="flex:1 1 220px;border:1px solid var(--color-divider);border-radius:12px;padding:16px 24px"><span style="font-size:13px;font-weight:500;display:block;color:color-mix(in srgb,var(--color-text) 70%,transparent)">Proposed threshold</span><strong style="font-family:var(--font-heading);font-size:30px;font-weight:600">{{ thresholdPp }} pp</strong></div></div>
+
+      <section class="blueprint" style="margin-top:44px">
+        
+        <div style="padding:26px 30px 20px"><h2 style="font-size:28px;line-height:1.15;letter-spacing:-.02em;margin:0 0 6px">Alerts to investigate</h2><p style="margin:0;font-size:14px;color:color-mix(in srgb,var(--color-text) 72%,transparent)">Each alert names its own cohort; ward-screen filters do not redefine it.</p></div>
+        <div style="border-top:1px solid var(--color-divider)">
+          <sc-for list="{{ alertRows }}" as="a" hint-placeholder-count="3">
+            <article style="display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;padding:24px 30px;border-bottom:1px solid var(--color-divider)">
+              <div style="flex:1 1 420px;min-width:0">
+                <span class="{{ a.tagClass }}" style="{{ a.tagStyle }}">{{ a.tag }}</span>
+                <h3 style="margin:12px 0 4px;font-size:30px">{{ a.title }}</h3>
+                <p style="margin:0 0 4px;font-size:14px">{{ a.group }}</p>
+                <p style="margin:0;font-size:14px;color:color-mix(in srgb,var(--color-text) 72%,transparent)"><strong style="color:var(--color-text)">{{ a.change }}</strong> · First detected {{ a.first }}</p>
+                <sc-if value="{{ a.low }}"><p style="margin:6px 0 0;font-size:13px">Last sufficient state: {{ a.lastState }}. Low counts do not establish clearance.</p></sc-if>
+              </div>
+              <button class="btn btn-primary" onClick="{{ a.open }}" style="padding:11px 20px;font-size:15px">Investigate alert<svg width="16" height="16"><use href="#i-arrow-right"></use></svg></button>
+            </article>
+          </sc-for>
+        </div>
+      </section>
+
+      <section class="blueprint" style="margin-top:44px">
+        
+        <div style="padding:26px 30px 20px"><h2 style="font-size:28px;line-height:1.15;letter-spacing:-.02em;margin:0 0 6px">Monitored groups</h2><p style="margin:0;font-size:14px;color:color-mix(in srgb,var(--color-text) 72%,transparent)">Recent 28-day resistance compared with the preceding, separate 12-month baseline.</p></div>
+        <div role="region" aria-label="Monitored resistance evaluations" tabindex="0" style="overflow-x:auto;border-top:1px solid var(--color-divider);padding:6px 14px 14px">
+          <table class="table" style="min-width:780px"><thead><tr><th>Patient group</th><th>Recent resistance</th><th>Baseline resistance</th><th>Change</th><th>Evaluation</th><th>Snapshot</th></tr></thead><tbody>
+            <sc-for list="{{ monitorRows }}" as="m" hint-placeholder-count="5">
+              <tr style="vertical-align:top">
+                <td style="min-width:260px"><strong>{{ m.group }}</strong><br><span style="font-size:13px;color:color-mix(in srgb,var(--color-text) 72%,transparent)">{{ m.drug }}</span></td>
+                <td><span style="font-family:var(--font-heading);font-weight:600;font-size:22px">{{ m.recent }}</span><br><small style="color:color-mix(in srgb,var(--color-text) 72%,transparent)">{{ m.recentN }}</small></td>
+                <td><span style="font-family:var(--font-heading);font-weight:600;font-size:22px">{{ m.baseline }}</span><br><small style="color:color-mix(in srgb,var(--color-text) 72%,transparent)">{{ m.baselineN }}</small></td>
+                <td style="white-space:nowrap">{{ m.change }}</td>
+                <td><span class="{{ m.evalClass }}" style="{{ m.evalStyle }}">{{ m.evalLabel }}</span><sc-if value="{{ m.reason }}"><br><small style="color:color-mix(in srgb,var(--color-text) 72%,transparent)">{{ m.reasonText }}</small></sc-if></td>
+                <td><div style="display:flex;flex-direction:column;gap:6px;align-items:flex-start"><button class="btn btn-secondary" onClick="{{ m.csv }}" style="padding:4px 10px"><svg width="14" height="14"><use href="#i-download"></use></svg>CSV</button><button class="btn btn-secondary" onClick="{{ m.json }}" style="padding:4px 10px">JSON</button></div></td>
+              </tr>
+            </sc-for>
+          </tbody></table>
+        </div>
+      </section>
+
+      <details style="margin-top:28px;padding:14px 0;border-top:1px solid var(--color-divider);border-bottom:1px solid var(--color-divider)">
+        <summary style="display:flex;justify-content:space-between;align-items:center;font-size:15px;font-weight:500;color:var(--color-accent-700);cursor:pointer"><span>How resistance alerts differ from the overview</span><svg width="16" height="16"><use href="#i-chevron"></use></svg></summary>
+        <p style="margin:12px 0 8px;font-size:14px;max-width:760px">The overview's last 12 months includes the recent 28 days. Alert detection instead uses a preceding 12-month baseline that ends before the recent period starts.</p>
+        <p style="margin:0;font-size:14px;max-width:760px">Both periods need at least 30 tested isolates. A threshold crossing is a proposed signal for review, not a significance test or evidence of an outbreak. Monitored groups are configured independently of the ward-screen filters.</p>
+      </details>
+    </div>
+  </sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ isAlert }}" hint-placeholder-val="{{ false }}">
+<div>
+  <button class="btn btn-ghost" onClick="{{ goAlerts }}" style="margin-bottom:18px"><svg width="16" height="16"><use href="#i-arrow-left"></use></svg>Back to resistance alerts</button>
+  <div style="min-width:0">
+    <div style="display:flex;align-items:center;gap:12px;font-size:13px;font-weight:500;color:color-mix(in srgb,var(--color-text) 70%,transparent)"><span>Resistance alert investigation</span></div>
+    <h1 tabindex="-1" style="font-size:46px;line-height:1.05;letter-spacing:-.02em;margin:10px 0 10px">Investigate a resistance increase</h1>
+    <p style="font-size:16px;margin:0;color:color-mix(in srgb,var(--color-text) 72%,transparent)">Compare the original detection with the latest evaluation of the same patient group.</p>
+  </div>
+
+  <div style="margin-top:30px;display:flex;align-items:center;gap:12px;flex-wrap:wrap" role="group" aria-label="Investigation snapshot">
+    <div class="seg"><sc-for list="{{ ivViews }}" as="v" hint-placeholder-count="2"><label class="seg-opt"><input type="radio" name="ivview" checked="{{ v.checked }}" onChange="{{ v.pick }}"><span>{{ v.label }}</span></label></sc-for></div>
+    <p style="margin:0;font-size:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">{{ ivSnapLabel }} · Current alert state: <span class="{{ ivStateClass }}" style="{{ ivStateStyle }}">{{ ivState }}</span></p>
+  </div>
+
+  <div style="margin-top:24px;display:flex;flex-wrap:wrap;gap:36px 32px;align-items:flex-start">
+    <div style="flex:3 1 600px;min-width:0">
+      <div class="blueprint" style="padding:16px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+        
+        <svg width="22" height="22" style="color:var(--color-accent-700);flex:none"><use href="#i-microscope"></use></svg>
+        <div style="flex:1 1 280px"><strong style="font-size:16px">{{ ivMonitor }}</strong><div style="font-size:13px;color:color-mix(in srgb,var(--color-text) 72%,transparent)">{{ ivDrug }} · Monitoring date {{ ivMonDate }}</div></div>
+        <span class="{{ ivEvalClass }}" style="{{ ivEvalStyle }}">{{ ivEvalLabel }}</span>
+      </div>
+
+      <div role="tablist" aria-label="Investigation views" style="display:flex;gap:0;margin-top:26px;border-bottom:1px solid var(--color-divider);flex-wrap:wrap">
+        <sc-for list="{{ ivTabs }}" as="t" hint-placeholder-count="3">
+          <button role="tab" aria-selected="{{ t.active }}" onClick="{{ t.pick }}" style="position:relative;background:none;border:0;cursor:pointer;padding:12px 20px;font-size:15px;color:var(--color-text)" style-hover="background:color-mix(in srgb,var(--color-accent) 8%,transparent)">{{ t.label }}<sc-if value="{{ t.active }}"><i style="position:absolute;left:0;right:0;bottom:-1px;height:3px;background:var(--color-accent)"></i></sc-if></button>
+        </sc-for>
+      </div>
+
+      <sc-if value="{{ ivTabEvidence }}">
+        <div>
+          <section class="blueprint" style="margin-top:26px">
+            
+            <div style="padding:24px 28px 18px"><h2 style="font-size:28px;line-height:1.15;margin:0 0 6px">Resistance in separate periods</h2><p style="margin:0;font-size:14px;color:color-mix(in srgb,var(--color-text) 72%,transparent)">The baseline ends before the recent 28 days begin. These dates do not overlap.</p></div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));margin:0 -1px -1px 0;clip-path:inset(0 1px 1px 0);border-top:1px solid var(--color-divider)">
+              <sc-for list="{{ ivMeasures }}" as="w" hint-placeholder-count="2">
+                <div style="box-shadow:inset -1px -1px 0 var(--color-divider);padding:24px 28px">
+                  <div style="font-size:13px;font-weight:500;color:color-mix(in srgb,var(--color-text) 70%,transparent)">{{ w.label }}</div>
+                  <div style="font-family:var(--font-heading);font-weight:600;font-size:60px;line-height:.95;letter-spacing:-.025em;margin:10px 0 8px;font-variant-numeric:tabular-nums">{{ w.value }}</div>
+                  <p style="margin:0;font-size:15px">{{ w.line }}</p>
+                  <p style="margin:2px 0 0;font-size:13px;color:color-mix(in srgb,var(--color-text) 72%,transparent)">{{ w.range }}</p>
+                  <sc-if value="{{ w.hasCi }}">
+                    <div style="margin-top:14px">
+                      <div style="position:relative;height:22px;border-left:1px solid var(--color-divider);border-right:1px solid var(--color-divider)"><i style="position:absolute;left:0;right:0;top:50%;height:1px;background:var(--color-divider)"></i><i style="position:absolute;left:25%;top:6px;bottom:6px;width:1px;background:var(--color-divider)"></i><i style="position:absolute;left:50%;top:4px;bottom:4px;width:1px;background:var(--color-divider)"></i><i style="position:absolute;left:75%;top:6px;bottom:6px;width:1px;background:var(--color-divider)"></i><i style="{{ w.ciStyle }}"></i><i style="{{ w.dotStyle }}"></i></div>
+                      <div style="display:flex;justify-content:space-between;font-size:11px;color:color-mix(in srgb,var(--color-text) 70%,transparent);margin-top:4px"><span>0%</span><span>50%</span><span>100%</span></div>
+                      <p style="margin:6px 0 0;font-size:13px">95% interval <strong>{{ w.ciText }}</strong></p>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ w.withheld }}"><p style="margin:12px 0 0;font-size:13px">Estimate withheld: fewer than 30 tested isolates.</p></sc-if>
+                  <sc-if value="{{ w.noData }}"><p style="margin:12px 0 0;font-size:13px">This period could not be evaluated.</p></sc-if>
+                </div>
+              </sc-for>
+            </div>
+            <div style="border-top:1px solid var(--color-divider);padding:22px 28px;display:flex;gap:18px;align-items:center;flex-wrap:wrap">
+              <div style="font-family:var(--font-heading);font-weight:600;font-size:38px;line-height:1;letter-spacing:-.02em">{{ ivChange }}</div>
+              <p style="margin:0;flex:1 1 280px;font-size:14px">Recent minus baseline resistance · Review threshold {{ thresholdPp }} percentage points. This is a heuristic signal, not a significance test.</p>
+            </div>
+          </section>
+          <section class="blueprint" style="margin-top:36px">
+            
+            <div style="padding:22px 28px 10px"><h3 style="font-size:28px;margin:0">The counts behind the change</h3></div>
+            <div style="overflow-x:auto;padding:0 14px 14px"><table class="table"><thead><tr><th>Measure</th><th>Baseline</th><th>Recent</th></tr></thead><tbody><sc-for list="{{ ivCounts }}" as="c" hint-placeholder-count="5"><tr><td>{{ c.label }}</td><td>{{ c.b }}</td><td>{{ c.r }}</td></tr></sc-for></tbody></table></div>
+          </section>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ ivTabPop }}">
+        <div>
+          <section class="blueprint" style="margin-top:26px">
+            
+            <div style="padding:24px 28px 14px"><h2 style="font-size:28px;line-height:1.15;margin:0 0 6px">Age composition</h2><p style="margin:0;font-size:14px;color:color-mix(in srgb,var(--color-text) 72%,transparent)">Eligible isolate counts by age group. Periods have different sample sizes.</p></div>
+            <div style="padding:0 28px 8px;display:flex;gap:20px;font-size:13px"><span style="display:flex;align-items:center;gap:8px"><i style="width:12px;height:8px;background:var(--color-accent-300);border:1px solid var(--color-accent-600)"></i>Baseline</span><span style="display:flex;align-items:center;gap:8px"><i style="width:12px;height:8px;background:var(--color-accent-800)"></i>Recent</span></div>
+            <div style="padding:8px 28px 22px" aria-hidden="true">
+              <sc-for list="{{ ivAge }}" as="a" hint-placeholder-count="4">
+                <div style="display:grid;grid-template-columns:110px 1fr;gap:14px;align-items:center;margin-bottom:12px"><span style="font-size:14px">{{ a.label }}</span><div style="display:flex;flex-direction:column;gap:3px"><div style="{{ a.bStyle }}"></div><div style="{{ a.rStyle }}"></div></div></div>
+              </sc-for>
+              <div style="display:flex;justify-content:space-between;margin-left:124px;font-size:11px;color:color-mix(in srgb,var(--color-text) 70%,transparent)"><span>0</span><span>{{ ivAgeMid }}</span><span>{{ ivAgeMax }} isolates</span></div>
+            </div>
+            <div style="border-top:1px solid var(--color-divider);padding:16px 28px;display:flex;gap:12px;font-size:14px"><svg width="18" height="18" style="flex:none;color:var(--color-accent-700);margin-top:2px"><use href="#i-info"></use></svg><p style="margin:0">{{ ivShared }} Patient populations are not assumed independent. The share of eligible isolates from older patients may differ between periods; this is descriptive, not an explanation of the change.</p></div>
+          </section>
+          <sc-for list="{{ ivGroups }}" as="gr" hint-placeholder-count="4">
+            <section class="blueprint" style="margin-top:36px">
+              
+              <div style="padding:20px 28px 8px"><h3 style="font-size:26px;margin:0">{{ gr.title }}</h3></div>
+              <div style="overflow-x:auto;padding:0 14px 14px"><table class="table"><thead><tr><th>Group</th><th>Baseline</th><th>Recent</th></tr></thead><tbody><sc-for list="{{ gr.rows }}" as="r" hint-placeholder-count="3"><tr><td>{{ r.label }}</td><td>{{ r.b }}</td><td>{{ r.r }}</td></tr></sc-for></tbody></table></div>
+            </section>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ ivTabTime }}">
+        <div>
+          <section class="blueprint" style="margin-top:26px">
+            
+            <div style="padding:24px 28px 12px"><h2 style="font-size:28px;line-height:1.15;margin:0 0 6px">Observation timeline</h2><p style="margin:0;font-size:14px;color:color-mix(in srgb,var(--color-text) 72%,transparent)">Collection periods and the evaluation event.</p></div>
+            <div style="padding:6px 28px 24px">
+              <sc-for list="{{ ivTimeline }}" as="e" hint-placeholder-count="3">
+                <article style="display:grid;grid-template-columns:26px 1fr;gap:0 16px;padding-bottom:20px">
+                  <div style="position:relative"><i style="position:absolute;left:12px;top:22px;bottom:-20px;width:1px;background:var(--color-divider)"></i><span style="display:block;width:11px;height:11px;margin:7px 0 0 7px;border:1.5px solid var(--color-accent-800);background:var(--color-bg)"></span></div>
+                  <div><div style="font-size:13px;font-weight:500;color:var(--color-accent-700)">{{ e.date }}</div><h3 style="margin:2px 0 2px;font-size:24px">{{ e.title }}</h3><p style="margin:0;font-size:14px">{{ e.detail }}</p></div>
+                </article>
+              </sc-for>
+            </div>
+          </section>
+          <section class="blueprint" style="margin-top:36px">
+            
+            <div style="padding:22px 28px 10px"><h3 style="font-size:28px;margin:0">Alert history</h3></div>
+            <ol style="margin:0;padding:0 28px 20px;list-style:none">
+              <sc-for list="{{ ivHistory }}" as="h" hint-placeholder-count="3"><li style="display:flex;gap:14px;align-items:center;padding:10px 0;border-top:1px solid var(--color-divider);font-size:14px"><span style="min-width:110px">{{ h.date }}</span><span class="{{ h.tagClass }}" style="{{ h.tagStyle }}">{{ h.label }}</span><span style="margin-left:auto;font-size:12px;color:color-mix(in srgb,var(--color-text) 70%,transparent)">revision {{ h.rev }}</span></li></sc-for>
+            </ol>
+          </section>
+        </div>
+      </sc-if>
+
+      <section class="blueprint" style="margin-top:36px">
+        
+        <div style="padding:24px 28px 14px"><h3 style="font-size:28px;margin:0 0 4px">Export this analysis</h3><p style="margin:0;font-size:14px;color:color-mix(in srgb,var(--color-text) 72%,transparent)">{{ ivExportDesc }}</p></div>
+        <div style="padding:0 28px 14px;display:flex;gap:10px"><button class="btn btn-primary" onClick="{{ ivCsv }}" style="padding:9px 18px"><svg width="15" height="15"><use href="#i-download"></use></svg>CSV</button><button class="btn btn-secondary" onClick="{{ ivJson }}" style="padding:9px 18px">JSON</button></div>
+        <details style="border-top:1px solid var(--color-divider);padding:12px 28px 16px">
+          <summary style="display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:500;color:var(--color-accent-700);cursor:pointer"><span>Snapshot &amp; method</span><svg width="16" height="16"><use href="#i-chevron"></use></svg></summary>
+          <div style="padding-top:10px;font-size:13px;display:grid;gap:4px"><span>Analysis {{ ivAnalysisId }}</span><span>Run fixture-run-001 · alert-v1 · resistance-rise-v1</span><span>Source authored-contract-fixtures-v1</span><sc-if value="{{ showFeed }}"><span>Feed: External feed · UTC reporting date. Imported-dataset coverage does not certify external-feed completeness.</span></sc-if><span>Rule proposal pending partner confirmation.</span>
+            <ul style="margin:6px 0 0;padding-left:18px"><li>A threshold crossing is a proposed review signal, not a significance test or evidence of an outbreak.</li><li>Both periods need at least 30 tested isolates.</li><li>No diagnoses, medication, clinical outcomes or result-release timestamps are available.</li></ul></div>
+        </details>
+      </section>
+    </div>
+
+    <aside style="flex:1 1 300px;min-width:0;display:flex;flex-direction:column;gap:32px">
+      <section class="blueprint" style="padding:22px 24px">
+        
+        <div style="font-size:13px;font-weight:500;color:var(--color-accent-700)">The exact population</div>
+        <h3 style="margin:6px 0 12px;font-size:28px">Review context</h3>
+        <dl style="margin:0;display:grid;gap:0">
+          <sc-for list="{{ ivContext }}" as="c" hint-placeholder-count="6"><div style="display:flex;justify-content:space-between;gap:14px;padding:9px 0;border-top:1px solid var(--color-divider);font-size:14px"><dt style="color:color-mix(in srgb,var(--color-text) 72%,transparent)">{{ c.k }}</dt><dd style="margin:0;text-align:right">{{ c.v }}</dd></div></sc-for>
+        </dl>
+      </section>
+      <section class="blueprint" style="padding:22px 24px">
+        
+        <svg width="22" height="22" style="color:var(--color-accent-700)"><use href="#i-info"></use></svg>
+        <h3 style="margin:8px 0 8px;font-size:26px">Read this as a starting point.</h3>
+        <p style="margin:0 0 8px;font-size:14px">Review the population and testing context before interpreting an observed change.</p>
+        <p style="margin:0 0 12px;font-size:14px">No diagnoses, medication, clinical outcomes or result-release timestamps are available.</p>
+        <span style="font-size:12px;color:color-mix(in srgb,var(--color-text) 72%,transparent)">Rule: resistance-rise-v1<br>Minimum: 30 tests in each period</span>
+      </section>
+    </aside>
+  </div>
+</div>
+</sc-if>
+
+<footer style="margin-top:72px;border-top:1px solid var(--color-divider);padding-top:18px;display:flex;justify-content:space-between;gap:12px 28px;flex-wrap:wrap;font-size:12px;color:color-mix(in srgb,var(--color-text) 72%,transparent)">
+  <span style="display:flex;align-items:center;gap:8px"><i style="width:6px;height:6px;border-radius:50%;background:var(--color-accent)"></i>Imported dataset: 2 Oct 2023 – 27 Sep 2026{{ feedNote }}</span>
+  <span>surveillance-v1 · Snapshot 8 · fixture-run-001</span>
+  <span>TYKS × mylab · JunctionX Turku · Prototype</span>
+</footer>
+</main>
+
+<sc-if value="{{ drawerOpen }}">
+  <div>
+    <button aria-label="Close panel" onClick="{{ closeDrawer }}" style="position:fixed;inset:0;z-index:50;border:0;padding:0;cursor:default;background:color-mix(in srgb,var(--color-neutral-900) 45%,transparent)"></button>
+    <aside role="dialog" aria-modal="true" aria-label="{{ drawerTitle }}" style="position:fixed;top:0;right:0;bottom:0;z-index:60;width:min(580px,100vw);background:var(--color-bg);border-left:1px solid var(--color-divider);border-radius:20px 0 0 20px;overflow:hidden;box-shadow:var(--shadow-lg);display:flex;flex-direction:column">
+      <div style="padding:24px 28px 18px;border-bottom:1px solid var(--color-divider);display:flex;justify-content:space-between;gap:16px;align-items:flex-start">
+        <div><div style="font-size:13px;font-weight:500;color:var(--color-accent-700)">Ward Evidence</div><h2 style="font-size:30px;line-height:1.1;letter-spacing:-.01em;margin:6px 0 8px">{{ drawerTitle }}</h2><p style="margin:0;font-size:14px;color:color-mix(in srgb,var(--color-text) 72%,transparent)">{{ drawerDesc }}</p></div>
+        <button class="btn btn-secondary btn-icon" aria-label="Close panel" onClick="{{ closeDrawer }}" style="flex:none"><svg width="18" height="18"><use href="#i-x"></use></svg></button>
+      </div>
+      <div style="flex:1;overflow-y:auto;padding:24px 28px 40px">
+
+        <sc-if value="{{ drawerPatients }}">
+          <div>
+            <sc-if value="{{ noPatient }}">
+              <div>
+                <label class="field"><span style="display:block;font-size:13px;font-weight:500;margin-bottom:6px;color:color-mix(in srgb,var(--color-text) 70%,transparent)">Patient identifier</span>
+                  <div style="position:relative"><svg width="18" height="18" style="position:absolute;left:11px;top:50%;margin-top:-9px;color:var(--color-accent-700)"><use href="#i-search"></use></svg><input class="input" style="padding-left:38px;min-height:42px" value="{{ patientText }}" onChange="{{ onPatientText }}" onInput="{{ onPatientText }}" placeholder="Enter a patient ID (e.g. P000001)" autocomplete="off"></div></label>
+                <sc-if value="{{ noQuery }}"><div class="blueprint" style="margin-top:26px;padding:34px 24px;text-align:center"><svg width="24" height="24" style="color:var(--color-accent-700)"><use href="#i-search"></use></svg><h3 style="margin:8px 0 4px;font-size:26px">Find a patient</h3><p style="margin:0;font-size:14px">Search a patient identifier to inspect samples from the preceding 12 months.</p></div></sc-if>
+                <sc-if value="{{ noMatches }}"><div class="blueprint" style="margin-top:26px;padding:34px 24px;text-align:center"><h3 style="margin:0 0 4px;font-size:26px">No matching patients</h3><p style="margin:0;font-size:14px">Try another patient identifier.</p></div></sc-if>
+                <sc-if value="{{ hasMatches }}"><div style="margin-top:22px;border:1px solid var(--color-divider);border-radius:12px;overflow:hidden"><sc-for list="{{ patientResults }}" as="p" hint-placeholder-count="3"><button onClick="{{ p.pick }}" style="width:100%;display:flex;align-items:center;gap:14px;padding:14px 16px;background:none;border:0;border-bottom:1px solid var(--color-divider);cursor:pointer;text-align:left;color:var(--color-text)" style-hover="background:color-mix(in srgb,var(--color-accent) 8%,transparent)"><span class="blueprint" style="width:38px;height:38px;display:grid;place-items:center;color:var(--color-accent-700);flex:none"><svg width="20" height="20"><use href="#i-user"></use></svg></span><span style="flex:1"><strong style="font-family:var(--font-heading);font-size:22px;display:block;line-height:1.1">{{ p.id }}</strong><small style="color:color-mix(in srgb,var(--color-text) 72%,transparent)">{{ p.label }}</small></span><svg width="16" height="16"><use href="#i-arrow-right"></use></svg></button></sc-for></div></sc-if>
+              </div>
+            </sc-if>
+            <sc-if value="{{ hasPatient }}">
+              <div>
+                <button class="btn btn-ghost" onClick="{{ backToSearch }}"><svg width="15" height="15"><use href="#i-arrow-left"></use></svg>Back to search</button>
+                <div style="display:flex;align-items:center;gap:14px;margin:16px 0 18px"><span class="blueprint" style="width:46px;height:46px;display:grid;place-items:center;color:var(--color-accent-700)"><svg width="23" height="23"><use href="#i-user"></use></svg></span><div><h3 style="margin:0;font-size:32px">{{ patient }}</h3><span class="tag tag-neutral">{{ patientTag }}</span></div></div>
+                <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:13px;padding:10px 0;border-top:1px solid var(--color-divider);border-bottom:1px solid var(--color-divider)"><span>Lookback starts {{ lookbackStart }}</span><span>Strict cutoff {{ cutoffDate }}</span></div>
+                <sc-if value="{{ noCultures }}"><div class="blueprint" style="margin-top:24px;padding:30px 24px;text-align:center"><h3 style="margin:0 0 4px;font-size:24px">No recorded samples in this lookback period</h3><p style="margin:0;font-size:14px">This does not establish the absence of resistance history outside the selected period.</p></div></sc-if>
+                <sc-if value="{{ hasCultures }}">
+                  <div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin:16px 0 8px"><strong style="font-size:15px">{{ cultureCount }}</strong><button class="btn btn-ghost" aria-pressed="{{ expanded }}" onClick="{{ toggleExpanded }}">{{ expandLabel }}</button></div>
+                    <div>
+                      <sc-for list="{{ cultures }}" as="c" hint-placeholder-count="3">
+                        <article style="position:relative;display:grid;grid-template-columns:30px 1fr;gap:0 14px;padding-bottom:22px">
+                          <div style="position:relative"><i style="position:absolute;left:14px;top:30px;bottom:-22px;width:1px;background:var(--color-divider)"></i><span class="blueprint" style="width:28px;height:28px;display:grid;place-items:center;color:var(--color-accent-700);background:var(--color-bg)"><svg width="15" height="15"><use href="#i-flask"></use></svg></span></div>
+                          <div style="min-width:0">
+                            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><h3 style="margin:0;font-size:26px">{{ c.date }}</h3><span class="tag tag-neutral">{{ c.specimen }}</span></div>
+                            <p style="margin:2px 0 8px;font-size:13px;color:color-mix(in srgb,var(--color-text) 72%,transparent)">{{ c.ward }} · {{ c.id }}</p>
+                            <sc-if value="{{ c.noIso }}"><div style="border:1px solid var(--color-divider);border-radius:12px;padding:10px 14px;font-size:14px">{{ c.result }}</div></sc-if>
+                            <sc-for list="{{ c.isolates }}" as="i" hint-placeholder-count="1">
+                              <div style="border:1px solid var(--color-divider);border-radius:12px;padding:14px 16px">
+                                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><h4 style="margin:0;font-size:20px;font-style:italic">{{ i.organism }}</h4><sc-for list="{{ i.pheno }}" as="ph" hint-placeholder-count="1"><span class="tag" style="background:var(--color-accent-900);color:var(--color-bg)">{{ ph }}</span></sc-for></div>
+                                <table class="table" style="margin-top:8px"><thead><tr><th>Antibiotic</th><th>Result</th></tr></thead><tbody>
+                                  <sc-for list="{{ i.tests }}" as="t" hint-placeholder-count="3"><tr><td>{{ t.label }}<sc-if value="{{ t.screening }}"><small style="display:block;color:color-mix(in srgb,var(--color-text) 72%,transparent)">Screening test</small></sc-if></td><td><span class="{{ t.cls }}" style="{{ t.style }}">{{ t.text }}</span></td></tr></sc-for>
+                                </tbody></table>
+                                <sc-if value="{{ i.more }}"><p style="margin:8px 0 0;font-size:12px;color:color-mix(in srgb,var(--color-text) 72%,transparent)">{{ i.moreText }}</p></sc-if>
+                              </div>
+                            </sc-for>
+                          </div>
+                        </article>
+                      </sc-for>
+                    </div>
+                  </div>
+                </sc-if>
+                <p style="margin:6px 0 16px;font-size:13px;color:color-mix(in srgb,var(--color-text) 72%,transparent)">Collection dates do not establish when results became available. Unlisted antibiotics have no recorded result.</p>
+                <div style="display:flex;gap:10px"><button class="btn btn-secondary" onClick="{{ histCsv }}">Export this page · CSV</button><button class="btn btn-secondary" onClick="{{ histJson }}">JSON</button></div>
+              </div>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ drawerProv }}">
+          <div>
+            <div style="display:flex;gap:16px;align-items:flex-start"><svg width="30" height="30" style="flex:none;color:var(--color-accent-700)"><use href="#i-shield"></use></svg><div><span class="tag tag-accent">Frozen analysis</span><h3 style="margin:8px 0 2px;font-size:30px">{{ pvTitle }}</h3><p style="margin:0;font-size:14px">Samples through {{ pvAsOf }}</p></div></div>
+            <div style="margin-top:24px;border-top:1px solid var(--color-divider);padding-top:16px"><h4 style="margin:0 0 6px;font-size:22px">Applied population</h4><p style="margin:0 0 4px;font-size:14px">{{ cohortText }}</p><p style="margin:0;font-size:14px">{{ pvDrugLine }}</p></div>
+            <div style="margin-top:24px;border-top:1px solid var(--color-divider);padding-top:16px"><h4 style="margin:0 0 10px;font-size:22px">Reporting periods</h4>
+              <sc-for list="{{ pvPeriods }}" as="k" hint-placeholder-count="2"><div style="border:1px solid var(--color-divider);border-radius:12px;padding:12px 14px;margin-bottom:10px;display:grid;gap:6px;font-size:14px"><strong>{{ k.label }}</strong><span>{{ k.range }}</span><code style="font-size:12px">{{ k.code }}</code><div style="display:flex;gap:8px;flex-wrap:wrap"><span class="{{ k.coverClass }}">{{ k.cover }}</span><span class="tag tag-neutral">Dataset import complete</span><sc-if value="{{ showFeed }}"><span class="tag tag-neutral">Includes feed data</span></sc-if></div></div></sc-for>
+            </div>
+            <sc-if value="{{ showFeed }}"><div style="margin-top:24px;border-top:1px solid var(--color-divider);padding-top:16px"><h4 style="margin:0 0 6px;font-size:22px">Feed provenance</h4><p style="margin:0 0 4px;font-size:14px">External feed</p><p style="margin:0 0 4px;font-size:14px">UTC reporting clock</p><p style="margin:0;font-size:12px;color:color-mix(in srgb,var(--color-text) 72%,transparent)">File hashes and coverage describe the imported seed dataset only. They do not certify completeness of the external feed.</p></div></sc-if>
+            <div style="margin-top:24px;border-top:1px solid var(--color-divider);padding-top:16px"><h4 style="margin:0 0 6px;font-size:22px">How counts are formed</h4>
+              <ol style="margin:0;padding-left:20px;font-size:14px;display:grid;gap:6px"><li>Resolve the latest visible isolate revisions.</li><li>Keep the first isolate per patient, organism and specimen in each period,{{ pvDedup }}</li><li>Apply the selected ward and population filters.</li><li>Use only isolates tested for the selected antibiotic. Paired comparisons require both tests.</li><li>Hide percentages and intervals below 30 tested isolates.</li></ol>
+              <p style="margin:10px 0 0;font-size:12px;color:color-mix(in srgb,var(--color-text) 72%,transparent)">Intervals: Wilson score, two-sided 95%. Missing tests do not imply resistance. Full source and demographic completeness metadata are included in the saved API export.</p></div>
+            <dl style="margin:24px 0 0;border-top:1px solid var(--color-divider)">
+              <sc-for list="{{ pvMeta }}" as="m" hint-placeholder-count="5"><div style="display:flex;justify-content:space-between;gap:14px;padding:9px 0;border-bottom:1px solid var(--color-divider);font-size:13px"><dt style="color:color-mix(in srgb,var(--color-text) 72%,transparent)">{{ m.k }}</dt><dd style="margin:0;text-align:right;word-break:break-all">{{ m.v }}</dd></div></sc-for>
+            </dl>
+            <div class="blueprint" style="margin-top:30px;padding:20px 22px">
+              <h4 style="margin:0 0 4px;font-size:24px">Export this snapshot</h4><p style="margin:0 0 14px;font-size:14px">Downloads retain the values, nulls, filters and revision displayed here, even after the data advances.</p>
+              <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn btn-primary" onClick="{{ pvCsv }}" style="padding:9px 18px"><svg width="16" height="16"><use href="#i-download"></use></svg>Download CSV</button><button class="btn btn-secondary" onClick="{{ pvJson }}" style="padding:9px 18px"><svg width="16" height="16"><use href="#i-file"></use></svg>Download JSON</button></div></div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ drawerGuide }}">
+          <div>
+            <div class="blueprint" style="padding:24px"><svg width="30" height="30" style="color:var(--color-accent-700)"><use href="#i-activity"></use></svg><h3 style="margin:10px 0 6px;font-size:28px;line-height:1.15">Every number needs its context.</h3><p style="margin:0;font-size:15px">Choose a cohort, read its last 12-month and 28-day evidence, then investigate the counts.</p></div>
+            <div style="margin-top:26px"><h4 style="margin:0 0 8px;font-size:24px">What these results mean</h4><p style="font-size:14px">Susceptible and resistant describe recorded laboratory results. The interval describes uncertainty in the observed proportion; it does not predict treatment success.</p><p style="font-size:14px;margin:0">At least 30 tested isolates are required to display a percentage. Missing tests remain visible and do not count as resistance.</p></div>
+            <div style="margin-top:26px"><h4 style="margin:0 0 8px;font-size:24px">About this preview</h4><p style="font-size:14px">This preview uses authored fixtures for interface testing.</p><p style="font-size:14px;margin:0">The source contains synthetic microbiology samples. The report end date sets both rolling periods; the chart year applies only to the time chart.</p></div>
+            <div style="margin-top:26px"><h4 style="margin:0 0 8px;font-size:24px">Explore support states</h4><p style="font-size:14px">In fixture mode: Urology demonstrates available evidence; Intensive care shows a sparse recent cohort; Geriatrics shows missing tests; Health centre North shows an empty cohort. Mecillinam demonstrates a paired denominator below 30.</p>
+              <div style="display:flex;gap:8px;flex-wrap:wrap"><sc-for list="{{ guideJumps }}" as="j" hint-placeholder-count="5"><button class="btn btn-secondary" onClick="{{ j.go }}" style="font-size:14px">{{ j.label }}<svg width="14" height="14"><use href="#i-arrow-right"></use></svg></button></sc-for></div></div>
+            <p style="margin:30px 0 0;font-size:12px;color:color-mix(in srgb,var(--color-text) 72%,transparent)">Tyks × Mylab · JunctionX Turku<br>A prototype using synthetic microbiology evidence.</p>
+          </div>
+        </sc-if>
+      </div>
+    </aside>
+  </div>
+</sc-if>
+
+<sc-if value="{{ hasToast }}"><div role="status" style="position:fixed;left:50%;bottom:28px;transform:translateX(-50%);z-index:80;background:var(--color-accent-900);color:var(--color-bg);padding:12px 20px;border-radius:12px;font-size:14px;box-shadow:var(--shadow-lg);display:flex;gap:10px;align-items:center"><svg width="16" height="16"><use href="#i-download"></use></svg>{{ toastMsg }}</div></sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;startPage&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;ward&quot;,&quot;investigate&quot;,&quot;alerts&quot;,&quot;alert&quot;],&quot;default&quot;:&quot;ward&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Preview&quot;},&quot;dataState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;ready&quot;,&quot;loading&quot;,&quot;error&quot;,&quot;stale&quot;],&quot;default&quot;:&quot;ready&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Preview&quot;},&quot;feedMode&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Preview&quot;}}">
+class Component extends DCLogic {
+  state = {
+    page: null, drawer: null, prov: null,
+    reportDate: '2026-09-27', pinned: false,
+    draft: this.blank(), applied: this.blank(),
+    advanced: false, formError: '', drugB: 'TMP', compWindow: 'd28', chartYear: 2026, refreshing: false,
+    alertId: 'a-uro-cip', alertView: 'current', alertTab: 'evidence',
+    patientText: '', patient: '', expanded: false, toastMsg: ''
+  };
+  blank() { return { ward: '', specimen: 'urine', organism: 'Escherichia coli', drug: 'CIP', sex: '', ageMin: '', ageMax: '', dedup: 'selected_cohort' }; }
+  get ds() { return this.props.dataState || 'ready'; }
+  get feed() { return !!this.props.feedMode; }
+  get pg() { return this.state.page || this.props.startPage || 'ward'; }
+  componentDidMount() {
+    this._k = (e) => { if (e.key === 'Escape' && this.state.drawer) this.setState({ drawer: null }); };
+    document.addEventListener('keydown', this._k);
+  }
+  componentWillUnmount() { document.removeEventListener('keydown', this._k); clearTimeout(this._t); clearTimeout(this._r); }
+  toast(m) { clearTimeout(this._t); this.setState({ toastMsg: m }); this._t = setTimeout(() => this.setState({ toastMsg: '' }), 2600); }
+  top() { try { window.scrollTo({ top: 0 }); } catch (e) {} }
+  go(p) { this.setState({ page: p, drawer: null }); this.top(); }
+  setD(k, v) { this.setState(s => ({ draft: { ...s.draft, [k]: v } })); }
+  openProv(kind, win, date) { this.setState({ drawer: 'provenance', prov: { kind, win: win || null, date: date || null } }); }
+
+  fd(iso, long) { return new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: long ? 'long' : 'short', year: 'numeric', timeZone: 'UTC' }).format(new Date(iso + 'T12:00:00Z')); }
+  ad(iso, n) { const d = new Date(iso + 'T12:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); }
+  py(iso) { const d = new Date(iso + 'T12:00:00Z'); const day = d.getUTCDate(); d.setUTCFullYear(d.getUTCFullYear() - 1); if (d.getUTCDate() !== day) d.setUTCDate(0); return d.toISOString().slice(0, 10); }
+  rng(s, eEx) { return this.fd(s) + ' – ' + this.fd(this.ad(eEx, -1)); }
+  p1(v) { return v == null ? '—' : v.toFixed(1) + '%'; }
+  num(n) { return new Intl.NumberFormat('en-GB').format(n); }
+  sg(v) { return v == null ? 'Not reported' : (v > 0 ? '+' : '') + v.toFixed(1); }
+  wilson(k, n) { const z = 1.959964, p = k / n, d = 1 + z * z / n, c = p + z * z / (2 * n), h = z * Math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)); return [Math.max(0, (c - h) / d * 100), Math.min(100, (c + h) / d * 100)]; }
+  mk(elig, tested, s) {
+    const r = tested - s;
+    const status = elig === 0 ? 'empty_cohort' : tested === 0 ? 'no_tests' : tested < 30 ? 'insufficient_data' : 'available';
+    const ok = status === 'available';
+    return { status, elig, tested, s, r, nt: elig - tested, sus: ok ? s / tested * 100 : null, res: ok ? r / tested * 100 : null, ci: ok ? this.wilson(s, tested) : null, ciR: ok ? this.wilson(r, tested) : null };
+  }
+  bounds(asOf) { const end = this.ad(asOf, 1); return { r12: { start: this.ad(this.py(asOf), 1), end }, d28: { start: this.ad(asOf, -27), end } }; }
+  plot(lo, hi, v) {
+    return {
+      ciStyle: `position:absolute;top:50%;height:8px;margin-top:-4px;left:${lo}%;width:${hi - lo}%;background:var(--color-accent-300);border:1px solid var(--color-accent-600);border-radius:6px`,
+      dotStyle: `position:absolute;top:50%;width:11px;height:11px;margin:-5.5px 0 0 -5.5px;left:${v}%;border-radius:50%;background:var(--color-accent-900)`
+    };
+  }
+  get M() {
+    if (this._M) return this._M;
+    const all = ['urine', 'blood', 'wound'], ec = 'Escherichia coli', kp = 'Klebsiella pneumoniae', sa = 'Staphylococcus aureus', ef = 'Enterococcus faecalis', pa = 'Pseudomonas aeruginosa';
+    const D = (code, label, sp, org, r12, d28, scr) => ({ code, label, screening: !!scr, specimens: sp, organisms: org, r12, d28 });
+    this._M = {
+      wards: [['ED', 'Emergency department'], ['MED-A', 'Internal medicine A'], ['MED-B', 'Internal medicine B'], ['SURG', 'Surgery'], ['URO', 'Urology'], ['ICU', 'Intensive care unit'], ['GER', 'Geriatrics'], ['PHC-N', 'Health centre North'], ['PHC-S', 'Health centre South']],
+      specimens: all, organisms: [ec, kp, sa, ef, pa],
+      drugs: [
+        D('CIP', 'Ciprofloxacin', all, [ec, kp, pa], 223, 30), D('TMP', 'Trimethoprim', ['urine'], [ec, kp], 238, 33),
+        D('NIT', 'Nitrofurantoin', ['urine'], [ec, ef], 252, 36), D('MEC', 'Mecillinam', ['urine'], [ec, kp], 262, 37),
+        D('AMP', 'Ampicillin', all, [ec, ef], 168, 24), D('CXM', 'Cefuroxime', all, [ec, kp], 235, 32),
+        D('CRO', 'Ceftriaxone', all, [ec, kp], 258, 37), D('CAZ', 'Ceftazidime', all, [ec, kp, pa], 262, 37),
+        D('TZP', 'Piperacillin–tazobactam', all, [ec, kp, pa], 268, 38), D('MEM', 'Meropenem', all, [ec, kp, pa], 279, 40),
+        D('VAN', 'Vancomycin', all, [sa, ef], 277, 39), D('CLI', 'Clindamycin', all, [sa], 241, 34),
+        D('FOX', 'Cefoxitin · screening', all, [sa], 244, 35, true)
+      ]
+    };
+    return this._M;
+  }
+  drugOf(c) { return this.M.drugs.find(d => d.code === c) || this.M.drugs[0]; }
+  wardName(c) { const w = this.M.wards.find(x => x[0] === c); return w ? w[1] : 'All wards'; }
+  popLabel(a) {
+    const sex = a.sex === 'F' ? 'Women' : a.sex === 'M' ? 'Men' : 'All sexes';
+    const ages = (a.ageMin !== '' || a.ageMax !== '') ? `ages ${a.ageMin !== '' ? a.ageMin : 0}–${a.ageMax !== '' ? a.ageMax : '120+'}` : 'all ages';
+    return { sex, ages };
+  }
+  cohortLabel(a) { const p = this.popLabel(a); return `${this.wardName(a.ward)} / ${a.specimen} / ${a.organism} / ${p.sex.toLowerCase()} / ${p.ages}`; }
+  ev(a) {
+    const d = this.drugOf(a.drug);
+    let w = { r12: this.mk(290, 280, d.r12), d28: this.mk(54, 40, d.d28) }, reason = null;
+    if (a.ward === 'ICU' || a.sex || a.ageMin !== '' || a.ageMax !== '') w.d28 = this.mk(34, 29, 21);
+    if (a.ward === 'GER' || !d.organisms.includes(a.organism)) w = { r12: this.mk(34, 0, 0), d28: this.mk(34, 0, 0) };
+    if (a.ward === 'PHC-N') w = { r12: this.mk(0, 0, 0), d28: this.mk(0, 0, 0) };
+    if (!d.specimens.includes(a.specimen)) { const na = { ...this.mk(0, 0, 0), status: 'not_applicable' }; w = { r12: na, d28: na }; reason = `The antibiotic dictionary restricts this test to ${d.specimens.join(', ')} specimens.`; }
+    return { w, reason };
+  }
+  periodVm(key, m, b, reason) {
+    const ok = m.status === 'available';
+    const titles = { available: 'Available', insufficient_data: 'Insufficient data', no_tests: 'No susceptibility tests recorded', empty_cohort: 'No eligible isolates in this period', not_applicable: 'This comparison is not applicable' };
+    const pl = ok ? this.plot(m.ci[0], m.ci[1], m.sus) : { ciStyle: '', dotStyle: '' };
+    return {
+      key, title: key === 'r12' ? 'Last 12 months' : 'Last 28 days', isR12: key === 'r12', isD28: key === 'd28',
+      featured: key === 'r12' && ok, range: this.rng(b.start, b.end), ok, notOk: !ok,
+      value: ok ? m.sus.toFixed(1) : '', big: ok ? m.sus.toFixed(1) + '%' : 'Not reported',
+      susText: `${m.s} susceptible / ${m.tested} tested`, tested: this.num(m.tested), s: m.s, r: m.r, elig: m.elig, nt: m.nt,
+      counts: `${m.s} susceptible · ${m.r} resistant`, ciText: ok ? `${this.p1(m.ci[0])}–${this.p1(m.ci[1])}` : '',
+      ciStyle: pl.ciStyle, dotStyle: pl.dotStyle,
+      badge: m.status === 'insufficient_data' ? `${m.tested} tested · minimum 30` : 'Evidence unavailable',
+      stateTitle: titles[m.status],
+      stateText: reason || (m.status === 'insufficient_data' ? 'Estimates require at least 30 tested isolates.' : `${m.elig} eligible isolates; ${m.nt} not tested.`),
+      showLonger: key === 'd28' && !ok, partial: b.start < '2023-10-02',
+      help: () => this.openProv('evidence', key),
+      longer: () => { this.setState({ compWindow: 'r12' }); setTimeout(() => { const el = document.getElementById('comparison'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 90, behavior: 'smooth' }); }, 30); }
+    };
+  }
+  cmpVm() {
+    const s = this.state, a = s.applied, A = this.drugOf(a.drug), B = this.drugOf(s.drugB), w = s.compWindow;
+    const has = !!s.drugB && a.drug !== 'FOX';
+    const base = { cmpEmpty: !has, cmpHas: has && this.ds !== 'loading', cmpLoading: has && this.ds === 'loading', cmpOk: false, cmpNo: false, cmpRows: [], cmpTable: [], cmpNoTitle: '', cmpRange: '', cmpPaired: '', cmpNet: '', cmpAddedN: '', cmpAddedPct: '', cmpFoot1: '', cmpFoot2: '' };
+    if (!has) return base;
+    const tot = w === 'r12' ? { elig: 290, n: 280, miss: 10 } : { elig: 54, n: 40, miss: 14 };
+    const sparse = (a.ward === 'ICU' || a.sex || a.ageMin !== '' || a.ageMax !== '') && w === 'd28';
+    const incompat = [A, B].some(d => !d.specimens.includes(a.specimen));
+    const noTests = [A, B].some(d => !d.organisms.includes(a.organism)) || a.ward === 'GER';
+    let status = 'available', n = tot.n, elig = tot.elig, cells, pa = null, pb = null, net = null, bOnlyPct = null;
+    const sA = A[w] * (n / (w === 'r12' ? 280 : 40)), sB = B[w] * (n / (w === 'r12' ? 280 : 40));
+    if (sparse || ((A.code === 'MEC' || B.code === 'MEC') && w === 'd28')) { status = 'insufficient_data'; n = 26; elig = sparse ? 34 : tot.elig; cells = { both_s: 17, a_only_s: 3, b_only_s: 4, both_r: 2 }; }
+    if (incompat) { status = 'not_applicable'; } else if (a.ward === 'PHC-N') { status = 'empty_cohort'; } else if (noTests) { status = 'no_tests'; }
+    if (status === 'available') {
+      const mx = Math.max(sA, sB), any0 = Math.min(n, mx + Math.round((n - mx) * 0.45));
+      const both = Math.max(0, sA + sB - any0), any = Math.min(n, sA + sB - both);
+      cells = { both_s: both, a_only_s: sA - both, b_only_s: sB - both, both_r: n - any };
+      pa = sA / n * 100; pb = sB / n * 100; net = pb - pa; bOnlyPct = cells.b_only_s / n * 100;
+    } else if (status !== 'insufficient_data') { n = 0; elig = (status === 'no_tests') ? 34 : 0; cells = { both_s: 0, a_only_s: 0, b_only_s: 0, both_r: 0 }; }
+    const bd = this.bounds(s.reportDate)[w];
+    const rowOf = (d, v, kind) => ({ code: d.code, valueStr: this.p1(v), barStyle: kind ? `height:100%;width:${v}%;background:var(--color-accent-300);border-right:1px solid var(--color-accent-700);border-radius:0 6px 6px 0` : `height:100%;width:${v}%;background:var(--color-accent-700);border-radius:0 6px 6px 0` });
+    const titleMap = { insufficient_data: `Only ${n} paired tests`, empty_cohort: 'No eligible isolates', not_applicable: 'Comparison not applicable', no_tests: 'No paired susceptibility tests recorded' };
+    return {
+      ...base, cmpOk: status === 'available', cmpNo: status !== 'available', cmpNoTitle: titleMap[status] || '',
+      cmpRange: this.rng(bd.start, bd.end), cmpPaired: `${n} paired isolates`,
+      cmpRows: status === 'available' ? [rowOf(A, pa, 0), rowOf(B, pb, 1)] : [],
+      cmpNet: net == null ? '' : (net > 0 ? '+' : '') + net.toFixed(1), cmpAddedN: status === 'available' ? String(cells.b_only_s) : '', cmpAddedPct: this.p1(bOnlyPct),
+      cmpTable: [
+        { label: `Susceptible to both ${A.code} and ${B.code}`, value: cells.both_s }, { label: `Susceptible to ${A.code} only`, value: cells.a_only_s },
+        { label: `Susceptible to ${B.code} only`, value: cells.b_only_s }, { label: 'Resistant to both', value: cells.both_r }
+      ],
+      cmpFoot1: `${elig} eligible · ${elig - n} missing either test`, cmpFoot2: `${elig - n} missing A · ${elig - n} missing B`
+    };
+  }
+  trendVm() {
+    const s = this.state, a = s.applied, asOf = s.reportDate, yr = s.chartYear;
+    const dates = Array.from({ length: 12 }, (_, m) => new Date(Date.UTC(yr, m + 1, 0, 12)).toISOString().slice(0, 10))
+      .map(d => (d > asOf && d.slice(0, 7) === asOf.slice(0, 7)) ? asOf : d).filter(d => d <= asOf && d >= '2023-10-02');
+    const e = this.ev(a), d = this.drugOf(a.drug), base = d.d28 / 40 * 100, st = e.w.d28.status;
+    const X = (i, n) => n <= 1 ? 394 : 52 + i / (n - 1) * 684, Y = v => 250 - v * 2.3;
+    const pts = dates.map((date, i) => {
+      const seed = Number(date.slice(0, 4)) * 12 + Number(date.slice(5, 7));
+      let m;
+      if (date === asOf) m = e.w.d28;
+      else if (st === 'available') { const gap = seed % 11 === 4, t = gap ? 24 + seed % 5 : 34 + (seed * 7) % 14, pc = Math.max(45, Math.min(98, base + Math.sin(seed * 1.7) * 6 + Math.cos(seed * .9) * 3)); m = this.mk(t + 6 + seed % 7, t, Math.round(t * pc / 100)); }
+      else if (st === 'insufficient_data') { const t = 20 + seed % 9; m = this.mk(32, t, Math.round(t * .72)); }
+      else m = e.w.d28;
+      const x = X(i, dates.length), has = m.sus != null;
+      const mon = new Intl.DateTimeFormat('en', { month: 'short', timeZone: 'UTC' }).format(new Date(date + 'T12:00:00Z'));
+      return { date, m, x, has, gap: !has, rx: x - 4.5, ry: has ? Y(m.sus) - 4.5 : 0, y: has ? Y(m.sus) : 0, month: mon, title: has ? `${this.fd(date)}: ${this.p1(m.sus)}, ${m.tested} tested` : `${this.fd(date)}: not reported, ${m.tested} tested` };
+    });
+    const segs = []; let cur = '';
+    pts.forEach((q, i) => { if (!q.has) { if (cur) segs.push({ d: cur }); cur = ''; } else cur += `${cur ? ' L' : 'M'}${q.x},${q.y}`; });
+    if (cur) segs.push({ d: cur });
+    const any = pts.some(q => q.has);
+    const last = pts[pts.length - 1];
+    return {
+      trGrid: [0, 25, 50, 75, 100].map(v => ({ y: Y(v), ty: Y(v) + 4, label: v + '%' })), trSegs: segs, trPts: pts,
+      trRows: pts.map(q => ({ date: this.fd(q.date), val: q.has ? this.p1(q.m.sus) : 'Not reported', tested: q.m.tested, ci: q.has ? `${this.p1(q.m.ci[0])}–${this.p1(q.m.ci[1])}` : 'Not reported', inspect: () => this.openProv('point', null, q.date) })),
+      trNoDates: dates.length === 0, trNoAvail: dates.length > 0 && !any, trChart: any,
+      trFresh: last ? `Chart snapshot: latest cutoff ${this.fd(last.date)} · revision 8.${s.refreshing ? ' Updating chart…' : ''}` : 'The chart loads automatically.',
+      trLoadingText: `Loading ${dates.length} monthly cutoffs…`
+    };
+  }
+  split(total, props) { const out = props.map(p => Math.round(total * p)); out[out.length - 1] += total - out.reduce((x, y) => x + y, 0); return out.map(v => Math.max(0, v)); }
+  evalOf(asOf, b, r, shared) {
+    const rs = this.ad(asOf, -27), re = this.ad(asOf, 1), bs = this.py(rs);
+    const B = { ...this.mk(b[0], b[1], b[2]), start: bs, end: rs }, R = { ...this.mk(r[0], r[1], r[2]), start: rs, end: re };
+    const ok = B.tested >= 30 && R.tested >= 30, change = ok ? R.res - B.res : null;
+    return { asOf, B, R, change, shared, status: !ok ? 'insufficient_evidence' : change >= 10 ? 'triggered' : 'below_threshold', reason: ok ? null : 'Fewer than 30 tested isolates in the recent period.' };
+  }
+  get AL() {
+    if (this._AL) return this._AL;
+    const E = (...a) => this.evalOf(...a);
+    this._AL = [
+      { id: 'm-uro-cip', ward: 'URO', specimen: 'urine', organism: 'Escherichia coli', drug: 'CIP', cur: E('2026-09-27', [128, 120, 105], [54, 40, 30], 6), orig: E('2026-09-27', [128, 120, 105], [54, 40, 30], 6), age: { b: [24, 29, 49, 26], r: [5, 8, 15, 26] }, alert: { id: 'a-uro-cip', status: 'new', last: 'new', first: '2026-09-27', trans: [[8, '2026-09-27', 'new']] } },
+      { id: 'm-all-tmp', ward: '', specimen: 'urine', organism: 'Escherichia coli', drug: 'TMP', cur: E('2026-09-27', [640, 612, 514], [71, 66, 54], 9), alert: null },
+      { id: 'm-icu-cro', ward: 'ICU', specimen: 'blood', organism: 'Klebsiella pneumoniae', drug: 'CRO', cur: E('2026-09-27', [156, 147, 115], [29, 24, 15], 1), orig: E('2026-09-06', [151, 142, 111], [44, 38, 22], 3), alert: { id: 'a-icu-cro', status: 'insufficient_evidence', last: 'ongoing', first: '2026-09-06', trans: [[8, '2026-09-27', 'insufficient_evidence'], [5, '2026-09-13', 'ongoing'], [3, '2026-09-06', 'new']] } },
+      { id: 'm-meda-nit', ward: 'MED-A', specimen: 'urine', organism: 'Escherichia coli', drug: 'NIT', cur: E('2026-09-27', [224, 210, 196], [41, 38, 36], 4), alert: null },
+      { id: 'm-surg-cli', ward: 'SURG', specimen: 'wound', organism: 'Staphylococcus aureus', drug: 'CLI', cur: E('2026-09-27', [99, 91, 73], [36, 33, 27], 2), orig: E('2026-08-16', [96, 88, 71], [38, 34, 22], 2), alert: { id: 'a-surg-cli', status: 'cleared', last: 'cleared', first: '2026-08-16', trans: [[7, '2026-09-20', 'cleared'], [4, '2026-08-30', 'ongoing'], [2, '2026-08-16', 'new']] } }
+    ];
+    return this._AL;
+  }
+  stLabel(s) { return { new: 'New', ongoing: 'Ongoing', cleared: 'Cleared', insufficient_evidence: 'Insufficient evidence', triggered: 'Threshold met', below_threshold: 'Below threshold', unavailable: 'Unavailable' }[s]; }
+  stTag(s) { const solid = s === 'new' || s === 'ongoing' || s === 'triggered' || s === 'insufficient_evidence'; return solid ? { cls: 'tag', style: 'white-space:nowrap;background:var(--color-accent-900);color:var(--color-bg)' } : { cls: 'tag tag-neutral', style: 'white-space:nowrap;border:1px solid var(--color-divider);border-radius:12px' }; }
+  monLabel(m) { return `${this.wardName(m.ward)} / ${m.specimen} / ${m.organism} / All sexes · all ages`; }
+  alertVm() {
+    const s = this.state, AL = this.AL;
+    const alerts = AL.filter(m => m.alert);
+    const dl = (m, f) => () => this.toast(`Downloaded aa_${m.id}_cur.${f}`);
+    return {
+      monitorCount: AL.length, thresholdPp: 10,
+      alertRows: alerts.map(m => { const t = this.stTag(m.alert.status); return { tag: this.stLabel(m.alert.status), tagClass: m.alert.status === 'cleared' ? 'tag tag-neutral' : t.cls, tagStyle: t.style, title: this.drugOf(m.drug).label + ' resistance', group: this.monLabel(m), change: this.sg(m.cur.change) + (m.cur.change == null ? '' : ' pp'), first: this.fd(m.alert.first), low: m.alert.status === 'insufficient_evidence', lastState: this.stLabel(m.alert.last), open: () => { this.setState({ page: 'alert', alertId: m.alert.id, alertView: 'current', alertTab: 'evidence', drawer: null }); this.top(); } }; }),
+      monitorRows: AL.map(m => { const e = m.cur, t = this.stTag(e.status === 'triggered' ? 'triggered' : e.status === 'insufficient_evidence' ? 'insufficient_evidence' : 'x'); return { group: this.monLabel(m), drug: this.drugOf(m.drug).label, recent: this.p1(e.R.res), recentN: `${e.R.tested} tested`, baseline: this.p1(e.B.res), baselineN: `${e.B.tested} tested`, change: e.change == null ? 'Not reported' : this.sg(e.change) + ' pp', evalLabel: this.stLabel(e.status), evalClass: t.cls, evalStyle: t.style, reason: !!e.reason, reasonText: e.reason || '', csv: dl(m, 'csv'), json: dl(m, 'json') }; })
+    };
+  }
+  invVm() {
+    const s = this.state, mon = this.AL.find(m => m.alert && m.alert.id === s.alertId) || this.AL[0], al = mon.alert;
+    const view = s.alertView === 'current' ? 'current' : 'original', e = view === 'current' ? mon.cur : mon.orig;
+    const mkM = (label, w) => {
+      const ok = w.res != null, pl = ok ? this.plot(w.ciR[0], w.ciR[1], w.res) : { ciStyle: '', dotStyle: '' };
+      return { label, value: this.p1(w.res), line: `${w.r} resistant / ${w.tested} tested`, range: this.rng(w.start, w.end), hasCi: ok, ciText: ok ? `${this.p1(w.ciR[0])}–${this.p1(w.ciR[1])}` : '', ciStyle: pl.ciStyle, dotStyle: pl.dotStyle, withheld: !ok, noData: false };
+    };
+    const sumOf = a => a.reduce((x, y) => x + y, 0);
+    const useAge = mon.age && sumOf(mon.age.b) === e.B.elig && sumOf(mon.age.r) === e.R.elig;
+    const age = useAge ? mon.age : { b: this.split(e.B.elig, [.19, .23, .38, .2]), r: this.split(e.R.elig, [.1, .16, .3, .44]) };
+    const ageL = ['Under 40', '40–59', '60–79', '80 and older'];
+    const mx = Math.ceil(Math.max(1, ...age.b, ...age.r) / 10) * 10;
+    const rows = (labels, b, r) => labels.map((l, i) => ({ label: l, b: b[i], r: r[i] }));
+    const others = this.M.organisms.filter(o => o !== mon.organism).slice(0, 2);
+    const rawB = Math.round(e.B.elig * 1.35), rawR = Math.round(e.R.elig * 1.35);
+    const groups = [
+      { title: 'Age groups', rows: rows(ageL, age.b, age.r) },
+      { title: 'Sex', rows: rows(['Women', 'Men'], this.split(e.B.elig, [.58, .42]), this.split(e.R.elig, [.61, .39])) },
+      { title: 'Collection setting', rows: rows(['Inpatient', 'Outpatient', 'Emergency'], this.split(e.B.elig, [.42, .38, .2]), this.split(e.R.elig, [.46, .3, .24])) },
+      { title: 'Organism mix — separate count-only population', rows: rows([mon.organism, ...others, 'Other'], this.split(rawB, [.7, .13, .1, .07]), this.split(rawR, [.69, .14, .1, .07])) }
+    ];
+    const rs = e.R.start, tag = this.stTag(al.status), et = this.stTag(e.status);
+    const tab = s.alertTab;
+    const dlId = `aa_${al.id}_${view === 'current' ? 'cur' : 'orig'}`;
+    return {
+      ivViews: [
+        { label: 'Current evaluation', checked: view === 'current', pick: () => this.setState({ alertView: 'current' }) },
+        { label: 'Original detection · ' + this.fd(al.first), checked: view === 'original', pick: () => this.setState({ alertView: 'original' }) }
+      ],
+      ivSnapLabel: `Showing ${view === 'current' ? 'current evaluation' : 'original detection'}`,
+      ivState: this.stLabel(al.status), ivStateClass: al.status === 'cleared' ? 'tag tag-neutral' : tag.cls, ivStateStyle: tag.style,
+      ivMonitor: this.monLabel(mon), ivDrug: this.drugOf(mon.drug).label, ivMonDate: this.fd(e.asOf),
+      ivEvalLabel: this.stLabel(e.status), ivEvalClass: et.cls, ivEvalStyle: et.style,
+      ivTabs: [['evidence', 'Evidence overview'], ['population', 'Population context'], ['timeline', 'Timeline and history']].map(([k, l]) => ({ label: l, active: tab === k, pick: () => this.setState({ alertTab: k }) })),
+      ivTabEvidence: tab === 'evidence', ivTabPop: tab === 'population', ivTabTime: tab === 'timeline',
+      ivMeasures: [mkM('Preceding 12-month baseline', e.B), mkM('Recent 28 days', e.R)],
+      ivChange: e.change == null ? 'Not reported' : this.sg(e.change) + ' pp',
+      ivCounts: [['Eligible isolates', 'elig'], ['Tested', 'tested'], ['Susceptible', 's'], ['Resistant', 'r'], ['Not tested', 'nt']].map(([l, k]) => ({ label: l, b: e.B[k], r: e.R[k] })),
+      ivShared: `${e.shared} patients occur in both periods.`,
+      ivAge: ageL.map((l, i) => ({ label: l, bStyle: `height:10px;width:${age.b[i] / mx * 100}%;background:var(--color-accent-300);border:1px solid var(--color-accent-600);border-radius:3px`, rStyle: `height:10px;width:${age.r[i] / mx * 100}%;background:var(--color-accent-800);border-radius:3px` })),
+      ivAgeMid: mx / 2, ivAgeMax: mx, ivGroups: groups,
+      ivTimeline: [
+        { date: this.fd(this.ad(rs, -1)), title: 'Baseline period closes', detail: `${e.B.tested} tested isolates in the preceding 12 months.` },
+        { date: this.fd(rs), title: 'Recent observation window opens', detail: 'A separate, non-overlapping 28-day window.' },
+        { date: this.fd(e.asOf), title: view === 'current' ? 'Evaluated for review' : 'Change flagged for review', detail: e.change == null ? 'The current support does not allow reevaluation of this alert.' : `Resistance changed by ${this.sg(e.change)} percentage points.` }
+      ],
+      ivHistory: al.trans.map(t => { const g = this.stTag(t[2]); return { date: this.fd(t[1]), label: this.stLabel(t[2]), tagClass: t[2] === 'cleared' ? 'tag tag-neutral' : g.cls, tagStyle: g.style, rev: t[0] }; }),
+      ivExportDesc: `Samples through ${this.fd(e.asOf)} · revision ${al.trans[0][0]}`, ivAnalysisId: dlId,
+      ivCsv: () => this.toast(`Downloaded ${dlId}.csv`), ivJson: () => this.toast(`Downloaded ${dlId}.json`),
+      ivContext: [
+        { k: 'Ward', v: this.wardName(mon.ward) }, { k: 'Specimen', v: mon.specimen }, { k: 'Organism', v: mon.organism },
+        { k: 'Antibiotic', v: this.drugOf(mon.drug).label }, { k: 'Population', v: 'All sexes · all ages' }, { k: 'Method', v: 'alert-v1' }
+      ]
+    };
+  }
+  cultVm() {
+    const s = this.state, cutoff = s.reportDate, lb = this.py(cutoff);
+    const data = [
+      { id: 'C-09271', date: '2026-09-27', specimen: 'urine', ward: 'Urology', result: 'Positive culture', iso: [] },
+      { id: 'C-08412', date: '2026-08-14', specimen: 'urine', ward: 'Urology', result: 'Positive culture', iso: [{ organism: 'Escherichia coli', ph: ['ESBL phenotype'], tests: [['Ciprofloxacin', 'R', 0], ['Trimethoprim', 'S', 0], ['Nitrofurantoin', 'S', 0], ['Ampicillin', 'R', 0], ['Cefuroxime', 'R', 0]] }] },
+      { id: 'C-06103', date: '2026-06-03', specimen: 'blood', ward: 'Emergency department', result: 'No growth', iso: [] },
+      { id: 'C-02118', date: '2026-02-18', specimen: 'wound', ward: 'Surgery', result: 'Positive culture', iso: [{ organism: 'Staphylococcus aureus', ph: [], tests: [['Cefoxitin', 'S', 1], ['Clindamycin', 'S', 0]] }] }
+    ].filter(c => c.date < cutoff && c.date >= lb);
+    return data.map(c => ({
+      id: c.id, date: this.fd(c.date), specimen: c.specimen, ward: c.ward, result: c.result, noIso: c.iso.length === 0,
+      isolates: c.iso.map(i => { const shown = s.expanded ? i.tests : i.tests.slice(0, 3); return { organism: i.organism, pheno: i.ph, more: i.tests.length > shown.length, moreText: `${i.tests.length - shown.length} more results hidden. Expand all results to view.`, tests: shown.map(t => ({ label: t[0], screening: !!t[2], text: t[1] === 'S' ? 'S · Susceptible' : 'R · Resistant', cls: t[1] === 'S' ? 'tag tag-outline' : 'tag', style: t[1] === 'S' ? '' : 'background:var(--color-accent-900);color:var(--color-bg)' })) }; })
+    }));
+  }
+  renderVals() {
+    const s = this.state, pg = this.pg, a = s.applied, d = s.draft, M = this.M, ds = this.ds, feed = this.feed;
+    const e = this.ev(a), b = this.bounds(s.reportDate);
+    const periods = [this.periodVm('r12', e.w.r12, b.r12, e.reason), this.periodVm('d28', e.w.d28, b.d28, e.reason)];
+    const active = [d.sex, d.ageMin, d.ageMax].filter(v => v !== '').length;
+    const alertsLive = s.reportDate === '2026-09-27', openAlerts = this.AL.filter(m => m.alert && m.alert.status !== 'cleared').length;
+    const mkNav = (key, num, label, badge) => ({ key, num, label, active: pg === key || (key === 'alerts' && pg === 'alert'), hasBadge: !!badge, badge, go: () => this.go(key) });
+    const patientText = s.patientText.trim().toLowerCase();
+    const pool = [['P000001', 'Synthetic patient'], ['P000012', 'Synthetic patient'], ['P000104', 'Synthetic patient'], ['P-00142', 'Synthetic patient']];
+    const results = patientText ? pool.filter(p => p[0].toLowerCase().includes(patientText)).map(p => ({ id: p[0], label: p[1], pick: () => this.setState({ patient: p[0], expanded: false }) })) : [];
+    const cultures = s.patient ? this.cultVm() : [];
+    const drawer = s.drawer;
+    const pv = this.provVm();
+    const lat = () => { this.setState({ reportDate: '2026-09-27', pinned: false }); };
+    const yrMax = Number(s.reportDate.slice(0, 4));
+    const apply = (ev) => {
+      if (ev && ev.preventDefault) ev.preventDefault();
+      const mn = d.ageMin === '' ? null : Number(d.ageMin), mxA = d.ageMax === '' ? null : Number(d.ageMax);
+      if ((mn !== null && (mn < 0 || mn > 120)) || (mxA !== null && (mxA < 0 || mxA > 120)) || (mn !== null && mxA !== null && mn > mxA)) { this.setState({ formError: 'Enter valid ages from 0 to 120, with minimum no greater than maximum.', advanced: true }); return; }
+      this.setState({ applied: { ...d }, formError: '' });
+    };
+    const drugOpts = M.drugs.map(x => ({ value: x.code, disabled: !x.specimens.includes(d.specimen), label: x.label + (!x.specimens.includes(d.specimen) ? ' · specimen not applicable' : !x.organisms.includes(d.organism) ? ' · not in imported test panels' : '') }));
+    const jump = (label, patch, extra) => ({ label, go: () => { const n = { ...this.blank(), ...patch }; this.setState({ draft: n, applied: n, page: 'ward', drawer: null, ...(extra || {}) }); this.top(); } });
+    return {
+      navItems: [mkNav('ward', '01', 'Ward overview'), mkNav('investigate', '02', 'Investigate susceptibility'), mkNav('alerts', '03', 'Resistance alerts', String(openAlerts))],
+      goHome: () => this.go('ward'), goWard: () => this.go('ward'), goInvestigate: () => this.go('investigate'), goAlerts: (ev) => { if (ev && ev.preventDefault) ev.preventDefault(); this.go('alerts'); },
+      openPatients: () => this.setState({ drawer: 'patients' }), openGuide: () => this.setState({ drawer: 'guide' }),
+      dataTag: feed ? 'External feed' : 'Synthetic data', showFeed: feed, feedNote: feed ? ' · Feed completeness is not certified' : '',
+      showStale: ds === 'stale', retryRefresh: () => this.toast('Retrying refresh…'),
+      isWard: pg === 'ward', isInvestigate: pg === 'investigate', isAlerts: pg === 'alerts', isAlert: pg === 'alert', showComparison: pg === 'ward' || pg === 'investigate',
+      reportDate: s.reportDate, minDate: '2023-10-02', maxDate: '2026-09-27', pinned: s.pinned, notPinned: !s.pinned,
+      reportDateLong: this.fd(s.reportDate, true),
+      onDate: (ev) => { const v = ev.target.value; if (v) this.setState({ reportDate: v, pinned: true, chartYear: Math.min(s.chartYear, Number(v.slice(0, 4))) }); },
+      useLatest: lat, useLatestMonitoring: lat,
+      exportDisabled: ds === 'loading' || ds === 'error', exportEvidence: () => this.openProv('evidence'), openEvidenceProv: () => this.openProv('evidence'), openCmpProv: () => this.openProv('comparison'),
+      wardOpts: [{ value: '', label: 'All wards' }, ...M.wards.map(w => ({ value: w[0], label: w[1] }))],
+      specimenOpts: M.specimens.map(x => ({ value: x, label: x[0].toUpperCase() + x.slice(1) })),
+      organismOpts: M.organisms.map(x => ({ value: x, label: x })), drugOpts,
+      dWard: d.ward, dSpecimen: d.specimen, dOrganism: d.organism, dDrug: d.drug, dDedup: d.dedup, dSex: d.sex, dAgeMin: d.ageMin, dAgeMax: d.ageMax,
+      onWard: ev => this.setD('ward', ev.target.value), onSpecimen: ev => this.setD('specimen', ev.target.value), onOrganism: ev => this.setD('organism', ev.target.value), onDrug: ev => this.setD('drug', ev.target.value),
+      onDedup: ev => this.setD('dedup', ev.target.value), onSex: ev => this.setD('sex', ev.target.value), onAgeMin: ev => this.setD('ageMin', ev.target.value), onAgeMax: ev => this.setD('ageMax', ev.target.value),
+      advanced: s.advanced, toggleAdvanced: () => this.setState({ advanced: !s.advanced }), hasActive: active > 0, activeFilters: active,
+      filterSummary: (() => { const p = this.popLabel(d); return `${p.sex} · ${p.ages.charAt(0).toUpperCase() + p.ages.slice(1)}`; })(),
+      onReset: () => { const n = this.blank(); this.setState({ draft: n, applied: n, formError: '' }); },
+      formError: s.formError, hasFormError: !!s.formError, onApply: apply,
+      cohortText: this.cohortLabel(a), drugName: this.drugOf(a.drug).label,
+      isLoading: ds === 'loading', isError: ds === 'error', isOk: ds !== 'loading' && ds !== 'error', retryEvidence: () => this.toast('Retrying…'),
+      periods,
+      ...this.cmpVm(),
+      drugB: s.drugB, drugBOpts: [{ value: '', label: 'Choose antibiotic', disabled: false }, ...M.drugs.filter(x => !x.screening && x.code !== a.drug).map(x => ({ value: x.code, label: x.label, disabled: !x.specimens.includes(a.specimen) }))],
+      onDrugB: ev => this.setState({ drugB: ev.target.value }),
+      cmpWins: [['r12', 'Last 12 months'], ['d28', 'Last 28 days']].map(([k, l]) => ({ label: l, checked: s.compWindow === k, pick: () => this.setState({ compWindow: k }) })),
+      ...this.trendVm(),
+      chartYear: s.chartYear, yearOpts: Array.from({ length: yrMax - 2023 + 1 }, (_, i) => ({ value: 2023 + i, label: String(2023 + i) })),
+      yearHelp: `Showing ${s.chartYear} in this chart only. The overview still ends on ${this.fd(s.reportDate)}.`,
+      onYear: ev => this.setState({ chartYear: Number(ev.target.value) }),
+      refreshing: s.refreshing, refreshNow: () => { this.setState({ refreshing: true }); clearTimeout(this._r); this._r = setTimeout(() => this.setState({ refreshing: false }), 1100); },
+      trLoading: ds === 'loading', trReady: ds !== 'loading',
+      alertsPinned: !alertsLive, alertsLive, ...this.alertVm(), ...(pg === 'alert' ? this.invVm() : { ivViews: [], ivTabs: [], ivMeasures: [], ivCounts: [], ivAge: [], ivGroups: [], ivTimeline: [], ivHistory: [], ivContext: [] }),
+      drawerOpen: !!drawer, drawerPatients: drawer === 'patients', drawerProv: drawer === 'provenance', drawerGuide: drawer === 'guide',
+      drawerTitle: drawer === 'patients' ? 'Patient microbiology history' : drawer === 'provenance' ? 'Behind the evidence' : 'Reading the evidence',
+      drawerDesc: drawer === 'patients' ? `Samples collected before ${this.fd(s.reportDate, true)}. All specimen types and wards are included.` : drawer === 'provenance' ? 'Calculation context and an export of the exact snapshot you opened.' : 'A research workspace for understanding observed laboratory susceptibility.',
+      closeDrawer: () => this.setState({ drawer: null }),
+      noPatient: !s.patient, hasPatient: !!s.patient, patientText: s.patientText, onPatientText: ev => this.setState({ patientText: ev.target.value }),
+      noQuery: !patientText, noMatches: !!patientText && results.length === 0, hasMatches: results.length > 0, patientResults: results,
+      backToSearch: () => this.setState({ patient: '' }), patient: s.patient, patientTag: 'Synthetic patient',
+      lookbackStart: this.fd(this.py(s.reportDate)), cutoffDate: this.fd(s.reportDate),
+      noCultures: cultures.length === 0, hasCultures: cultures.length > 0, cultureCount: `${cultures.length} prior cultures`, cultures,
+      expanded: s.expanded, toggleExpanded: () => this.setState({ expanded: !s.expanded }), expandLabel: s.expanded ? 'Compact results' : 'Expand all results',
+      histCsv: () => this.toast('Downloaded history_' + s.patient + '_page1.csv'), histJson: () => this.toast('Downloaded history_' + s.patient + '_page1.json'),
+      ...pv,
+      guideJumps: [jump('Urology', { ward: 'URO' }), jump('Intensive care', { ward: 'ICU' }), jump('Geriatrics', { ward: 'GER' }), jump('Health centre North', { ward: 'PHC-N' }), jump('Mecillinam comparison', { drug: 'CIP' }, { drugB: 'MEC' })],
+      hasToast: !!s.toastMsg, toastMsg: s.toastMsg
+    };
+  }
+  provVm() {
+    const s = this.state, p = s.prov || { kind: 'evidence' }, a = s.applied;
+    const asOf = p.kind === 'point' ? p.date : s.reportDate, bd = this.bounds(asOf);
+    const keys = p.kind === 'point' ? ['d28'] : p.win ? [p.win] : p.kind === 'comparison' ? [s.compWindow] : ['r12', 'd28'];
+    const src = '2023-10-02', srcEnd = this.ad('2026-09-27', 1);
+    const lab = k => k === 'r12' ? 'Last 12 months' : 'Last 28 days';
+    const id = 'an_' + p.kind + '_' + asOf.replaceAll('-', '') + '_r8';
+    return {
+      pvTitle: p.kind === 'comparison' ? 'Antibiotic comparison' : p.kind === 'point' ? 'Monthly cutoff' : p.win ? lab(p.win) : 'Evidence snapshot',
+      pvAsOf: this.fd(asOf, true),
+      pvDrugLine: p.kind === 'comparison' ? `Paired antibiotics: ${a.drug} / ${s.drugB}` : `Antibiotic: ${a.drug}`,
+      pvPeriods: keys.map(k => { const x = bd[k], covers = x.start >= src && x.end <= srcEnd; return { label: lab(k), range: this.rng(x.start, x.end), code: `[${x.start}, ${x.end})`, cover: covers ? 'Imported date span covers this period' : 'Partial imported-dataset coverage', coverClass: covers ? 'tag tag-neutral' : 'tag tag-outline' }; }),
+      pvDedup: a.dedup === 'selected_cohort' ? ' within the selected ward.' : ' across wards before applying the ward filter.',
+      pvMeta: [{ k: 'Imported dataset dates', v: '2 Oct 2023 – 27 Sep 2026' }, { k: 'Source manifest', v: 'authored-contract-fixtures-v1' }, { k: 'Method', v: 'surveillance-v1' }, { k: 'Run / revision', v: 'fixture-run-001 / 8' }, { k: 'Analysis ID', v: id }],
+      pvCsv: () => this.toast(`Downloaded ${id}.csv`), pvJson: () => this.toast(`Downloaded ${id}.json`)
+    };
+  }
+}
+</script>
+</body>
+</html>
