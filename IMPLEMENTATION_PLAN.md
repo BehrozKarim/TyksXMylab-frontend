@@ -362,7 +362,6 @@ src/
       ProvenanceDrawer.tsx
       ExportAnalysis.tsx
     replay/
-      ReplayController.tsx
       ReplayContext.tsx
       useReplayState.ts
   components/

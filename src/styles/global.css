@@ -1,5 +1,4 @@
-/* Reference recipes for the repo's shared classes (see src/components/ui.tsx) and the new patterns.
-   Adapt selectors to the repo's existing class names; values are final. Requires tokens.css. */
+/* Shared UI primitives. Requires tokens.css; application layouts live in workspace.css. */
 
 *,
 *::before,

@@ -1,4 +1,4 @@
-/* Application layouts using the handoff's shared primitives and divider grids. */
+/* Application layouts using shared primitives and divider grids. */
 :root {
   --button-bg: var(--accent-700);
   --primary-hover: var(--accent-800);
@@ -1978,15 +1978,6 @@ table caption {
 .toast {
   max-width: calc(100vw - 32px);
   white-space: normal;
-}
-.replay-controls,
-.replay-toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 12px;
-  padding: 16px 22px;
-  border-bottom: 1px solid var(--divider);
 }
 
 @media (min-width: 1180px) {

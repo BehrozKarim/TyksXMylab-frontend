@@ -59,8 +59,8 @@ Configure the provider on the backend as described in its `AI_SUMMARY.md`.
 
 ## Design and quick access
 
-The UI follows `design_handoff_ward_evidence`: steel-blue colors, locally bundled
-Barlow fonts, sticky top navigation, shared evidence cards and side drawers.
+The UI uses steel-blue colors, locally bundled Barlow fonts, sticky top
+navigation, shared evidence cards and side drawers.
 Alerts, demo controls, live updates and optional AI use the same design system.
 See `design-system/MASTER.md` for details and supported-data differences.
 
