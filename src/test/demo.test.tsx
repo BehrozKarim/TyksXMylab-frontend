@@ -64,6 +64,23 @@ it('waits for a click, sends only the advertised ID and disables while publishin
   close();
 });
 
+it('uses the public hosted API with no password or local controller', async () => {
+  vi.stubEnv('VITE_DEMO_CONTROLS', '1');
+  vi.stubEnv('VITE_HOSTED_DEMO', '1');
+  const fetcher = vi.fn(async () => new Response(JSON.stringify(ready)));
+  vi.stubGlobal('fetch', fetcher);
+  const close = mount();
+  const button = await screen.findByRole('button', { name: 'Send next lab batch' });
+  await waitFor(() => expect(button).toBeEnabled());
+  fireEvent.click(button);
+  await waitFor(() => expect(fetcher).toHaveBeenCalledWith('/api/v1/demo/next', expect.objectContaining({
+    method: 'POST', body: JSON.stringify({ delivery_id: 'first-batch' }),
+    headers: { 'Content-Type': 'application/json' },
+  })));
+  expect(fetcher).toHaveBeenCalledWith('/api/v1/demo/status', expect.any(Object));
+  close();
+});
+
 it.each([
   { ...ready, phase: 'complete', next_batch: null },
   { ...ready, run_id: 'a-replaced-run' },
@@ -76,7 +93,7 @@ it.each([
   );
   const close = mount();
   await waitFor(() =>
-    expect(screen.queryByText('Connecting to demo launcher…')).not.toBeInTheDocument(),
+    expect(screen.queryByText('Connecting to demo controls…')).not.toBeInTheDocument(),
   );
   expect(screen.getByRole('button', { name: 'Send next lab batch' })).toBeDisabled();
   close();
