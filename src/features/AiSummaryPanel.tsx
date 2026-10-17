@@ -16,6 +16,7 @@ import { rememberTrigger } from '../components/focus';
 
 export function AiSummaryDrawer(props: Parameters<typeof AiSummaryPanel>[0]) {
   const [open, setOpen] = useState(false);
+  const [requestedAnalysisId, setRequestedAnalysisId] = useState<string | null>(null);
   const trigger = useRef<HTMLButtonElement>(null);
   const pendingEvidence = useRef<Evidence | null>(null);
   return (
@@ -25,6 +26,7 @@ export function AiSummaryDrawer(props: Parameters<typeof AiSummaryPanel>[0]) {
         disabled={!props.evidence}
         onClick={() => {
           rememberTrigger();
+          setRequestedAnalysisId(props.evidence?.analysis_id ?? null);
           setOpen(true);
         }}
       >
@@ -46,6 +48,7 @@ export function AiSummaryDrawer(props: Parameters<typeof AiSummaryPanel>[0]) {
       >
         <AiSummaryPanel
           {...props}
+          requestedAnalysisId={requestedAnalysisId}
           onEvidence={(report) => {
             pendingEvidence.current = report;
             setOpen(false);
@@ -60,10 +63,12 @@ export function AiSummaryPanel({
   evidence,
   state,
   onEvidence,
+  requestedAnalysisId,
 }: {
   evidence: Evidence | undefined;
   state: ReplayState;
   onEvidence: (report: Evidence) => void;
+  requestedAnalysisId?: string | null;
 }) {
   const [requestedBefore, setRequestedBefore] = useState(false);
   if (!evidence) return null;
@@ -76,6 +81,7 @@ export function AiSummaryPanel({
       onEvidence={onEvidence}
       requestedBefore={requestedBefore}
       onRequested={() => setRequestedBefore(true)}
+      autoStart={requestedAnalysisId === evidence.analysis_id}
     />
   );
 }
@@ -86,12 +92,14 @@ function ReportSummary({
   onEvidence,
   requestedBefore,
   onRequested,
+  autoStart,
 }: {
   evidence: Evidence;
   state: ReplayState;
   onEvidence: (report: Evidence) => void;
   requestedBefore: boolean;
   onRequested: () => void;
+  autoStart: boolean;
 }) {
   const client = useQueryClient();
   const jobKey = ['summary-job', evidence.analysis_id];
@@ -104,9 +112,17 @@ function ReportSummary({
   const jobId = job.data ?? undefined;
   const [polling, setPolling] = useState(true);
   const [check, setCheck] = useState(0);
+  const started = useRef(false);
   const key = (id?: string) => ['summary', evidence.analysis_id, id];
   const create = useMutation({
-    mutationFn: () => api.summarize(evidence),
+    // Share an in-flight creation when the drawer is closed and reopened quickly.
+    mutationFn: () =>
+      client.fetchQuery({
+        queryKey: ['summary-create', evidence.analysis_id],
+        queryFn: () => api.summarize(evidence),
+        staleTime: Infinity,
+        retry: false,
+      }),
     retry: false,
     onSuccess: (summary) => {
       client.setQueryData(key(summary.summary_id), summary);
@@ -132,7 +148,17 @@ function ReportSummary({
   const older =
     evidence.context.run_id !== state.run_id ||
     evidence.context.state_revision !== state.state_revision;
-  const waiting = create.isPending || (!!jobId && !ready && polling && !result.error);
+  const startSummary = create.mutate;
+  useEffect(() => {
+    if (!autoStart || older || jobId || started.current) return;
+    started.current = true;
+    onRequested();
+    startSummary();
+  }, [autoStart, older, jobId, onRequested, startSummary]);
+  const waiting =
+    create.isPending ||
+    (autoStart && !older && !jobId && !create.error) ||
+    (!!jobId && !ready && polling && !result.error);
   const summary = ready ? result.data : undefined;
   return (
     <Panel className="ai-summary" aria-label="Report summary">
@@ -146,7 +172,7 @@ function ReportSummary({
           This summary belongs to an older report. Updated evidence is loading.
         </p>
       )}
-      {!jobId && (
+      {!jobId && !autoStart && (
         <Button
           variant="primary"
           disabled={create.isPending || older}

@@ -6,11 +6,12 @@ test('AI drawer remains optional, reuses the summary and hands focus to its evid
 }, info) => {
   await page.goto('/tests/browser/design-harness.html?scenario=summary');
   const trigger = page.getByRole('button', { name: 'AI summary', exact: true });
+  expect(await page.locator('body').getAttribute('data-summary-requests')).toBeNull();
   await trigger.click();
   await expect(page.getByRole('dialog', { name: 'AI report summary' })).toBeVisible();
-  expect(await page.locator('body').getAttribute('data-summary-requests')).toBeNull();
-  await page.getByRole('button', { name: 'Summarize this report' }).click();
   await expect(page.getByText('AI-assisted summary')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Summarize this report' })).toHaveCount(0);
+  await expect(page.locator('body')).toHaveAttribute('data-summary-requests', '1');
   await page.screenshot({ path: info.outputPath('ai-summary-drawer.png'), fullPage: true });
   expect(
     (await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze())

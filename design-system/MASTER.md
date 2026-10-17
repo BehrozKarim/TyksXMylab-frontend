@@ -72,9 +72,9 @@ show a source/connection banner or a global analysis-refresh notice. The footer
 contains branding only; method, run, revision and source details remain in evidence
 provenance and exports. Individual sections retain their loading/error states.
 
-**AI summary** is a page action opening an optional drawer. Generation still
-requires an explicit click. Closing and reopening reuses the report-bound job
-and result in the query cache. A different analysis has its own summary; live
+**AI summary** is a page action that opens the drawer and starts generation with
+one click. Closing and reopening reuses the report-bound job and result in the query
+cache; in-flight creation requests are shared so quick reopening cannot duplicate them. A different analysis has its own summary; live
 updates do not trigger generation. Supporting facts, interpretation limits and
 matching evidence provenance remain available.
 

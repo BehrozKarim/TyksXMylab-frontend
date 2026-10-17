@@ -184,7 +184,7 @@ it('rejects malformed completion and summaries for a different snapshot', async 
   }
 });
 
-it('opens AI as a secondary drawer and reuses the summary when reopened', async () => {
+it('generates with one home-page click and reuses the summary when reopened', async () => {
   const create = vi.spyOn(api, 'summarize').mockResolvedValue(complete());
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   render(
@@ -193,14 +193,92 @@ it('opens AI as a secondary drawer and reuses the summary when reopened', async 
     </QueryClientProvider>,
   );
   expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  expect(create).not.toHaveBeenCalled();
   fireEvent.click(screen.getByRole('button', { name: 'AI summary' }));
   expect(screen.getByRole('dialog', { name: 'AI report summary' })).toBeInTheDocument();
-  expect(create).not.toHaveBeenCalled();
-  fireEvent.click(screen.getByRole('button', { name: 'Summarize this report' }));
   await screen.findByText('Basic summary');
+  expect(screen.queryByRole('button', { name: 'Summarize this report' })).not.toBeInTheDocument();
   fireEvent.click(screen.getByRole('button', { name: 'Close panel' }));
   fireEvent.click(screen.getByRole('button', { name: 'AI summary' }));
   await screen.findByText('Basic summary');
   expect(create).toHaveBeenCalledTimes(1);
+  client.clear();
+});
+
+it('shares pending creation across drawer reopening without duplicate requests', async () => {
+  let resolve!: (summary: ReportSummary) => void;
+  const create = vi.spyOn(api, 'summarize').mockImplementation(
+    () =>
+      new Promise((done) => {
+        resolve = done;
+      }),
+  );
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  const view = render(
+    <QueryClientProvider client={client}>
+      <AiSummaryDrawer evidence={evidence} state={initialState} onEvidence={vi.fn()} />
+    </QueryClientProvider>,
+  );
+  fireEvent.click(screen.getByRole('button', { name: 'AI summary' }));
+  await waitFor(() => expect(create).toHaveBeenCalledTimes(1));
+  fireEvent.click(screen.getByRole('button', { name: 'Close panel' }));
+  fireEvent.click(screen.getByRole('button', { name: 'AI summary' }));
+  await screen.findByText('Preparing the report summary…');
+  expect(create).toHaveBeenCalledTimes(1);
+  await act(async () => resolve(complete()));
+  await screen.findByText('Basic summary');
+  expect(create).toHaveBeenCalledTimes(1);
+  view.unmount();
+  client.clear();
+});
+
+it('does not auto-generate for a report that changes while the drawer is open', async () => {
+  const create = vi.spyOn(api, 'summarize').mockResolvedValue(complete());
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  const tree = (report: Evidence) => (
+    <QueryClientProvider client={client}>
+      <AiSummaryDrawer evidence={report} state={initialState} onEvidence={vi.fn()} />
+    </QueryClientProvider>
+  );
+  const view = render(tree(evidence));
+  fireEvent.click(screen.getByRole('button', { name: 'AI summary' }));
+  await screen.findByText('Basic summary');
+  const next = makeEvidence(
+    new URLSearchParams({ ward_code: 'ICU' }),
+    initialState,
+    'updated-report',
+  );
+  view.rerender(tree(next));
+  expect(screen.queryByText(complete().paragraph!)).not.toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'Summarize updated report' })).toBeEnabled();
+  expect(create).toHaveBeenCalledTimes(1);
+  fireEvent.click(screen.getByRole('button', { name: 'Close panel' }));
+  create.mockResolvedValue(complete(next));
+  fireEvent.click(screen.getByRole('button', { name: 'AI summary' }));
+  await screen.findByText('Basic summary');
+  expect(create).toHaveBeenCalledTimes(2);
+  expect(create).toHaveBeenLastCalledWith(next);
+  view.unmount();
+  client.clear();
+});
+
+it('offers retry after automatic generation fails without retrying on its own', async () => {
+  const create = vi
+    .spyOn(api, 'summarize')
+    .mockRejectedValueOnce(new Error('Unavailable'))
+    .mockResolvedValue(complete());
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  const view = render(
+    <QueryClientProvider client={client}>
+      <AiSummaryDrawer evidence={evidence} state={initialState} onEvidence={vi.fn()} />
+    </QueryClientProvider>,
+  );
+  fireEvent.click(screen.getByRole('button', { name: 'AI summary' }));
+  await screen.findByText('Could not prepare summary');
+  expect(create).toHaveBeenCalledTimes(1);
+  fireEvent.click(screen.getByRole('button', { name: /Retry/ }));
+  await screen.findByText('Basic summary');
+  expect(create).toHaveBeenCalledTimes(2);
+  view.unmount();
   client.clear();
 });

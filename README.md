@@ -68,15 +68,16 @@ the first batch moves the reporting date to 25 September 2026.
 
 ## Report summary panel
 
-In API mode, **AI summary** at the top of the overview opens a separate side panel.
-Inside it, **Summarize this report** requests an explanation of the saved evidence
-currently displayed. Opening the drawer alone does not call the AI provider. The panel uses `/api/v1/ai/summaries`, polls pending work, and
+In API mode, clicking **AI summary** at the top of the overview opens the side panel
+and immediately requests an explanation of the displayed saved evidence. No second
+confirmation is required. The panel uses `/api/v1/ai/summaries`, polls pending work, and
 labels the result **AI-assisted summary** or **Basic summary** according to the
 backend. Applicable limitations remain visible, supporting facts expand below the
 paragraph, and **View evidence** opens the matching report's provenance.
 
 Closing and reopening the drawer reuses the same report-bound job and result in
-the query cache. Generation is explicit. A new analysis clears the old panel and offers
+the query cache, including when it is closed while the creation request is pending.
+Generation starts from the home-page button click. A new analysis clears the old panel and offers
 **Summarize updated report**; late responses cannot attach to another analysis.
 During revision refresh, a retained summary is labelled as belonging to an older
 report. Errors stay in this panel. Pending polling pauses after two minutes and
