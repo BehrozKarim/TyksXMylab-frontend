@@ -1,6 +1,4 @@
-/* Drop-in replacement for src/styles/tokens.css.
-   Keeps every existing variable name from the repo and adds the new design tokens.
-   Palette: one steel-blue accent + cool neutrals. */
+/* Shared design tokens: one steel-blue accent and cool neutrals. */
 :root {
   /* Primitives: neutral ramp */
   --neutral-100: #f5f5f8;

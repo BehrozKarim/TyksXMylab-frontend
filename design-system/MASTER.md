@@ -1,9 +1,8 @@
 # Ward Evidence design system
 
-The current visual source is `design_handoff_ward_evidence`: its tokens, component
-recipes and 34 screenshots. The reference HTML/runtime is a design aid only and
-is not shipped in the application. React, semantic HTML and Radix Dialog remain
-the implementation stack.
+This document and `src/styles/` define the application's shared visual system.
+React, semantic HTML and Radix Dialog provide the implementation. The application
+is self-contained and does not require a separate design prototype or runtime.
 
 ## Foundations
 
@@ -14,8 +13,8 @@ the implementation stack.
 - Page headings 46px, section headings 28px, card headings 26px, hero values 84px.
 - 16px card corners, 10px controls, 12px notices, 20px drawer corners.
 - Hairline borders, subtle card shadows, generous divider-based grids.
-- Primary button background uses `#416180` to meet AA contrast for small text,
-  as permitted by the handoff. Blue outlines also use the darker text color.
+- Primary button background uses `#416180` to meet AA contrast for small text.
+  Blue outlines also use the darker text color.
 
 `src/styles/tokens.css` contains palette and semantic tokens. Shared primitive
 recipes live in `global.css`; application layouts and responsive rules live in
@@ -64,7 +63,7 @@ matching evidence provenance remain available.
 ## Data and design boundaries
 
 Copy, API contracts, calculation rules, query hooks and routes retain their
-existing semantics. The handoff's authored numbers do not replace backend data.
+existing semantics. Design examples do not replace backend data.
 In particular, alert responses do not contain confidence intervals, so alert
 screens retain supported percentages/counts without invented interval plots.
 The navigation alert count uses the backend's actual active alerts and is shown

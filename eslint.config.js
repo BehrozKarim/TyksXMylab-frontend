@@ -10,7 +10,6 @@ export default tseslint.config(
       'public/mockServiceWorker.js',
       'playwright-report',
       'test-results',
-      'design_handoff_ward_evidence',
     ],
   },
   js.configs.recommended,
