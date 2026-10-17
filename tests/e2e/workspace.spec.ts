@@ -11,6 +11,11 @@ async function publish(page: Page, action: string) {
 }
 import AxeBuilder from '@axe-core/playwright';
 
+async function editQuery(page: Page) {
+  const button = page.getByRole('button', { name: 'Edit query', exact: true });
+  if (await button.isVisible()) await button.click();
+}
+
 test.beforeEach(async ({ page }) => {
   await page.goto('/ward');
   await expect(
@@ -35,6 +40,7 @@ test('renders all windows and a common-denominator comparison', async ({ page })
 test('applies filters explicitly, restores back navigation, and suppresses sparse data', async ({
   page,
 }) => {
+  await editQuery(page);
   await page.getByLabel('Ward', { exact: true }).selectOption('ICU');
   await expect(page.getByRole('region', { name: 'Last 28 days evidence' })).toContainText('75.0');
   await page.getByRole('button', { name: 'Apply cohort' }).click();
@@ -56,11 +62,13 @@ test('preserves counts when paired support is below 30', async ({ page }) => {
   );
 });
 test('distinguishes no tests and empty cohort', async ({ page }) => {
+  await editQuery(page);
   await page.getByLabel('Ward', { exact: true }).selectOption('GER');
   await page.getByRole('button', { name: 'Apply cohort' }).click();
   await expect(page.getByRole('region', { name: 'Last 28 days evidence' })).toContainText(
     'No susceptibility tests recorded',
   );
+  await editQuery(page);
   await page.getByLabel('Ward', { exact: true }).selectOption('PHC-N');
   await page.getByRole('button', { name: 'Apply cohort' }).click();
   await expect(page.getByRole('region', { name: 'Last 28 days evidence' })).toContainText(
@@ -103,6 +111,7 @@ test('patient dialog includes prior specimens, traps focus and returns it', asyn
   await expect(trigger).toBeFocused();
 });
 test('investigation uses its own cohort and has working evidence views', async ({ page }) => {
+  await editQuery(page);
   await page.getByRole('button', { name: 'Population filters' }).click();
   await page.getByLabel('Sex', { exact: true }).selectOption('F');
   await page.getByRole('button', { name: 'Apply cohort' }).click();
@@ -199,6 +208,7 @@ test('shows persistent API failure without fixture fallback and retries the same
     const { fault } = await import(module);
     fault('network');
   });
+  await editQuery(page);
   await page.getByLabel('Ward', { exact: true }).selectOption('ICU');
   await page.getByRole('button', { name: 'Apply cohort' }).click();
   await expect(page.getByText('The evidence service is unavailable.').first()).toBeVisible();
@@ -229,6 +239,7 @@ test('background state and metadata failures keep the workspace usable with inli
     await expect(page.getByRole('heading', { name: 'Ward overview', exact: true })).toBeVisible();
     await expect(page.locator('.period-value')).toHaveText(values);
     await expect(page.locator('.boot-screen')).toHaveCount(0);
+    await editQuery(page);
     await page.getByLabel('Ward', { exact: true }).selectOption('ICU');
     await expect(page.getByLabel('Ward', { exact: true })).toHaveValue('ICU');
     await page.evaluate(async () => {
@@ -314,8 +325,10 @@ test('a delayed previous cohort cannot replace the current results', async ({ pa
     const { fault } = await import(module);
     fault('delayed');
   });
+  await editQuery(page);
   await page.getByLabel('Ward', { exact: true }).selectOption('ICU');
   await page.getByRole('button', { name: 'Apply cohort' }).click();
+  await editQuery(page);
   await page.getByLabel('Ward', { exact: true }).selectOption('URO');
   await page.getByRole('button', { name: 'Apply cohort' }).click();
   await expect(page.getByRole('region', { name: 'Last 28 days evidence' })).toContainText('75.0');

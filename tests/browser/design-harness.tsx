@@ -11,6 +11,8 @@ import { initialState, meta, makeEvidence } from '../../src/mocks/fixtures';
 import { analysis, context, record, monitor } from '../../src/test/alert-fixtures';
 import { ResistanceInvestigation, ResistanceAlerts } from '../../src/features/ResistanceAlerts';
 import { AiSummaryDrawer } from '../../src/features/AiSummaryPanel';
+import { SusceptibilityTimeChart } from '../../src/features/SusceptibilityTimeChart';
+import { trendPoints } from '../../src/test/trend-fixtures';
 import { ProvenanceDrawer } from '../../src/features/ProvenanceDrawer';
 import { ExportToast } from '../../src/components/ExportToast';
 import { rememberTrigger } from '../../src/components/focus';
@@ -143,7 +145,12 @@ createRoot(document.getElementById('root')!).render(
   <QueryClientProvider client={client}>
     <MemoryRouter initialEntries={['/investigate/alert1']}>
       <main className="main-content">
-        {scenario === 'summary' ? (
+        {scenario === 'trend' ? (
+          <section className="panel trend-panel">
+            <h1>Susceptibility over time</h1>
+            <SusceptibilityTimeChart points={trendPoints} antibiotic="Ciprofloxacin" year={2026} />
+          </section>
+        ) : scenario === 'summary' ? (
           <SummaryHarness />
         ) : scenario === 'alerts' || scenario === 'past-alerts' ? (
           <ResistanceAlerts

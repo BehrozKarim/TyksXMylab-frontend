@@ -3,6 +3,8 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   server: {
+    // Generated HTML reports must not reload an open live dashboard.
+    watch: { ignored: ['**/test-results/**', '**/playwright-report/**', '**/dist/**'] },
     proxy: {
       '/api/v1': { target: 'http://127.0.0.1:8000', changeOrigin: true },
       ...(process.env.DEMO_CONTROL_URL && process.env.DEMO_CONTROL_TOKEN

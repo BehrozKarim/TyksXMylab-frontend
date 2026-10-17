@@ -1,33 +1,51 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
-test('saved queries restore applied filters and latest-date behavior after navigation', async ({
+async function editQuery(page: Page) {
+  const button = page.getByRole('button', { name: 'Edit query', exact: true });
+  if (await button.isVisible()) await button.click();
+}
+
+test('overview leads with applied query and results, with explicit editing and cancellation', async ({
   page,
 }) => {
   await page.goto('/ward');
   await expect(page.getByRole('region', { name: 'Last 28 days evidence' })).toBeVisible();
-  await page.getByRole('button', { name: /Saved queries/ }).click();
-  await page.getByLabel('Query name').fill('Urology quick review');
-  await page.getByRole('button', { name: 'Save query', exact: true }).click();
-  await expect(page.getByText('Query saved.', { exact: false })).toBeVisible();
+  const summary = page.getByRole('region', { name: 'Current evidence query' });
+  await expect(summary).toContainText('Escherichia coli');
+  await expect(summary).toContainText('Ciprofloxacin');
+  await expect(page.getByRole('button', { name: 'Edit query', exact: true })).toHaveAttribute(
+    'aria-expanded',
+    'false',
+  );
+  await expect(page.getByLabel('Ward', { exact: true })).toBeHidden();
+  await expect(page.getByRole('button', { name: /Saved queries|Favorite/ })).toHaveCount(0);
+  await editQuery(page);
+  await page.getByLabel('Ward', { exact: true }).selectOption('ICU');
   expect(
     (await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze())
       .violations,
   ).toEqual([]);
-  await page.getByRole('button', { name: 'Close panel' }).click();
-  await page.getByLabel('Ward', { exact: true }).selectOption('ICU');
-  await page.getByRole('button', { name: 'Apply cohort' }).click();
-  await expect(page.getByRole('region', { name: 'Last 28 days evidence' })).toContainText(
-    '29 tested',
-  );
-  await page.reload();
-  await page.getByRole('button', { name: /Saved queries/ }).click();
-  await page
-    .getByRole('button', { name: 'Urology quick review Latest published samples · CIP' })
-    .click();
-  await expect(page.getByLabel('Ward', { exact: true })).toHaveValue('URO');
   await expect(page.getByRole('region', { name: 'Last 28 days evidence' })).toContainText('75.0');
-  await expect(page).toHaveURL(/date_mode=follow/);
+  await page.getByRole('button', { name: 'Cancel', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Edit query', exact: true })).toBeFocused();
+  await editQuery(page);
+  await expect(page.getByLabel('Ward', { exact: true })).toHaveValue('URO');
+  await editQuery(page);
+  await page.getByRole('button', { name: 'Population filters', exact: true }).click();
+  await page.getByLabel('Sex', { exact: true }).selectOption('F');
+  await page.getByLabel('Minimum age').fill('18');
+  await page.getByLabel('First isolate selection').selectOption('all_wards');
+  await page.getByRole('button', { name: 'Apply cohort' }).click();
+  await expect(page.getByLabel('Ward', { exact: true })).toBeHidden();
+  await expect(summary).toContainText('women');
+  await expect(summary).toContainText('Ages 18–120+');
+  await expect(summary).toContainText('First isolate across all wards');
+  await page.reload();
+  await expect(summary).toContainText('women');
+  await expect(page.getByLabel('Ward', { exact: true })).toBeHidden();
+  await page.goBack();
+  await expect(summary).toContainText('All sexes');
 });
 
 test('design review across screen widths, support states and drawers', async ({ page }, info) => {
@@ -56,6 +74,7 @@ test('design review across screen widths, support states and drawers', async ({ 
     await screenshot(`ward-${width}`);
   }
   await page.setViewportSize({ width: 1185, height: 1000 });
+  await editQuery(page);
   await page.getByRole('button', { name: 'Population filters', exact: true }).click();
   await screenshot('05-population-filters');
   await page.getByLabel('Minimum age').fill('80');
@@ -63,6 +82,7 @@ test('design review across screen widths, support states and drawers', async ({ 
   await page.getByRole('button', { name: 'Apply cohort' }).click();
   await expect(page.getByRole('alert')).toContainText('minimum no greater');
   await screenshot('06-invalid-ages');
+  await editQuery(page);
   await page.getByRole('button', { name: 'Reset filters' }).click();
   await expect(page).toHaveURL(/ward_code=URO/);
   await expect(page.getByLabel('Ward', { exact: true })).toHaveValue('URO');
@@ -71,11 +91,13 @@ test('design review across screen widths, support states and drawers', async ({ 
     ['GER', '08-no-tests', 'No susceptibility tests recorded'],
     ['PHC-N', '09-empty', 'No eligible isolates'],
   ]) {
+    await editQuery(page);
     await page.getByLabel('Ward', { exact: true }).selectOption(ward);
     await page.getByRole('button', { name: 'Apply cohort' }).click();
     await expect(page.getByRole('region', { name: 'Last 28 days evidence' })).toContainText(text);
     await screenshot(name);
   }
+  await editQuery(page);
   await page.getByRole('button', { name: 'Reset filters' }).click();
   await expect(page).toHaveURL(/ward_code=URO/);
   await expect(page.getByLabel('Ward', { exact: true })).toHaveValue('URO');

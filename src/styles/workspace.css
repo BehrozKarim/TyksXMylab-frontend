@@ -624,7 +624,81 @@ table caption {
   padding: 50px 0;
 }
 
-/* Cohort selection: one card for date, filter cells and actions. */
+/* Applied query stays visible; editing is disclosed beside the results. */
+.query-panel {
+  margin-top: var(--space-6);
+  border: 1px solid var(--divider);
+  border-radius: var(--radius-xl);
+  background: var(--card);
+  overflow: hidden;
+}
+.query-panel-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-5) 0;
+}
+.query-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-4);
+  margin: 0;
+  padding: var(--space-3) var(--space-5);
+}
+.query-summary dt,
+.demo-feed-summary dt {
+  font-size: var(--fs-label);
+  color: var(--muted);
+}
+.query-summary dd,
+.demo-feed-summary dd {
+  margin: var(--space-1) 0 0;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+.query-summary div:last-child dd {
+  color: var(--primary-text);
+}
+.query-population.applied-context {
+  margin: 0;
+  padding: 0 var(--space-5) var(--space-3);
+}
+.query-population p {
+  font-size: var(--fs-label);
+}
+.query-reporting {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-5);
+  border-top: 1px solid var(--divider);
+}
+.query-reporting .date-controls {
+  gap: var(--space-4);
+}
+.query-reporting .inline-field {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.query-reporting input {
+  width: auto;
+  min-height: var(--control-height);
+}
+.query-panel .cohort-panel {
+  margin: 0;
+  border: 0;
+  border-top: 1px solid var(--divider);
+  border-radius: 0;
+  box-shadow: none;
+}
+.query-panel + .evidence-section-title {
+  margin-top: var(--space-6);
+}
+/* Cohort editor reuses the existing filter grid and form controls. */
 .cohort-panel {
   margin-top: 36px;
   border: 1px solid var(--divider);
@@ -1069,27 +1143,66 @@ table caption {
   font-size: 12px;
   color: var(--muted);
 }
+.trend-chart-frame {
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-6) var(--space-6) 0;
+}
+.trend-y-axis {
+  position: relative;
+  flex: 0 0 64px;
+  height: 260px;
+  color: var(--muted);
+  font-size: var(--fs-label);
+}
+.trend-y-title {
+  position: absolute;
+  height: 100%;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  text-align: center;
+  color: var(--foreground);
+}
+.trend-y-tick {
+  position: absolute;
+  right: 0;
+  transform: translateY(50%);
+}
 .trend-chart {
-  padding: 28px 30px 16px;
+  flex: 1;
+  min-width: 0;
+  padding-bottom: var(--space-2);
   overflow-x: auto;
 }
+.trend-canvas {
+  min-width: 640px;
+}
+.trend-plot {
+  position: relative;
+  height: 260px;
+  margin-top: var(--space-2);
+}
+.trend-y-axis {
+  margin-top: var(--space-2);
+}
 .trend-chart svg {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
-  min-width: 600px;
+  height: 100%;
+  min-width: 0;
   overflow: visible;
 }
 .trend-chart text {
   fill: var(--neutral-700);
   font: 11px var(--font-body);
 }
-.trend-grid,
-.trend-gap {
-  stroke: var(--divider);
-  stroke-width: 1;
-}
-.trend-gap {
-  stroke-dasharray: 4 4;
+.trend-grid {
+  position: absolute;
+  left: 4%;
+  right: 4%;
+  border-top: 1px solid var(--divider);
 }
 .trend-line {
   fill: none;
@@ -1099,9 +1212,130 @@ table caption {
   stroke-linejoin: round;
 }
 .trend-point {
-  fill: white;
-  stroke: var(--accent-700);
-  stroke-width: 2;
+  position: absolute;
+  width: var(--space-3);
+  height: var(--space-3);
+  transform: translate(-50%, -50%);
+  border: 2px solid var(--accent-700);
+  border-radius: var(--radius-pill);
+  background: var(--card);
+  cursor: pointer;
+}
+.trend-point::before {
+  content: '';
+  position: absolute;
+  inset: -16px;
+}
+.trend-point[data-selected] {
+  background: var(--accent-200);
+  border-width: 3px;
+}
+.trend-legend {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-6);
+  padding: var(--space-5) var(--space-6) 0;
+  font-size: var(--fs-label);
+  color: var(--muted);
+}
+.trend-legend > span {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.trend-series-key {
+  font-weight: 500;
+  color: var(--foreground);
+}
+.trend-line-key {
+  position: relative;
+  width: var(--space-8);
+  border-top: 2px solid var(--accent);
+}
+.trend-line-key::after {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: var(--space-3);
+  width: var(--space-2);
+  height: var(--space-2);
+  border: 2px solid var(--accent-700);
+  border-radius: var(--radius-pill);
+  background: var(--card);
+}
+.trend-legend .trend-coverage {
+  margin-left: auto;
+}
+.trend-missing-key {
+  font-size: var(--fs-h4);
+}
+.trend-availability {
+  position: relative;
+  height: var(--space-18);
+}
+.trend-availability-label {
+  position: absolute;
+  top: calc(100% + var(--space-10));
+  font-size: var(--fs-caption);
+  left: 0;
+  color: var(--muted);
+}
+.trend-month {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  min-width: var(--space-12);
+  min-height: var(--space-18);
+  padding: var(--space-2) var(--space-1);
+  transform: translateX(-50%);
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-ui);
+}
+.trend-month:hover,
+.trend-month[aria-pressed='true'] {
+  background: var(--hover-tint);
+}
+.trend-month:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 0;
+}
+.trend-available-marker {
+  color: var(--accent-700);
+  font-size: var(--fs-label);
+}
+.trend-missing-marker {
+  color: var(--muted);
+  font-size: var(--fs-h4);
+  line-height: 1;
+}
+.trend-x-label {
+  margin: var(--space-2) 0 var(--space-4);
+  text-align: center;
+  font-size: var(--fs-ui);
+}
+.trend-scroll-hint {
+  display: none;
+  margin: 0 var(--space-6) var(--space-4);
+  font-size: var(--fs-caption);
+}
+.trend-chart .trend-axis-label {
+  fill: var(--foreground);
+  font-size: var(--fs-label);
+}
+.trend-cutoff-detail {
+  margin: 0 var(--space-6);
+  padding: var(--space-3) var(--space-4);
+  min-height: var(--space-18);
+  background: var(--surface-subtle);
+  border-left: 2px solid var(--accent);
+  font-size: var(--fs-label);
+}
+.trend-cutoff-detail p {
+  margin: 0;
 }
 .trend-panel > .small-note {
   padding: 10px 30px 14px;
@@ -1955,7 +2189,30 @@ table caption {
 }
 .demo-controls {
   display: block;
-  margin: 14px 0 0;
+  margin: 0;
+}
+.demo-feed-trigger {
+  min-height: var(--control-height);
+  padding-inline: var(--space-3);
+}
+.demo-feed-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+}
+.demo-feed-trigger[data-busy] .demo-feed-dot,
+.demo-feed-dot[data-error] {
+  background: var(--foreground);
+  outline: 2px solid var(--accent-200);
+}
+.demo-feed-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+  margin: 0 0 var(--space-6);
+  padding-bottom: var(--space-5);
+  border-bottom: 1px solid var(--divider);
 }
 .demo-controls-row {
   display: flex;
@@ -2070,6 +2327,32 @@ table caption {
   .cohort-panel {
     margin-top: 28px;
   }
+  .query-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .query-reporting .date-controls {
+    align-items: flex-start;
+    gap: var(--space-2);
+    flex-direction: column;
+  }
+  .query-reporting > .button {
+    padding-left: 0;
+  }
+  .query-reporting .following-label {
+    font-size: var(--fs-caption);
+  }
+  .query-reporting input {
+    width: 160px;
+    font-size: var(--fs-ui);
+  }
+  .query-reporting .inline-field > span {
+    white-space: nowrap;
+    font-size: var(--fs-label);
+  }
+  .demo-feed-trigger {
+    padding-inline: var(--space-2);
+    gap: var(--space-1);
+  }
   .filter-date-row {
     gap: 12px;
     padding: 18px;
@@ -2144,7 +2427,13 @@ table caption {
     font-size: 17px;
   }
   .trend-chart {
-    padding-inline: 20px;
+    padding-inline: 0;
+  }
+  .trend-chart-frame {
+    padding-inline: var(--space-4);
+  }
+  .trend-scroll-hint {
+    display: block;
   }
   .chart-controls,
   .trend-freshness {
