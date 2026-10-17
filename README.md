@@ -20,6 +20,26 @@ An existing `.env.local` can override these. Restart Vite after environment chan
 API errors never switch to mock data. Explicit `VITE_DATA_MODE=fixtures` remains
 available for isolated interface testing and is visibly labeled as authored examples.
 
+## Manual live-feed demonstration
+
+From the sibling backend repository, run:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\start-demo.ps1
+```
+
+This launches PostgreSQL, the backend and this frontend with an isolated synthetic
+dataset. In **Demo controls**, press **Send next lab batch**. One batch travels through
+the real HTTP feed; the button is disabled until publication finishes, and the existing
+SSE connection refreshes the dashboard. There are no automatic deliveries. The trend
+retains its separate 30-second refresh limit. Use **Use latest date** to follow arrivals.
+
+The panel appears only when the launcher sets `VITE_DEMO_CONTROLS=1`. Vite proxies
+`/__demo` to the loopback controller using server-only `DEMO_CONTROL_URL` and
+`DEMO_CONTROL_TOKEN`; the browser receives no feed credential. Ordinary startup
+does not include these controls. Ctrl+C stops the launcher and its servers; relaunch
+resumes, and `-Restart` creates a fresh demo run. See the backend's `DEMO.md`.
+
 ## Dates and overlapping overview periods
 
 **Report end date** sets the inclusive endpoint of both headline periods and the

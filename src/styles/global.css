@@ -3445,6 +3445,19 @@ main:focus {
 .alert-downloads .button {
   font-size: 12px;
 }
+.demo-controls {
+  display: block;
+}
+.demo-controls-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.demo-controls p {
+  margin: 6px 0;
+}
 .alert-snapshot-selector {
   display: flex;
   flex-wrap: wrap;

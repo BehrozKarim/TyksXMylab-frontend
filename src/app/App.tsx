@@ -34,6 +34,7 @@ import { InvestigationPage } from '../features/InvestigationPage';
 import { CohortInvestigation } from '../features/CohortInvestigation';
 import { SusceptibilityTrend } from '../features/SusceptibilityTrend';
 import { ResistanceAlerts, ResistanceInvestigation } from '../features/ResistanceAlerts';
+import { DemoControls } from '../features/DemoControls';
 
 function Brand() {
   return (
@@ -245,6 +246,7 @@ function Workspace({
           </div>
         </header>
         <main id="main-content" className="main-content" tabIndex={-1}>
+          <DemoControls state={state} />
           <RefreshNotice
             error={refreshError}
             onRetry={onRetryRefresh}
