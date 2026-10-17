@@ -3,6 +3,20 @@
 React/TypeScript microbiology workspace using Vite, React Router, TanStack Query,
 Zod, Radix Dialog and the existing CSS-token design system.
 
+## Deploy on Render
+
+Use this repository's `render.yaml` for the free static site. Set `VITE_API_BASE_URL`
+to the backend's public HTTPS URL including `/api/v1`; set the backend's
+`AEI_CORS_ORIGINS` to this site's actual origin. The Blueprint enables the public
+hosted batch button and SPA routing. API URLs are public; OpenAI keys, database
+credentials and feed tokens belong only in backend secrets.
+
+With `VITE_HOSTED_DEMO=1`, controls use `/api/v1/demo` on the backend and need no local
+launcher. Viewing, AI summaries and batch controls need no password. The backend's
+`DEPLOYMENT.md` covers creating PostgreSQL and importing/preparing the demo once.
+Free Render backends can take about a minute to wake up; their free databases expire
+after 30 days. Build again after changing Vite environment variables.
+
 ## Run
 
 After pulling changes, run `npm ci` before starting the frontend. The redesigned

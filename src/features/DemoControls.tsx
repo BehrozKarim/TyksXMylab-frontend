@@ -3,6 +3,7 @@ import { FlaskConical } from 'lucide-react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { z } from 'zod';
 import type { ReplayState } from '../api/contracts';
+import { API_BASE } from '../api/client';
 import { Button, Drawer, RefreshNotice } from '../components/ui';
 import { rememberTrigger } from '../components/focus';
 
@@ -21,14 +22,15 @@ const statusSchema = z.object({
 });
 
 async function controlRequest(path: string, init?: RequestInit) {
-  const response = await fetch(`/__demo/${path}`, {
+  const base = import.meta.env.VITE_HOSTED_DEMO === '1' ? `${API_BASE}/demo` : '/__demo';
+  const response = await fetch(`${base}/${path}`, {
     ...init,
     cache: 'no-store',
-    signal: init?.signal ?? AbortSignal.timeout(10_000),
+    signal: init?.signal ?? AbortSignal.timeout(90_000),
   });
   // A stale tab or duplicate click returns the current status without advancing.
   if (!response.ok && response.status !== 409)
-    throw new Error('Could not reach the demo launcher.');
+    throw new Error('Could not reach demo controls. The server may be waking up; retry shortly.');
   return statusSchema.parse(await response.json());
 }
 
@@ -44,7 +46,7 @@ function ManualFeed({ state }: { state: ReplayState }) {
   const status = useQuery({
     queryKey: key,
     queryFn: ({ signal }) => controlRequest('status', { signal }),
-    refetchInterval: 1000,
+    refetchInterval: (query) => query.state.data?.phase === 'processing' ? 1000 : 5000,
     retry: false,
   });
   const send = useMutation({
@@ -124,13 +126,13 @@ function ManualFeed({ state }: { state: ReplayState }) {
           </div>
           <p role="status" aria-live="polite">
             {!data
-              ? 'Connecting to demo launcher…'
+              ? 'Connecting to demo controls…'
               : !matches
-                ? 'Demo run changed. Restart the launcher to continue.'
+                ? 'Demo run changed. Ask the demo owner to initialize it again.'
                 : busy
                   ? 'Processing — waiting for publication.'
                   : data.phase === 'complete'
-                    ? 'All demo batches published. Restart with -Restart to demonstrate again.'
+                    ? 'All demo batches published. The demo owner can start a new run.'
                     : data.phase === 'error'
                       ? data.error
                       : data.next_batch
